@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: iran-student-guide
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4
+    healthCheckPath: /health
+    envVars:
+      # Render به‌صورت خودکار RENDER_EXTERNAL_URL را ست می‌کند؛
+      # ترد keep-alive داخل app.py از همین متغیر برای self-ping استفاده می‌کند.
+      - key: PYTHON_VERSION
+        value: 3.11.9
