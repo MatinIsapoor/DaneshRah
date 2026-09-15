@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}جست‌وجو در راهنماها{% if q %} — «{{ q }}»{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+  <div class="breadcrumb"><a href="{{ url_for('index') }}">خانه</a><span>‹</span><span>جست‌وجو</span></div>
+
+  <div class="page-hero">
+    <h1>🔎 جست‌وجو در همه‌ی راهنماها</h1>
+    <p>یک کلمه کافی است: «ودیعه»، «سیم‌کارت»، «Pfand»، «Anmeldung»، «IMEI»… در نام کشورها، تیترها و متن همه‌ی {{ 17 }} کشور می‌گردیم.</p>
+  </div>
+
+  <form class="hero-search" style="background:var(--card);border-color:var(--border);max-width:none" action="{{ url_for('search_page') }}" method="get" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="مثلاً: ودیعه آلمان، سیم‌کارت ترکیه…" aria-label="جست‌وجو" data-global-search style="color:var(--ink)">
+    <button type="submit">بگرد</button>
+  </form>
+
+  <div class="section">
+    {% if q %}
+      <div class="section-head">
+        <h2>نتایج «{{ q }}»</h2>
+        <span class="count-badge">{{ results|length }} نتیجه</span>
+      </div>
+      {% if results %}
+      <div class="search-results">
+        {% for r in results %}
+        <a class="result-card reveal" href="{{ url_for('category_page', country_code=r.country_code, category=r.category_code) }}">
+          <h3>{{ r.flag }} {{ r.item_title }}</h3>
+          <div class="r-meta">{{ r.country_name }} · {{ r.category_title }}</div>
+          <p>…{{ r.snippet }}…</p>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>
+        <h3>چیزی پیدا نشد 😕</h3>
+        <p>کلمه‌ی کوتاه‌تر یا فارسی/انگلیسیِ معادل را امتحان کن؛ مثلاً به‌جای «بیمه درمانی آلمان» فقط «بیمه» را بزن.</p>
+        <a class="btn btn-outline" href="{{ url_for('index') }}">دیدن همه‌ی کشورها</a>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="section-head"><h2>💡 پیشنهاد جست‌وجو</h2></div>
+      <div class="steps-mini" style="margin-bottom:18px">
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='سیم‌کارت') }}">سیم‌کارت</a>
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='Pfand') }}">Pfand</a>
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='خوابگاه') }}">خوابگاه</a>
+        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='تخفیف دانشجویی') }}">تخفیف دانشجویی</a>
+      </div>
+      <p class="muted">عبارتی را بالا بنویس و Enter بزن. نکته: جست‌وجو هم‌زمان در تیتر و متن انجام می‌شود.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

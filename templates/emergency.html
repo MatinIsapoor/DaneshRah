@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}شماره‌های اضطراری و اطلاعات پایه‌ی کشورها{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="breadcrumb"><a href="{{ url_for('index') }}">خانه</a><span>‹</span><span>شماره‌های اضطراری</span></div>
+
+  <div class="page-hero">
+    <span class="eyebrow">🚨 روز اول در گوشی‌ات ذخیره کن</span>
+    <h1>شماره‌های اضطراری و اطلاعات پایه</h1>
+    <p>شماره‌ی اورژانس، پایتخت، واحد پول و زبان هر کشور — یک‌جا. در بیشتر کشورهای اتحادیه‌ی اروپا شماره‌ی واحد <b style="color:#ffe9b8">۱۱۲</b> کار می‌کند. شماره‌ی سفارت یا کنسولگری ایران در کشور مقصد را هم جداگانه پیدا و ذخیره کن.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="filter-search" style="max-width:380px;margin-inline-start:0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" placeholder="فیلتر: مثلاً آلمان یا ۹۱۱…" data-em-search aria-label="فیلتر جدول">
+    </div>
+  </div>
+
+  <div class="table-wrap reveal">
+    <table>
+      <thead>
+        <tr><th>کشور</th><th>پایتخت</th><th>🚨 اضطراری</th><th>واحد پول</th><th>زبان</th><th>منطقه</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr data-em-row data-search="{{ r.name }} {{ r.emergency }} {{ r.capital }}">
+          <td><b>{{ r.flag }} {{ r.name }}</b></td>
+          <td>{{ r.capital }}</td>
+          <td><span class="em-num">{{ r.emergency }}</span></td>
+          <td>{{ r.currency }}</td>
+          <td>{{ r.language }}</td>
+          <td class="muted">{{ r.region }}</td>
+          <td><a href="{{ url_for('country_page', country_code=r.code) }}">راهنما ←</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+    <div><b>مهم:</b> این شماره‌ها برای تماس اضطراری (پلیس/آتش‌نشانی/اورژانس) است. در استرالیا <b>۰۰۰</b>، در آمریکا و کانادا <b>۹۱۱</b>، در انگلیس <b>۹۹۹</b> (و ۱۱۲ هم کار می‌کند). قبل از سفر، یک‌بار با سایت رسمی کشور مقصد چک کن.</div>
+  </div>
+</div>
+{% endblock %}

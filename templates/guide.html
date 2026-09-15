@@ -1,31 +1,72 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-  <meta charset="UTF-8">
-  <title>{{ category.title }} - {{ country.name }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <header>
-    <div class="header-inner">
-      <span class="eyebrow">{{ country.flag }} {{ country.name }}</span>
-      <h1>{{ category.title }}</h1>
+{% extends "base.html" %}
+{% block title %}{{ category.title }} در {{ country.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="breadcrumb">
+    <a href="{{ url_for('index') }}">خانه</a><span>‹</span>
+    <a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a><span>‹</span>
+    <span>{{ category.title }}</span>
+  </div>
+
+  <div class="page-hero">
+    <span class="eyebrow">{{ country.flag }} {{ country.name }}</span>
+    <h1>{{ category.title }}</h1>
+    <p>
+      {% if category_code == 'shopping' %}همه‌ی کارهای روزمره‌ی هفته‌های اول: کجا ارزان خرید کنی، کدام بانک سریع‌تر حساب باز می‌کند، کدام سیم‌کارت دانشجویی به‌صرفه‌تر است و با کارت دانشجویی کجاها تخفیف می‌گیری.{% elif category_code == 'housing' %}از پیدا کردن خانه تا امضای قرارداد و ثبت قانونی آدرس: ودیعه، هزینه‌های جانبی، کلاهبرداری‌های رایج و مهلت‌های قانونی — با دقت بخوان.{% elif category_code == 'arrival' %}قدم‌به‌قدم از فرودگاه تا استقرار کامل. برای نسخه‌ی تعاملی با ذخیره‌ی پیشرفت، چک‌لیست را باز کن.{% else %}راهنمای قدم‌به‌قدم {{ category.title }} در {{ country.name }}.{% endif %}
+    </p>
+    <div class="meta-row">
+      <span class="meta-badge">📄 {{ category['items']|length }} مطلب</span>
+      <span class="meta-badge">⏱️ حدود {{ ((category['items']|length * 1.5)|round(0, 'ceil')|int) }} دقیقه مطالعه</span>
+      <span class="meta-badge">🔗 همراه با لینک منابع اصلی</span>
     </div>
-  </header>
-  <main>
-    <div class="breadcrumb">
-      <a href="{{ url_for('index') }}">لیست کشورها</a> ›
-      <a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-outline" data-print style="padding:8px 18px;font-size:.85rem">🖨️ چاپ / ذخیره‌ی PDF</button>
+    <span class="muted" style="font-size:.82rem">💡 روی تیتر هر مطلب بزن تا باز و بسته شود · <span class="kbd">/</span> جست‌وجو</span>
+  </div>
+
+  <div class="guide-layout">
+    <aside class="toc" aria-label="فهرست مطالب">
+      <h4>📑 فهرست این صفحه</h4>
+      {% for item in category['items'] %}
+      <a href="#item-{{ loop.index }}" data-toc-link>{{ loop.index }}. {{ item.title }}</a>
+      {% endfor %}
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <a href="{{ url_for('country_page', country_code=country_code) }}">→ همه‌ی دسته‌های {{ country.name }}</a>
+      </div>
+    </aside>
+
+    <div>
+      {% for item in category['items'] %}
+      <article class="guide-item reveal" id="item-{{ loop.index }}" data-guide-item>
+        <div class="guide-item-head" data-guide-head role="button" tabindex="0" aria-expanded="true">
+          <span class="g-num">{{ loop.index }}</span>
+          <h3>{{ item.title }}</h3>
+          <button class="g-toggle" aria-label="باز/بسته">▾</button>
+        </div>
+        <div class="g-body">
+          <p>{{ item.content | linkify }}</p>
+          {% if item.link %}
+          <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">↗ صفحه‌ی اصلی منبع</a>
+          {% endif %}
+          <div class="g-actions">
+            <button class="mini-btn" data-copy-link="#item-{{ loop.index }}">کپی لینک</button>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+
+      <div class="tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+        <div><b>چیزی تغییر کرده یا نکته‌ای جا افتاده؟</b> این راهنما با مشارکت دانشجوها به‌روز می‌ماند. در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب پروژه</a> Issue باز کن یا Pull Request بفرست. 🙌<br><span class="muted">قبل از هر اقدام مهم (امضای قرارداد، واریز ودیعه، ثبت اقامت) حتماً منبع رسمی لینک‌شده را هم چک کن.</span></div>
+      </div>
+
+      <div class="center mt">
+        <a class="btn btn-outline" href="{{ url_for('country_page', country_code=country_code) }}">→ بازگشت به {{ country.name }}</a>
+      </div>
     </div>
-    {% for item in category['items'] %}
-    <div class="guide-item">
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.content | linkify }}</p>
-      {% if item.link %}
-      <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">صفحه‌ی اصلی</a>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </main>
-</body>
-</html>
+  </div>
+</div>
+{% endblock %}
