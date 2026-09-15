@@ -6,7 +6,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="eyebrow"><span class="dot"></span> 🎓 راهنمای زندگی دانشجویی — {{ stats.countries }} کشور، {{ stats.items }} راهنمای کاربردی</span>
+      <span class="eyebrow"><span class="dot"></span> 🎓 راهنمای زندگی دانشجویی — {{ stats.countries }} کشور، {{ stats['items'] }} راهنمای کاربردی</span>
       <h1>روزهای اول توی کشور جدید، <span class="grad">کمتر استرس داشته باش</span></h1>
       <p class="lead">وقتی تازه می‌رسی، هزار سؤال کوچک داری که هیچ‌کس جوابش را یک‌جا بهت نمی‌دهد: از کجا سیم‌کارت بگیرم؟ حساب بانکی چطور باز می‌شود؟ ودیعه و قرارداد اجاره یعنی چه؟ ثبت آدرس را کِی باید انجام دهم؟ این سایت را دقیقاً برای همین سؤال‌ها ساختیم — <b style="color:#ffe9b8">کشور به کشور، قدم به قدم، با لینک منابع اصلی.</b></p>
       <div class="hero-actions">
@@ -94,7 +94,7 @@
   <!-- ================= STATS ================= -->
   <div class="stats" role="list">
     <div class="stat reveal" role="listitem"><b data-count="{{ stats.countries }}">{{ stats.countries }}</b><span>🌍 کشور تحت پوشش</span></div>
-    <div class="stat reveal" role="listitem"><b data-count="{{ stats.items }}">{{ stats.items }}</b><span>📚 راهنمای قدم‌به‌قدم</span></div>
+    <div class="stat reveal" role="listitem"><b data-count="{{ stats['items'] }}">{{ stats['items'] }}</b><span>📚 راهنمای قدم‌به‌قدم</span></div>
     <div class="stat reveal" role="listitem"><b>۱۰۰٪</b><span>💯 رایگان و فارسی</span></div>
   </div>
 
