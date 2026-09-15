@@ -38,6 +38,8 @@ app.jinja_env.filters["linkify"] = linkify
 CATEGORY_META = {
     "shopping": {"icon": "cart", "label": "خرید و زندگی روزمره"},
     "housing": {"icon": "home", "label": "مسکن و اجاره‌خانه"},
+    "admin": {"icon": "doc", "label": "اقامت، بیمه و امور اداری"},
+    "work": {"icon": "brief", "label": "کار دانشجویی"},
     "arrival": {"icon": "compass", "label": "قدم‌های اول"},
 }
 
@@ -68,6 +70,12 @@ COUNTRY_META = {
     "georgia": {"capital": "تفلیس", "currency": "لاری (₾)", "language": "گرجی", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
     "south_korea": {"capital": "سئول", "currency": "وون (₩)", "language": "کره‌ای", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
     "japan": {"capital": "توکیو", "currency": "ین (¥)", "language": "ژاپنی", "emergency": "۱۱۰", "region": "asia", "region_label": "آسیا و خاورمیانه"},
+    "norway": {"capital": "اسلو", "currency": "کرون (kr)", "language": "نروژی", "emergency": "۱۱۳", "region": "europe", "region_label": "اروپا"},
+    "denmark": {"capital": "کپنهاگ", "currency": "کرون (kr.)", "language": "دانمارکی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "belgium": {"capital": "بروکسل", "currency": "یورو (€)", "language": "هلندی / فرانسوی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "switzerland": {"capital": "برن", "currency": "فرانک (CHF)", "language": "آلمانی / فرانسوی", "emergency": "۱۴۴", "region": "europe", "region_label": "اروپا"},
+    "portugal": {"capital": "لیسبون", "currency": "یورو (€)", "language": "پرتغالی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "czechia": {"capital": "پراگ", "currency": "کرونا (Kč)", "language": "چکی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
 }
 
 REGIONS = {

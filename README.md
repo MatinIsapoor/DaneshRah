@@ -6,11 +6,11 @@ A Flask-based web application that helps Iranian students find practical informa
 
 ## ✨ Features
 
-* 🌍 **25 country guides** — Germany, Canada, USA, Turkey, UK, Italy, Netherlands, Australia, Malaysia, France, Austria, China, Russia, UAE, Spain, Sweden, Armenia, Hungary, Poland, Cyprus, Georgia, South Korea, Japan, Finland, Ireland
+* 🌍 **31 country guides** — Germany, Canada, USA, Turkey, UK, Italy, Netherlands, Australia, Malaysia, France, Austria, China, Russia, UAE, Spain, Sweden, Armenia, Hungary, Poland, Cyprus, Georgia, South Korea, Japan, Finland, Ireland, Norway, Denmark, Belgium, Switzerland, Portugal, Czechia
 * 🧭 **First-days arrival checklist** — interactive, saved in your browser (`/checklist`)
 * 🔎 **Global search** — full-text search across every guide (`/search` + live API `/api/search`)
 * 🚨 **Emergency & essentials table** — capitals, currencies, languages, emergency numbers (`/emergency`)
-* 📚 Categorized guides (shopping / housing) with external resources
+* 📚 4 categorized guides per country (shopping / housing / admin & residence / student jobs) with external resources
 * 🌙 **Dark mode**, SVG animations, reading progress, table of contents, print-friendly guides
 * ⭐ **Favorites** — bookmark countries (localStorage), region filters, stats counters
 * 📱 Fully responsive RTL Persian interface (Vazirmatn font)

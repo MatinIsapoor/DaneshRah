@@ -405,6 +405,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .cat-ico.teal { background: linear-gradient(135deg, #16888a, #35b5b7); }
 .cat-ico.gold { background: linear-gradient(135deg, #b8873a, #ddb96f); }
 .cat-ico.navy { background: linear-gradient(135deg, #142236, #1e3a5f); }
+.cat-ico.plum { background: linear-gradient(135deg, #6d28d9, #a78bfa); }
+.cat-ico.green { background: linear-gradient(135deg, #1e8e5a, #4cc38a); }
 .cat-card h3 { margin: 0 0 4px; }
 .cat-card p { margin: 0; color: var(--muted); font-size: .85rem; }
 
