@@ -60,6 +60,14 @@ COUNTRY_META = {
     "russia": {"capital": "مسکو", "currency": "روبل (₽)", "language": "روسی", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
     "armenia": {"capital": "ایروان", "currency": "درام (֏)", "language": "ارمنی", "emergency": "۹۱۱", "region": "asia", "region_label": "آسیا و خاورمیانه"},
     "australia": {"capital": "کانبرا", "currency": "دلار استرالیا", "language": "انگلیسی", "emergency": "۰۰۰", "region": "oceania", "region_label": "اقیانوسیه"},
+    "hungary": {"capital": "بوداپست", "currency": "فورینت (Ft)", "language": "مجاری", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "poland": {"capital": "ورشو", "currency": "زلوتی (zł)", "language": "لهستانی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "finland": {"capital": "هلسینکی", "currency": "یورو (€)", "language": "فنلاندی / سوئدی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "ireland": {"capital": "دوبلین", "currency": "یورو (€)", "language": "انگلیسی", "emergency": "۱۱۲", "region": "europe", "region_label": "اروپا"},
+    "cyprus": {"capital": "نیکوزیا", "currency": "یورو (€)", "language": "یونانی / ترکی / انگلیسی", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
+    "georgia": {"capital": "تفلیس", "currency": "لاری (₾)", "language": "گرجی", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
+    "south_korea": {"capital": "سئول", "currency": "وون (₩)", "language": "کره‌ای", "emergency": "۱۱۲", "region": "asia", "region_label": "آسیا و خاورمیانه"},
+    "japan": {"capital": "توکیو", "currency": "ین (¥)", "language": "ژاپنی", "emergency": "۱۱۰", "region": "asia", "region_label": "آسیا و خاورمیانه"},
 }
 
 REGIONS = {
@@ -198,7 +206,8 @@ def search_page():
     q = request.args.get("q", "").strip()
     guides = load_guides()
     results = search_guides(q, guides) if q else []
-    return render_template("search.html", q=q, results=results)
+    total = len([k for k in guides if k != "general"])
+    return render_template("search.html", q=q, results=results, total=total)
 
 
 @app.route("/api/search")

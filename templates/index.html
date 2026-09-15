@@ -155,7 +155,7 @@
       {% for code, country in countries.items() %}
       <a class="card country-card reveal" data-country-card data-name="{{ country.name }}" data-region="{{ country.meta.region }}"
          href="{{ url_for('country_page', country_code=code) }}">
-        <button class="fav-btn" data-fav-btn="{{ code }}" aria-label="علاقه‌مندی {{ country.name }}" title="ذخیره در علاقه‌مندی‌ها">☆</button>
+        <span class="fav-btn" role="button" tabindex="0" data-fav-btn="{{ code }}" aria-label="علاقه‌مندی {{ country.name }}" title="ذخیره در علاقه‌مندی‌ها">☆</span>
         <span class="cc-flag">{{ country.flag }}</span>
         <div style="min-width:0">
           <h3>{{ country.name }}</h3>

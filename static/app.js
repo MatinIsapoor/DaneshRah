@@ -33,6 +33,24 @@
     var b = e.target.closest('[data-menu-btn]');
     if (b) document.querySelector('[data-nav-links]').classList.toggle('open');
   });
+  // Escape closes the mobile menu; activating toggleables via keyboard
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var nav = document.querySelector('[data-nav-links]');
+      if (nav) nav.classList.remove('open');
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      return;
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target) {
+      var t = e.target.closest
+        ? (e.target.closest('[data-fav-btn]') || e.target.closest('[data-guide-head]') || e.target.closest('[data-check-item]'))
+        : null;
+      if (t) {
+        e.preventDefault();
+        t.click();
+      }
+    }
+  });
 
   /* ---------- reveal on scroll ---------- */
   var io = new IntersectionObserver(function (entries) {

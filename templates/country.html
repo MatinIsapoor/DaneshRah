@@ -20,7 +20,7 @@
   <div class="page-hero">
     <span class="eyebrow">{{ country.flag }} {{ country.name }}{% if meta.region_label %} · {{ meta.region_label }}{% endif %}</span>
     <h1>راهنمای زندگی دانشجویی در {{ country.name }}</h1>
-    <p>دو دسته‌ی کامل و کاربردی: خرید و زندگی روزمره (سوپرمارکت، بانک، سیم‌کارت، تخفیف‌ها) و مسکن (کجا بگردی، ودیعه، قرارداد و ثبت آدرس). اول دسته را انتخاب کن، بعد قدم‌به‌قدم جلو برو.</p>
+    <p>{% if country.blurb %}{{ country.blurb }}{% else %}دو دسته‌ی کامل و کاربردی: خرید و زندگی روزمره (سوپرمارکت، بانک، سیم‌کارت، تخفیف‌ها) و مسکن (کجا بگردی، ودیعه، قرارداد و ثبت آدرس). اول دسته را انتخاب کن، بعد قدم‌به‌قدم جلو برو.{% endif %}</p>
     <div class="meta-row">
       <span class="meta-badge">📚 {{ n_items }} راهنما</span>
       {% if meta.capital %}<span class="meta-badge">🏛️ پایتخت: {{ meta.capital }}</span>{% endif %}
