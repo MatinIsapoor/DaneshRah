@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}راهنمای {{ country.name }} برای دانشجویان ایرانی{% endblock %}
+{% block title %}راهنمای {{ country.name }} برای دانشجویان ایرانی | DaneshRah{% endblock %}
 
 {% macro icon(name) %}
   {% if name == 'cart' %}
@@ -17,18 +17,20 @@
 
 {% block content %}
 <div class="container">
-  <div class="breadcrumb">
-    <a href="{{ url_for('index') }}">خانه</a><span>‹</span><span>{{ country.name }}</span>
-  </div>
+  <nav class="breadcrumb" aria-label="مسیر">
+    <a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">{{ country.name }}</span>
+  </nav>
 
   <div class="page-hero">
     <span class="eyebrow">{{ country.flag }} {{ country.name }}{% if meta.region_label %} · {{ meta.region_label }}{% endif %}</span>
     <h1>راهنمای زندگی دانشجویی در {{ country.name }}</h1>
-    <p>{% if country.blurb %}{{ country.blurb }}{% else %}چهار دسته‌ی کامل و کاربردی: خرید و زندگی روزمره، مسکن، امور اداری و اقامت، و کار دانشجویی. اول دسته را انتخاب کن، بعد قدم‌به‌قدم جلو برو.{% endif %}</p>
+    <p>{% if country.blurb %}{{ country.blurb }}{% else %}این صفحه را موضوع‌به‌موضوع جدا کردم که گیج نشوی: اول خرید و زندگی، بعد مسکن، بعد کارهای اداری.{% endif %}</p>
+    <p class="hand-note" style="color:#ddb96f">من همه‌ی این‌ها را رفتم و برگشتم که تو نروی :)</p>
     <div class="meta-row">
       <span class="meta-badge">📚 {{ n_items }} راهنما</span>
       {% if meta.capital %}<span class="meta-badge">🏛️ پایتخت: {{ meta.capital }}</span>{% endif %}
       {% if meta.emergency %}<span class="meta-badge">🚨 اضطراری: {{ meta.emergency }}</span>{% endif %}
+      {% if country.last_updated %}<span class="meta-badge update-badge" title="آخرین به‌روزرسانی این راهنما">🕓 {{ country.last_updated|format_updated }}</span>{% endif %}
     </div>
   </div>
 
@@ -76,7 +78,7 @@
 
   <div class="tip reveal">
     <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
-    <div><b>💡 پیشنهاد ترتیب مطالعه:</b> اول <b>خرید و زندگی روزمره</b> را بخوان (بانک و سیم‌کارت هفته‌ی اول لازم می‌شود)، بعد سراغ <b>مسکن</b> برو و بخش «ثبت آدرس» را جدی بگیر — مهلت قانونی دارد و بدون آن بانک و اقامت جلو نمی‌رود. سپس <b>امور اداری</b> (اقامت و بیمه، که جریمه‌ی تأخیر دارند) و <b>کار دانشجویی</b> را بخوان. اگر هنوز نرسیده‌ای، <a href="{{ url_for('checklist') }}">چک‌لیست ورود</a> را هم ببین.</div>
+    <div><b>از تجربه‌ی خودم می‌گویم:</b> اول <b>خرید و زندگی</b> را بخوان چون بانک و سیم‌کارت هفته‌ی اول گیرت می‌اندازد. بخش «ثبت آدرس» در مسکن را هم پشت گوش نینداز — من انداختم و دو هفته کارم عقب افتاد. بقیش را به ترتیب بخوان. اگر هنوز نرسیده‌ای، <a href="{{ url_for('checklist') }}">چک‌لیست</a> را ببین.</div>
   </div>
 
   {% if related %}

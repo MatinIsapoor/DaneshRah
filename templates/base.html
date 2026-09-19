@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="راهنمای فارسی زندگی دانشجویی در خارج از کشور: خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول — کشور به کشور.">
+  <meta name="description" content="{{ site_description|default('DaneshRah (دانش‌راه): راهنمای فارسی زندگی دانشجویی در خارج از کشور — خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول، کشور به کشور.') }}">
   <meta name="theme-color" content="#142236">
-  <title>{% block title %}راهنمای دانشجویان ایرانی خارج از کشور{% endblock %}</title>
+  <meta property="og:site_name" content="DaneshRah">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:title" content="DaneshRah | دانش‌راه">
+  <meta property="og:description" content="از فرودگاه تا استقرار کامل — راهنمای کشوربه‌کشور برای دانشجویان ایرانی.">
+  <title>{% block title %}DaneshRah | دانش‌راه — راهنمای دانشجویان ایرانی خارج از کشور{% endblock %}</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23142236'/%3E%3Ctext x='32' y='44' font-size='32' text-anchor='middle'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body>
-  <div class="read-progress" data-read-progress></div>
+  <a class="skip-link" href="#main">پرش به محتوای اصلی</a>
+  <div class="read-progress" data-read-progress aria-hidden="true"></div>
 
   <nav class="nav" aria-label="ناوبری اصلی">
     <div class="nav-inner">
-      <a class="brand" href="{{ url_for('index') }}">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="DaneshRah — صفحه اصلی">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#f7ead1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z" fill="#b8873a" stroke="#f7ead1"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/><path d="M22 9v5"/></svg>
         </span>
-        <span>راهنمای دانشجویان ایرانی<small>کشور به کشور، قدم به قدم</small></span>
+        <span>DaneshRah <span class="brand-fa">دانش‌راه</span><small>نوشته‌ی متین و بچه‌ها، از روی تجربه</small></span>
       </a>
-      <div class="nav-links" data-nav-links>
+      <div class="nav-links" data-nav-links id="main-nav">
         <a href="{{ url_for('index') }}" class="{% if request.path == '/' %}active{% endif %}">خانه</a>
         <a href="{{ url_for('checklist') }}" class="{% if request.path == '/checklist' %}active{% endif %}">چک‌لیست ورود</a>
         <a href="{{ url_for('emergency') }}" class="{% if request.path == '/emergency' %}active{% endif %}">شماره‌های اضطراری</a>
@@ -30,12 +36,12 @@
       </div>
       <div style="display:flex;gap:8px;margin-inline-start:auto">
         <button class="icon-btn" data-theme-btn aria-label="تغییر تم">◐</button>
-        <button class="icon-btn menu-btn" data-menu-btn aria-label="منو">☰</button>
+        <button class="icon-btn menu-btn" data-menu-btn aria-label="باز کردن منو" aria-expanded="false" aria-controls="main-nav">☰</button>
       </div>
     </div>
   </nav>
 
-  <main>
+  <main id="main" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
 
@@ -43,8 +49,9 @@
   <footer class="site">
     <div class="footer-grid">
       <div>
-        <h4>🎓 راهنمای دانشجویان ایرانی</h4>
-        <p style="margin:0;max-width:26rem">جواب همان سؤال‌های کوچکی که هیچ‌کس قبل از مهاجرت بهت نمی‌گوید: سیم‌کارت از کجا؟ حساب بانکی چطور؟ ودیعه یعنی چه؟ ثبت آدرس کِی؟ این راهنما را دانشجوها، برای دانشجوها نوشته‌اند.</p>
+        <h4>DaneshRah · دانش‌راه</h4>
+        <p style="margin:0;max-width:26rem">من متینم. این سایت را بعد از کلی اشتباهِ هفته‌های اول مهاجرت شروع کردم — همان سؤال‌های کوچکی که هیچ‌کس جوابش را یک‌جا نمی‌دهد. بچه‌های کشورهای دیگر هم تجربه‌شان را فرستادند و کم‌کم جمع شد. اگر غلطی دیدی بگو، ناراحت نمی‌شوم.</p>
+        <span class="signature">— Matin</span>
       </div>
       <div>
         <h4>دسترسی سریع</h4>
@@ -62,8 +69,8 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>ساخته‌شده با ❤ برای دانشجویان ایرانی مقیم خارج از کشور</span>
-      <span>اگر این پروژه به کارت آمد، بهش ⭐ بده</span>
+      <span>اگر به کارت آمد، برای نفر بعدی هم بفرست — همین برایم کافی است.</span>
+      <span class="update-note">با اشتباه و آزمون‌وخطا نوشته شده، نه با قالب آماده</span>
     </div>
   </footer>
 

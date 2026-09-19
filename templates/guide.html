@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}{{ category.title }} در {{ country.name }}{% endblock %}
+{% block title %}{{ category.title }} در {{ country.name }} | DaneshRah{% endblock %}
 
 {% block content %}
 <div class="container">
-  <div class="breadcrumb">
-    <a href="{{ url_for('index') }}">خانه</a><span>‹</span>
-    <a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a><span>‹</span>
-    <span>{{ category.title }}</span>
-  </div>
+  <nav class="breadcrumb" aria-label="مسیر">
+    <a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span>
+    <a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a><span aria-hidden="true">‹</span>
+    <span aria-current="page">{{ category.title }}</span>
+  </nav>
 
   <div class="page-hero">
     <span class="eyebrow">{{ country.flag }} {{ country.name }}</span>
@@ -19,34 +19,37 @@
       <span class="meta-badge">📄 {{ category['items']|length }} مطلب</span>
       <span class="meta-badge">⏱️ حدود {{ ((category['items']|length * 1.5)|round(0, 'ceil')|int) }} دقیقه مطالعه</span>
       <span class="meta-badge">🔗 همراه با لینک منابع اصلی</span>
+      {% if country.last_updated %}<span class="meta-badge update-badge">🕓 به‌روز شده: {{ country.last_updated|format_updated }}</span>{% endif %}
     </div>
   </div>
 
   <div class="toolbar">
-    <button class="btn btn-outline" data-print style="padding:8px 18px;font-size:.85rem">🖨️ چاپ / ذخیره‌ی PDF</button>
-    <span class="muted" style="font-size:.82rem">💡 روی تیتر هر مطلب بزن تا باز و بسته شود · <span class="kbd">/</span> جست‌وجو</span>
+    <button class="btn btn-outline" data-print style="padding:8px 18px;font-size:.85rem" aria-label="چاپ این راهنما">چاپ / ذخیره‌ی PDF</button>
+    <span class="muted" style="font-size:.82rem" id="guide-hint">روی تیتر هر مطلب بزن باز و بسته می‌شود · <span class="kbd">/</span> برای جست‌وجو · <span class="kbd">Esc</span> بستن</span>
   </div>
 
   <div class="guide-layout">
-    <aside class="toc" aria-label="فهرست مطالب">
-      <h4>📑 فهرست این صفحه</h4>
+    <nav class="toc" aria-label="فهرست مطالب">
+      <h4 id="toc-heading">📑 فهرست این صفحه</h4>
+      <div role="list" aria-labelledby="toc-heading">
       {% for item in category['items'] %}
-      <a href="#item-{{ loop.index }}" data-toc-link>{{ loop.index }}. {{ item.title }}</a>
+      <a href="#item-{{ loop.index }}" data-toc-link role="listitem">{{ loop.index|fa_digits }}. {{ item.title }}</a>
       {% endfor %}
+      </div>
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
         <a href="{{ url_for('country_page', country_code=country_code) }}">→ همه‌ی دسته‌های {{ country.name }}</a>
       </div>
-    </aside>
+    </nav>
 
     <div>
       {% for item in category['items'] %}
       <article class="guide-item reveal" id="item-{{ loop.index }}" data-guide-item>
-        <div class="guide-item-head" data-guide-head role="button" tabindex="0" aria-expanded="true">
-          <span class="g-num">{{ loop.index }}</span>
+        <div class="guide-item-head" data-guide-head role="button" tabindex="0" aria-expanded="true" aria-controls="item-body-{{ loop.index }}" id="item-head-{{ loop.index }}">
+          <span class="g-num" aria-hidden="true">{{ loop.index|fa_digits }}</span>
           <h3>{{ item.title }}</h3>
-          <button class="g-toggle" aria-label="باز/بسته">▾</button>
+          <button class="g-toggle" aria-label="باز/بسته کردن {{ item.title }}" tabindex="-1">▾</button>
         </div>
-        <div class="g-body">
+        <div class="g-body" id="item-body-{{ loop.index }}" role="region" aria-labelledby="item-head-{{ loop.index }}">
           <p>{{ item.content | linkify }}</p>
           {% if item.link %}
           <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">↗ صفحه‌ی اصلی منبع</a>
@@ -60,8 +63,10 @@
 
       <div class="tip">
         <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
-        <div><b>چیزی تغییر کرده یا نکته‌ای جا افتاده؟</b> این راهنما با مشارکت دانشجوها به‌روز می‌ماند. در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب پروژه</a> Issue باز کن یا Pull Request بفرست. 🙌<br><span class="muted">قبل از هر اقدام مهم (امضای قرارداد، واریز ودیعه، ثبت اقامت) حتماً منبع رسمی لینک‌شده را هم چک کن.</span></div>
+        <div><b>یه چیزی اشتباه است یا عوض شده؟</b> بهم بگو، واقعاً درستش می‌کنم — در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a> پیام بگذار.<br><span class="muted">و خواهشاً قبل از امضا یا واریز پول، منبع رسمی لینک‌شده را هم خودت چک کن. حرف منِ تنها کافی نیست.</span></div>
       </div>
+      <hr class="doodle-hr">
+      <p class="update-note">این صفحه را آدم نوشته و آدم هم اشتباه می‌کند — اگر نکته‌ای از قلم افتاده، تقصیر من است نه تو.</p>
 
       <div class="center mt">
         <a class="btn btn-outline" href="{{ url_for('country_page', country_code=country_code) }}">→ بازگشت به {{ country.name }}</a>

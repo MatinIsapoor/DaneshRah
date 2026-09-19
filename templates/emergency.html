@@ -1,32 +1,34 @@
 {% extends "base.html" %}
-{% block title %}شماره‌های اضطراری و اطلاعات پایه‌ی کشورها{% endblock %}
+{% block title %}شماره‌های اضطراری و اطلاعات پایه‌ی کشورها | DaneshRah{% endblock %}
 
 {% block content %}
 <div class="container">
-  <div class="breadcrumb"><a href="{{ url_for('index') }}">خانه</a><span>‹</span><span>شماره‌های اضطراری</span></div>
+  <nav class="breadcrumb" aria-label="مسیر"><a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">شماره‌های اضطراری</span></nav>
 
   <div class="page-hero">
-    <span class="eyebrow">🚨 روز اول در گوشی‌ات ذخیره کن</span>
-    <h1>شماره‌های اضطراری و اطلاعات پایه</h1>
-    <p>شماره‌ی اورژانس، پایتخت، واحد پول و زبان هر کشور — یک‌جا. در بیشتر کشورهای اتحادیه‌ی اروپا شماره‌ی واحد <b style="color:#ffe9b8">۱۱۲</b> کار می‌کند. شماره‌ی سفارت یا کنسولگری ایران در کشور مقصد را هم جداگانه پیدا و ذخیره کن.</p>
+    <span class="eyebrow">DaneshRah · این را روز اول در گوشی ذخیره کن، جدی</span>
+    <h1>شماره‌های اضطراری</h1>
+    <p>خودم روز دوم لازمش داشتم و نداشتم. در بیشتر اروپا <b style="color:#ffe9b8">۱۱۲</b> جواب می‌دهد. شماره‌ی سفارت ایران در شهرت را هم جدا ذخیره کن — امیدوارم هیچ‌وقت لازم نشود.</p>
   </div>
 
   <div class="toolbar">
     <div class="filter-search" style="max-width:380px;margin-inline-start:0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input type="search" placeholder="فیلتر: مثلاً آلمان یا ۹۱۱…" data-em-search aria-label="فیلتر جدول">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" placeholder="فیلتر: مثلاً آلمان یا ۹۱۱…" data-em-search aria-label="فیلتر جدول شماره‌های اضطراری" autocomplete="off">
     </div>
+    <span class="muted" style="font-size:.82rem" role="status" aria-live="polite" data-em-count>{{ rows|length|fa_digits }} کشور</span>
   </div>
 
   <div class="table-wrap reveal">
     <table>
+      <caption class="visually-hidden">شماره‌های اضطراری و اطلاعات پایه‌ی کشورها در DaneshRah</caption>
       <thead>
-        <tr><th>کشور</th><th>پایتخت</th><th>🚨 اضطراری</th><th>واحد پول</th><th>زبان</th><th>منطقه</th><th></th></tr>
+        <tr><th scope="col">کشور</th><th scope="col">پایتخت</th><th scope="col">🚨 اضطراری</th><th scope="col">واحد پول</th><th scope="col">زبان</th><th scope="col">منطقه</th><th scope="col"><span class="visually-hidden">راهنما</span></th></tr>
       </thead>
       <tbody>
         {% for r in rows %}
         <tr data-em-row data-search="{{ r.name }} {{ r.emergency }} {{ r.capital }}">
-          <td><b>{{ r.flag }} {{ r.name }}</b></td>
+          <td><b>{{ r.flag }} {{ r.name }}</b>{% if r.last_updated %}<br><small class="muted">{{ r.last_updated|format_updated }}</small>{% endif %}</td>
           <td>{{ r.capital }}</td>
           <td><span class="em-num">{{ r.emergency }}</span></td>
           <td>{{ r.currency }}</td>
@@ -41,7 +43,7 @@
 
   <div class="tip">
     <svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-    <div><b>مهم:</b> این شماره‌ها برای تماس اضطراری (پلیس/آتش‌نشانی/اورژانس) است. در استرالیا <b>۰۰۰</b>، در آمریکا و کانادا <b>۹۱۱</b>، در انگلیس <b>۹۹۹</b> (و ۱۱۲ هم کار می‌کند). قبل از سفر، یک‌بار با سایت رسمی کشور مقصد چک کن.</div>
+    <div><b>از من بشنو:</b> این‌ها شماره‌ی پلیس و اورژانس است، نه اطلاعات. استرالیا <b>۰۰۰</b> است، آمریکا و کانادا <b>۹۱۱</b>، انگلیس <b>۹۹۹</b>. قبل از پرواز یک‌بار هم خودت در سایت رسمی چک کن — من که چک می‌کنم ولی قانون عوض می‌شود.</div>
   </div>
 </div>
 {% endblock %}

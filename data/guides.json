@@ -100,7 +100,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "برلین",
+      "currency": "یورو (€)",
+      "language": "آلمانی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "canada": {
     "name": "کانادا",
@@ -199,7 +208,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "اتاوا",
+      "currency": "دلار کانادا",
+      "language": "انگلیسی / فرانسوی",
+      "emergency": "۹۱۱",
+      "region": "north_america",
+      "region_label": "آمریکای شمالی"
+    },
+    "last_updated": "2026-09-18"
   },
   "usa": {
     "name": "آمریکا",
@@ -298,7 +316,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "واشنگتن",
+      "currency": "دلار آمریکا",
+      "language": "انگلیسی",
+      "emergency": "۹۱۱",
+      "region": "north_america",
+      "region_label": "آمریکای شمالی"
+    },
+    "last_updated": "2026-09-18"
   },
   "turkey": {
     "name": "ترکیه",
@@ -397,7 +424,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "آنکارا",
+      "currency": "لیر (₺)",
+      "language": "ترکی",
+      "emergency": "۱۱۲",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "uk": {
     "name": "انگلیس",
@@ -496,7 +532,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "لندن",
+      "currency": "پوند (£)",
+      "language": "انگلیسی",
+      "emergency": "۹۹۹",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "italy": {
     "name": "ایتالیا",
@@ -595,7 +640,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "رم",
+      "currency": "یورو (€)",
+      "language": "ایتالیایی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "netherlands": {
     "name": "هلند",
@@ -694,7 +748,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "آمستردام",
+      "currency": "یورو (€)",
+      "language": "هلندی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "australia": {
     "name": "استرالیا",
@@ -793,7 +856,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "کانبرا",
+      "currency": "دلار استرالیا",
+      "language": "انگلیسی",
+      "emergency": "۰۰۰",
+      "region": "oceania",
+      "region_label": "اقیانوسیه"
+    },
+    "last_updated": "2026-09-18"
   },
   "malaysia": {
     "name": "مالزی",
@@ -892,7 +964,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "کوالالامپور",
+      "currency": "رینگیت (RM)",
+      "language": "مالایی",
+      "emergency": "۹۹۹",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "france": {
     "name": "فرانسه",
@@ -991,7 +1072,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "پاریس",
+      "currency": "یورو (€)",
+      "language": "فرانسوی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "austria": {
     "name": "اتریش",
@@ -1090,7 +1180,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "وین",
+      "currency": "یورو (€)",
+      "language": "آلمانی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "china": {
     "name": "چین",
@@ -1189,7 +1288,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "پکن",
+      "currency": "یوآن (¥)",
+      "language": "چینی",
+      "emergency": "۱۱۰",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "russia": {
     "name": "روسیه",
@@ -1288,7 +1396,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "مسکو",
+      "currency": "روبل (₽)",
+      "language": "روسی",
+      "emergency": "۱۱۲",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "uae": {
     "name": "امارات",
@@ -1387,7 +1504,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "ابوظبی",
+      "currency": "درهم",
+      "language": "عربی",
+      "emergency": "۹۹۹",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "spain": {
     "name": "اسپانیا",
@@ -1486,7 +1612,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "مادرید",
+      "currency": "یورو (€)",
+      "language": "اسپانیایی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "sweden": {
     "name": "سوئد",
@@ -1585,7 +1720,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "استکهلم",
+      "currency": "کرون (kr)",
+      "language": "سوئدی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "armenia": {
     "name": "ارمنستان",
@@ -1684,7 +1828,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "ایروان",
+      "currency": "درام (֏)",
+      "language": "ارمنی",
+      "emergency": "۹۱۱",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "hungary": {
     "name": "مجارستان",
@@ -1783,7 +1936,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "بوداپست",
+      "currency": "فورینت (Ft)",
+      "language": "مجاری",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "poland": {
     "name": "لهستان",
@@ -1882,7 +2044,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "ورشو",
+      "currency": "زلوتی (zł)",
+      "language": "لهستانی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "cyprus": {
     "name": "قبرس",
@@ -1981,7 +2152,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "نیکوزیا",
+      "currency": "یورو (€)",
+      "language": "یونانی / ترکی / انگلیسی",
+      "emergency": "۱۱۲",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "georgia": {
     "name": "گرجستان",
@@ -2080,7 +2260,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "تفلیس",
+      "currency": "لاری (₾)",
+      "language": "گرجی",
+      "emergency": "۱۱۲",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "south_korea": {
     "name": "کره جنوبی",
@@ -2179,7 +2368,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "سئول",
+      "currency": "وون (₩)",
+      "language": "کره‌ای",
+      "emergency": "۱۱۲",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "japan": {
     "name": "ژاپن",
@@ -2278,7 +2476,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "توکیو",
+      "currency": "ین (¥)",
+      "language": "ژاپنی",
+      "emergency": "۱۱۰",
+      "region": "asia",
+      "region_label": "آسیا و خاورمیانه"
+    },
+    "last_updated": "2026-09-18"
   },
   "finland": {
     "name": "فنلاند",
@@ -2377,7 +2584,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "هلسینکی",
+      "currency": "یورو (€)",
+      "language": "فنلاندی / سوئدی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "ireland": {
     "name": "ایرلند",
@@ -2476,7 +2692,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "دوبلین",
+      "currency": "یورو (€)",
+      "language": "انگلیسی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "norway": {
     "name": "نروژ",
@@ -2575,7 +2800,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "اسلو",
+      "currency": "کرون (kr)",
+      "language": "نروژی",
+      "emergency": "۱۱۳",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "denmark": {
     "name": "دانمارک",
@@ -2674,7 +2908,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "کپنهاگ",
+      "currency": "کرون (kr.)",
+      "language": "دانمارکی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "belgium": {
     "name": "بلژیک",
@@ -2773,7 +3016,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "بروکسل",
+      "currency": "یورو (€)",
+      "language": "هلندی / فرانسوی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "switzerland": {
     "name": "سوئیس",
@@ -2872,7 +3124,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "برن",
+      "currency": "فرانک (CHF)",
+      "language": "آلمانی / فرانسوی",
+      "emergency": "۱۴۴",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "portugal": {
     "name": "پرتغال",
@@ -2971,7 +3232,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "لیسبون",
+      "currency": "یورو (€)",
+      "language": "پرتغالی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "czechia": {
     "name": "چک",
@@ -3070,7 +3340,16 @@
           }
         ]
       }
-    }
+    },
+    "meta": {
+      "capital": "پراگ",
+      "currency": "کرونا (Kč)",
+      "language": "چکی",
+      "emergency": "۱۱۲",
+      "region": "europe",
+      "region_label": "اروپا"
+    },
+    "last_updated": "2026-09-18"
   },
   "general": {
     "name": "قدم‌های اول",
@@ -3125,6 +3404,7 @@
           }
         ]
       }
-    }
+    },
+    "last_updated": "2026-09-18"
   }
 }
