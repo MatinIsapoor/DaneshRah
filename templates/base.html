@@ -4,14 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{{ site_description|default('DaneshRah (دانش‌راه): راهنمای فارسی زندگی دانشجویی در خارج از کشور — خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول، کشور به کشور.') }}">
-  <meta name="theme-color" content="#142236">
+  <meta name="theme-color" content="#f6f2ea" data-theme-color>
   <meta property="og:site_name" content="DaneshRah">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fa_IR">
   <meta property="og:title" content="DaneshRah | دانش‌راه">
   <meta property="og:description" content="از فرودگاه تا استقرار کامل — راهنمای کشوربه‌کشور برای دانشجویان ایرانی.">
   <title>{% block title %}DaneshRah | دانش‌راه — راهنمای دانشجویان ایرانی خارج از کشور{% endblock %}</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23142236'/%3E%3Ctext x='32' y='44' font-size='32' text-anchor='middle'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23a63d22'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='36' font-weight='700' fill='%23f6f2ea' text-anchor='middle'%3E%D8%AF%3C/text%3E%3C/svg%3E">
+  <script>
+    (function () {
+      document.documentElement.classList.add('js');
+      try {
+        var t = localStorage.getItem('daneshrah-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
@@ -22,20 +36,19 @@
   <nav class="nav" aria-label="ناوبری اصلی">
     <div class="nav-inner">
       <a class="brand" href="{{ url_for('index') }}" aria-label="DaneshRah — صفحه اصلی">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#f7ead1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z" fill="#b8873a" stroke="#f7ead1"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/><path d="M22 9v5"/></svg>
-        </span>
-        <span>DaneshRah <span class="brand-fa">دانش‌راه</span><small>راهنمای منابع‌محور زندگی دانشجویی</small></span>
+        <span class="brand-mark" aria-hidden="true">د</span>
+        <span>دانش‌راه <span class="brand-fa">DaneshRah</span><small>راهنمای زندگی دانشجویی</small></span>
       </a>
       <div class="nav-links" data-nav-links id="main-nav">
         <a href="{{ url_for('index') }}" class="{% if request.path == '/' %}active{% endif %}">خانه</a>
         <a href="{{ url_for('checklist') }}" class="{% if request.path == '/checklist' %}active{% endif %}">چک‌لیست ورود</a>
         <a href="{{ url_for('emergency') }}" class="{% if request.path == '/emergency' %}active{% endif %}">شماره‌های اضطراری</a>
         <a href="{{ url_for('search_page') }}" class="{% if request.path.startswith('/search') %}active{% endif %}">جست‌وجو</a>
-        <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a>
       </div>
       <div style="display:flex;gap:8px;margin-inline-start:auto">
-        <button class="icon-btn" data-theme-btn aria-label="تغییر تم">◐</button>
+        <button class="icon-btn" data-theme-btn aria-label="تغییر تم">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        </button>
         <button class="icon-btn menu-btn" data-menu-btn aria-label="باز کردن منو" aria-expanded="false" aria-controls="main-nav">☰</button>
       </div>
     </div>
@@ -45,32 +58,35 @@
     {% block content %}{% endblock %}
   </main>
 
-  <svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,30 C240,60 480,0 720,25 C960,50 1200,10 1440,30 L1440,60 L0,60 Z"/></svg>
   <footer class="site">
     <div class="footer-grid">
       <div>
-        <h4>DaneshRah · دانش‌راه</h4>
-        <p style="margin:0;max-width:26rem">DaneshRah یک راهنمای فارسی برای زندگی دانشجویی در خارج از کشور است: خرید، مسکن، اقامت، بیمه و کار دانشجویی. اطلاعات از منابع رسمی هر کشور جمع شده و لینک منبع و تاریخ آخرین بازبینی در هر صفحه آمده است. اگر جایی قدیمی یا اشتباه بود، در گیت‌هاب بنویس تا اصلاح شود.</p>
+        <h4>دانش‌راه · DaneshRah</h4>
+        <p style="margin:0;max-width:26rem">راهنمای فارسی زندگی دانشجویی در خارج از کشور: خرید، مسکن، کارهای اداری و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع و تاریخ آخرین بازبینی کنارش آمده است.</p>
         <span class="signature">— متین، دانشجوی پاریس</span>
       </div>
       <div>
         <h4>دسترسی سریع</h4>
         <a href="{{ url_for('index') }}">همه‌ی کشورها</a>
         <a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول</a>
-        <a href="{{ url_for('emergency') }}">شماره‌های اضطراری و اطلاعات پایه</a>
-        <a href="{{ url_for('search_page') }}">جست‌وجو در همه‌ی راهنماها</a>
+        <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
+        <a href="{{ url_for('search_page') }}">جست‌وجو در راهنماها</a>
       </div>
       <div>
-        <h4>مشارکت</h4>
-        <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب پروژه</a>
-        <a href="{{ url_for('api_countries') }}">API کشورها (JSON)</a>
+        <h4>ارتباط و مشارکت</h4>
+        <div class="social-links">
+          <a href="https://t.me/caspianix" target="_blank" rel="noopener">تلگرام — <bdi dir="ltr">@caspianix</bdi></a>
+          <a href="https://x.com/persianix" target="_blank" rel="noopener">توییتر — <bdi dir="ltr">@persianix</bdi></a>
+          <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب پروژه</a>
+        </div>
+        <a href="{{ url_for('api_countries') }}" style="margin-top:6px">API کشورها (JSON)</a>
         <a href="{{ url_for('health') }}">وضعیت سرویس</a>
-        <span class="muted" style="display:block;margin-top:8px">محتوا در <span class="kbd">data/guides.json</span> است — اضافه کردن کشور جدید نیاز به کدنویسی ندارد.</span>
+        <span class="muted" style="display:block;margin-top:8px">محتوا در <span class="kbd">data/guides.json</span> است؛ افزودن کشور نیاز به کدنویسی ندارد.</span>
       </div>
     </div>
     <div class="footer-bottom">
       <span>اطلاعات این سایت جایگزین منبع رسمی نیست؛ پیش از تصمیم مالی یا قانونی، لینک منبع را خودت هم چک کن.</span>
-      <span class="update-note">محتوا در یک فایل JSON نگهداری می‌شود و تاریخ آخرین بازبینی دارد</span>
+      <span>محتوا در یک فایل JSON نگهداری می‌شود و تاریخ آخرین بازبینی دارد.</span>
     </div>
   </footer>
 

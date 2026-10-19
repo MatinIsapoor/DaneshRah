@@ -9,19 +9,18 @@
     <span class="eyebrow">DaneshRah · جست‌وجو در همه‌ی راهنماها</span>
     <h1>جست‌وجو در راهنماها</h1>
     <p>یک کلمه بنویس — «ودیعه»، «سیم‌کارت»، حتی «Pfand». در همه‌ی {{ total|fa_digits }} کشور می‌گردد، هم تیتر هم متن. نیم‌فاصله و ی/ک عربی مهم نیست.</p>
-    {% if q %}<p class="update-note" style="color:#ffe9b8">جست‌وجو برای «{{ q }}» — تیترها اول، بعد نام کشور، بعد متن.</p>{% endif %}
+    {% if q %}<p class="update-note">جست‌وجو برای «{{ q }}» — تیترها اول، بعد نام کشور، بعد متن.</p>{% endif %}
   </div>
 
-  <form class="hero-search" style="background:var(--card);border-color:var(--border);max-width:none" action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در DaneshRah">
-    <input type="search" name="q" value="{{ q }}" placeholder="مثلاً فقط بنویس «بیمه»…" aria-label="جست‌وجو" data-global-search autocomplete="off" enterkeyhint="search" style="color:var(--ink)">
+  <form class="search-bar" style="max-width:none;margin-bottom:8px" action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در DaneshRah">
+    <input type="search" name="q" value="{{ q }}" placeholder="مثلاً فقط بنویس «بیمه»…" aria-label="جست‌وجو" data-global-search autocomplete="off" enterkeyhint="search">
     <button type="submit">بگرد</button>
   </form>
 
   <div class="section" aria-live="polite">
     {% if q %}
       <div class="section-head">
-        <h2>نتایج «{{ q }}»</h2>
-        <span class="count-badge">{{ results|length|fa_digits }} نتیجه</span>
+        <h2>نتایج «{{ q }}» <span class="count-badge">{{ results|length|fa_digits }} نتیجه</span></h2>
       </div>
       {% if results %}
       <div class="search-results" role="list">
@@ -43,19 +42,19 @@
         <p>یک کلمه‌ی کوتاه‌تر امتحان کن — مثلاً به‌جای «بیمه درمانی آلمان» فقط «بیمه». نیم‌فاصله را هم بردار و دوباره بزن. اگر باز هم نبود، در گیت‌هاب بگو تا اضافه شود.</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
           <a class="btn btn-outline" href="{{ url_for('index') }}">دیدن همه‌ی کشورها</a>
-          <a class="btn btn-ghost" style="color:var(--ink);border-color:var(--border)" href="{{ url_for('search_page', q='بیمه') }}">امتحان «بیمه»</a>
+          <a class="btn btn-ghost" href="{{ url_for('search_page', q='بیمه') }}">امتحان «بیمه»</a>
         </div>
       </div>
       {% endif %}
     {% else %}
-      <div class="section-head"><h2>💡 پیشنهاد جست‌وجو</h2></div>
+      <div class="section-head"><h2>پیشنهاد جست‌وجو</h2></div>
       <div class="steps-mini" style="margin-bottom:18px">
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='سیم‌کارت') }}">سیم‌کارت</a>
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='Pfand') }}">Pfand</a>
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='خوابگاه') }}">خوابگاه</a>
-        <a class="step-chip" style="text-decoration:none;color:inherit" href="{{ url_for('search_page', q='تخفیف دانشجویی') }}">تخفیف دانشجویی</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='سیم‌کارت') }}">سیم‌کارت</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='Pfand') }}">Pfand</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='خوابگاه') }}">خوابگاه</a>
+        <a class="step-chip" href="{{ url_for('search_page', q='تخفیف دانشجویی') }}">تخفیف دانشجویی</a>
       </div>
       <p class="muted">عبارتی را بالا بنویس و Enter بزن. نکته: جست‌وجو هم‌زمان در تیتر و متن انجام می‌شود.</p>
     {% endif %}

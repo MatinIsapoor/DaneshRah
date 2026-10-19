@@ -8,7 +8,7 @@
   <div class="page-hero">
     <span class="eyebrow">به ترتیب معمولِ کارها</span>
     <h1>چک‌لیست روزهای اول</h1>
-    <p>۱۱ قدم به ترتیبی که معمولاً کارها جلو می‌رود. انجام دادی تیک بزن — پیشرفتت در همین مرورگر می‌ماند. عجله نکن، قدم‌به‌قدم.</p>
+    <p>{{ arrival['items']|length|fa_digits }} قدم به ترتیبی که معمولاً کارها جلو می‌رود. انجام دادی تیک بزن — پیشرفتت در همین مرورگر می‌ماند. عجله نکن، قدم‌به‌قدم.</p>
   </div>
 
   <div class="check-progress">
@@ -18,7 +18,7 @@
     </div>
     <div class="bar" role="progressbar" aria-labelledby="check-heading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-check-progress><i data-check-bar></i></div>
     <div style="margin-top:12px;display:flex;gap:8px">
-      <button class="mini-btn" data-check-reset>↺ شروع دوباره</button>
+      <button class="mini-btn" data-check-reset>شروع دوباره</button>
       <a class="mini-btn" style="text-decoration:none" href="{{ url_for('category_page', country_code='general', category='arrival') }}">خواندن نسخه‌ی متنی</a>
     </div>
   </div>
@@ -36,14 +36,12 @@
   </div>
 
   <div class="celebrate" data-celebrate>
-    <div style="font-size:2.2rem">🎉</div>
     <h3 style="margin:6px 0">تمام شد</h3>
     <p style="margin:0;opacity:.9">حالا اگر تجربه‌ی دست‌اولی داری، برای نفر بعدی بفرست.</p>
     <div style="margin-top:14px"><a class="btn btn-gold" href="{{ url_for('index') }}">رفتن به کشورها</a></div>
   </div>
 
   <div class="tip">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
     <div><b>نکته:</b> روز اول فقط سیم‌کارت و اینترنت. بقیه را قدم‌به‌قدم انجام بده؛ خواستن همه‌چیز در یک روز معمولاً فقط خسته‌کننده است.</div>
   </div>
 </div>

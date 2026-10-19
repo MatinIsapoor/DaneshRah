@@ -14,10 +14,12 @@
 * 🧭 **First-days arrival checklist** — interactive, saved in your browser (`/checklist`, with progressbar + ARIA)
 * 🚨 **Emergency & essentials table** — capitals, currencies, languages, emergency numbers, region, last check (`/emergency`)
 * 📚 4 categorized guides per country (shopping / housing / admin & residence / student jobs) with links to official sources
-* 🌙 **Dark mode**, SVG animations, reading progress bar, table of contents, print-friendly guides
+* 🖋️ **Editorial, hand-crafted UI** — warm paper/ink palette, one terracotta accent, hairline rules, Markazi Text headlines over Vazirmatn body, no gradients or stock hero art
+* 🌙 **Dark mode without a flash** — theme is resolved by an inline `<head>` script before first paint, and it follows the OS preference until you pick a side
 * ⭐ **Favorites** — bookmark countries (localStorage, key `daneshrah-favs`), region filters, animated stats
-* 📱 Fully responsive RTL Persian interface (Vazirmatn font)
+* 📱 Fully responsive RTL Persian interface
 * ♿ **Accessibility** — skip link, landmarks, `aria-expanded` accordions, `role=checkbox` checklist, live-region result counts, keyboard shortcuts (`/` to search, `Esc` to close)
+* 💬 **Contact** — Telegram [@caspianix](https://t.me/caspianix), X/Twitter [@persianix](https://x.com/persianix)
 
 ## 🛠️ Tech Stack
 
@@ -50,8 +52,8 @@ daneshrah/
 ├── app.py                  # DaneshRah Flask app: cached data, ranked search, routes, API
 ├── data/guides.json        # ALL content + per-country meta + last_updated (edit only this to add a country)
 ├── templates/
-│   ├── base.html           # shared layout, nav, footer, DaneshRah brand, skip-link
-│   ├── index.html          # hero + search + stats + country grid + last_updated
+│   ├── base.html           # shared layout, nav, footer, contact links, inline theme bootstrap
+│   ├── index.html          # masthead hero + search + facts strip + country grid + last_updated
 │   ├── country.html        # category cards + essentials + last_updated + related
 │   ├── guide.html          # TOC + accordion (ARIA) + progress + print
 │   ├── search.html         # ranked results + matched-in badges + friendly empty state
@@ -60,7 +62,7 @@ daneshrah/
 │   ├── 404.html
 │   └── 500.html
 ├── static/
-│   ├── style.css           # design system + dark mode + a11y (skip-link, badges, focus)
+│   ├── style.css           # editorial design system (tokens, light/dark, a11y, print)
 │   └── app.js              # theme, normalized filter, reveal, checklist, favorites, TOC
 ├── requirements.txt        # Flask==3.0.3, gunicorn==22.0.0
 ├── render.yaml             # Render deploy (service: daneshrah, healthCheck: /health)
@@ -155,7 +157,7 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 
 ## 👨‍💻 Author
 
-**Matin Isapoor** — [GitHub](https://github.com/MatinIsapoor)
+**Matin Isapoor** — [GitHub](https://github.com/MatinIsapoor) · Telegram [@caspianix](https://t.me/caspianix) · X/Twitter [@persianix](https://x.com/persianix)
 
 ---
 
@@ -171,5 +173,6 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 * افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه)، `last_updated` (مثل `2026-10-19`) و فهرست اختیاری `sources` (`{title, url, cat}`) دارد که در صفحه‌ی کشور به‌عنوان «منابع رسمی» نمایش داده می‌شود.
 * جست‌وجو نیم‌فاصله و ی/ک را خودش درست می‌کند؛ ترتیب نتایج: تیتر، بعد نام کشور، بعد متن.
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
+* ارتباط: تلگرام [@caspianix](https://t.me/caspianix) — توییتر [@persianix](https://x.com/persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
 
 پیشنهادها و مشارکت‌ها خوش‌آمدند! 🙌

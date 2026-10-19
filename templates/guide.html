@@ -16,10 +16,10 @@
       {% if category_code == 'shopping' %}کارهای روزمره‌ی هفته‌های اول: کجا خرید کنی، کدام بانک سریع‌تر حساب باز می‌کند، برای سیم‌کارت چه مدارکی لازم است و با کارت دانشجویی کجاها تخفیف می‌گیری.{% elif category_code == 'housing' %}از پیدا کردن خانه تا امضای قرارداد و ثبت قانونی آدرس: ودیعه، هزینه‌های جانبی، کلاهبرداری‌های رایج و مهلت‌های قانونی — با دقت بخوان.{% elif category_code == 'admin' %}اقامت، بیمه‌ی سلامت، شماره‌های شناسایی و مالیاتی و سفارت: کارهای اداری که اگر عقب بیفتند جریمه و دردسر دارند — به ترتیب بخوان و تیک بزن.{% elif category_code == 'work' %}قوانین کار دانشجویی (سقف ساعت، مجوزها)، حداقل دستمزد، سایت‌های کاریابی و نکته‌های کاربردی.{% elif category_code == 'arrival' %}قدم‌به‌قدم از فرودگاه تا استقرار کامل. برای نسخه‌ی تعاملی با ذخیره‌ی پیشرفت، چک‌لیست را باز کن.{% else %}راهنمای قدم‌به‌قدم {{ category.title }} در {{ country.name }}.{% endif %}
     </p>
     <div class="meta-row">
-      <span class="meta-badge">📄 {{ category['items']|length }} مطلب</span>
-      <span class="meta-badge">⏱️ حدود {{ ((category['items']|length * 1.5)|round(0, 'ceil')|int) }} دقیقه مطالعه</span>
-      <span class="meta-badge">🔗 همراه با لینک منابع اصلی</span>
-      {% if country.last_updated %}<span class="meta-badge update-badge">🕓 به‌روز شده: {{ country.last_updated|format_updated }}</span>{% endif %}
+      <span class="meta-badge">{{ category['items']|length|fa_digits }} مطلب</span>
+      <span class="meta-badge">حدود {{ ((category['items']|length * 1.5)|round(0, 'ceil')|int)|fa_digits }} دقیقه مطالعه</span>
+      <span class="meta-badge">همراه با لینک منابع اصلی</span>
+      {% if country.last_updated %}<span class="meta-badge update-badge">آخرین بازبینی: {{ country.last_updated|format_updated }}</span>{% endif %}
     </div>
   </div>
 
@@ -30,13 +30,13 @@
 
   <div class="guide-layout">
     <nav class="toc" aria-label="فهرست مطالب">
-      <h4 id="toc-heading">📑 فهرست این صفحه</h4>
+      <h4 id="toc-heading">فهرست این صفحه</h4>
       <div role="list" aria-labelledby="toc-heading">
-      {% for item in category['items'] %}
-      <a href="#item-{{ loop.index }}" data-toc-link role="listitem">{{ loop.index|fa_digits }}. {{ item.title }}</a>
-      {% endfor %}
+        {% for item in category['items'] %}
+        <a href="#item-{{ loop.index }}" data-toc-link role="listitem">{{ loop.index|fa_digits }}. {{ item.title }}</a>
+        {% endfor %}
       </div>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
         <a href="{{ url_for('country_page', country_code=country_code) }}">→ همه‌ی دسته‌های {{ country.name }}</a>
       </div>
     </nav>
@@ -52,7 +52,7 @@
         <div class="g-body" id="item-body-{{ loop.index }}" role="region" aria-labelledby="item-head-{{ loop.index }}">
           <p>{{ item.content | linkify }}</p>
           {% if item.link %}
-          <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">↗ صفحه‌ی اصلی منبع</a>
+          <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">صفحه‌ی اصلی منبع ↗</a>
           {% endif %}
           <div class="g-actions">
             <button class="mini-btn" data-copy-link="#item-{{ loop.index }}">کپی لینک</button>
@@ -62,10 +62,8 @@
       {% endfor %}
 
       <div class="tip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
         <div><b>چیزی اشتباه است یا عوض شده؟</b> در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a> بنویس تا اصلاح کنم.<br><span class="muted">قبل از امضا یا واریز پول، لینک منبع رسمی را که در متن آمده خودت هم چک کن؛ قانون و قیمت هر سال عوض می‌شود.</span></div>
       </div>
-      <hr class="doodle-hr">
       <p class="update-note">این صفحه از منابع رسمی و راهنماهای عمومی جمع شده است؛ اگر نکته‌ای جا افتاده یا قدیمی شده، در گیت‌هاب بگو.</p>
 
       <div class="center mt">

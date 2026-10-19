@@ -578,12 +578,16 @@ def index():  # type: ignore[no-untyped-def]
             "meta": get_country_meta(country),
             "n_items": n_items,
         }
+    latest_updated = max(
+        (c.get("last_updated") or "" for c in countries.values()), default=""
+    )
     return render_template(
         "index.html",
         countries=enriched,
         general=general,
         stats=stats,
         regions=regions,
+        latest_updated=latest_updated,
     )
 
 

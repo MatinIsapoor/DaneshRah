@@ -48,6 +48,8 @@
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('daneshrah-theme', t); } catch (e) {}
+    var meta = document.querySelector('meta[data-theme-color]');
+    if (meta) meta.setAttribute('content', t === 'dark' ? '#171512' : '#f6f2ea');
     document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
       b.innerHTML = t === 'dark' ? sunIcon() : moonIcon();
       b.setAttribute('aria-label', t === 'dark' ? 'تغییر به حالت روشن' : 'تغییر به حالت تیره');
@@ -74,11 +76,18 @@
     if (menuBtn) {
       menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       menuBtn.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
+      menuBtn.textContent = open ? '✕' : '☰';
     }
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-menu-btn]');
-    if (b) setMenu(!navLinks.classList.contains('open'));
+    if (b) { setMenu(!navLinks.classList.contains('open')); return; }
+    if (navLinks && navLinks.classList.contains('open')) {
+      if (!e.target.closest('[data-nav-links]')) setMenu(false);
+    }
+  });
+  document.querySelectorAll('[data-nav-links] a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
   });
   // Keyboard: Escape closes menu / blurs; Enter/Space activates custom toggles.
   document.addEventListener('keydown', function (e) {
@@ -88,19 +97,24 @@
       return;
     }
     if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.closest) {
+      if (e.target.closest('a, button, input, textarea, select')) return;
       var t = e.target.closest('[data-guide-head]') || e.target.closest('[data-check-item]');
-      // Fav buttons are native <button> now — no manual handling needed.
       if (t) { e.preventDefault(); t.click(); }
     }
   });
 
   /* ---------- reveal on scroll ---------- */
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.08 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+  }
 
   /* ---------- animated counters ---------- */
   var cio = new IntersectionObserver(function (entries) {
@@ -136,8 +150,7 @@
       var okTerm = !term || name.indexOf(term) !== -1;
       var show = okRegion && okTerm;
       card.style.display = show ? '' : 'none';
-      // Hide from keyboard/AT when filtered out.
-      if (show) { card.removeAttribute('tabindex'); visible++; }
+      if (show) visible++;
     });
     var empty = document.querySelector('[data-no-result]');
     if (empty) empty.style.display = visible ? 'none' : '';
@@ -281,7 +294,8 @@
       if (cel) cel.classList.toggle('show', pct === 100);
     }
     boxes.forEach(function (box) {
-      box.addEventListener('click', function () {
+      box.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
         var id = box.dataset.checkItem;
         state[id] = !state[id];
         try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (err) {}
