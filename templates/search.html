@@ -6,9 +6,9 @@
   <nav class="breadcrumb" aria-label="مسیر"><a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">جست‌وجو</span></nav>
 
   <div class="page-hero">
-    <span class="eyebrow">DaneshRah · جست‌وجوی هوشمند فارسی</span>
-    <h1>بگرد، حتماً یک‌جا جوابش هست</h1>
-    <p>فقط یک کلمه بنویس — «ودیعه»، «سیم‌کارت»، حتی «Pfand». در همه‌ی {{ total|fa_digits }} کشور می‌گردم، هم تیتر هم متن. نیم‌فاصله و ی/ک عربی مهم نیست.</p>
+    <span class="eyebrow">DaneshRah · جست‌وجو در همه‌ی راهنماها</span>
+    <h1>جست‌وجو در راهنماها</h1>
+    <p>یک کلمه بنویس — «ودیعه»، «سیم‌کارت»، حتی «Pfand». در همه‌ی {{ total|fa_digits }} کشور می‌گردد، هم تیتر هم متن. نیم‌فاصله و ی/ک عربی مهم نیست.</p>
     {% if q %}<p class="update-note" style="color:#ffe9b8">جست‌وجو برای «{{ q }}» — تیترها اول، بعد نام کشور، بعد متن.</p>{% endif %}
   </div>
 
@@ -39,8 +39,8 @@
       {% else %}
       <div class="empty" role="status">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>
-        <h3>پیدا نکردم، ببخشید</h3>
-        <p>یک کلمه‌ی کوتاه‌تر امتحان کن — مثلاً به‌جای «بیمه درمانی آلمان» فقط «بیمه». نیم‌فاصله را هم بردار و دوباره بزن. اگر باز هم نبود بهم بگو تا در DaneshRah اضافه‌اش کنم.</p>
+        <h3>نتیجه‌ای پیدا نشد</h3>
+        <p>یک کلمه‌ی کوتاه‌تر امتحان کن — مثلاً به‌جای «بیمه درمانی آلمان» فقط «بیمه». نیم‌فاصله را هم بردار و دوباره بزن. اگر باز هم نبود، در گیت‌هاب بگو تا اضافه شود.</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
           <a class="btn btn-outline" href="{{ url_for('index') }}">دیدن همه‌ی کشورها</a>
           <a class="btn btn-ghost" style="color:var(--ink);border-color:var(--border)" href="{{ url_for('search_page', q='بیمه') }}">امتحان «بیمه»</a>

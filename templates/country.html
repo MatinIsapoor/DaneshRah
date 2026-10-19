@@ -25,7 +25,7 @@
     <span class="eyebrow">{{ country.flag }} {{ country.name }}{% if meta.region_label %} · {{ meta.region_label }}{% endif %}</span>
     <h1>راهنمای زندگی دانشجویی در {{ country.name }}</h1>
     <p>{% if country.blurb %}{{ country.blurb }}{% else %}این صفحه را موضوع‌به‌موضوع جدا کردم که گیج نشوی: اول خرید و زندگی، بعد مسکن، بعد کارهای اداری.{% endif %}</p>
-    <p class="hand-note" style="color:#ddb96f">من همه‌ی این‌ها را رفتم و برگشتم که تو نروی :)</p>
+    <p class="hand-note" style="color:#ddb96f">اطلاعات این صفحه از منابع رسمی جمع شده؛ لینک منبع و تاریخ بازبینی را ببین و خودت هم چک کن.</p>
     <div class="meta-row">
       <span class="meta-badge">📚 {{ n_items }} راهنما</span>
       {% if meta.capital %}<span class="meta-badge">🏛️ پایتخت: {{ meta.capital }}</span>{% endif %}
@@ -78,8 +78,25 @@
 
   <div class="tip reveal">
     <svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
-    <div><b>از تجربه‌ی خودم می‌گویم:</b> اول <b>خرید و زندگی</b> را بخوان چون بانک و سیم‌کارت هفته‌ی اول گیرت می‌اندازد. بخش «ثبت آدرس» در مسکن را هم پشت گوش نینداز — من انداختم و دو هفته کارم عقب افتاد. بقیش را به ترتیب بخوان. اگر هنوز نرسیده‌ای، <a href="{{ url_for('checklist') }}">چک‌لیست</a> را ببین.</div>
+    <div><b>پیشنهاد ترتیب مطالعه:</b> اول <b>خرید و زندگی</b> چون بانک و سیم‌کارت کار هفته‌ی اول‌اند. بخش «ثبت آدرس» در مسکن را عقب نینداز، چون بدون آن بانک و اقامت جلو نمی‌رود. اگر هنوز نرسیده‌ای، <a href="{{ url_for('checklist') }}">چک‌لیست</a> را ببین.</div>
   </div>
+
+  {% if country.sources %}
+  <div class="section-head" id="sources">
+    <h2>منابع رسمی {{ country.name }}</h2>
+  </div>
+  <div class="tip reveal" style="margin-top:0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#16888a" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7L12 19"/></svg>
+    <div style="flex:1;min-width:0">
+      <b>این راهنما بر اساس این منابع نوشته شده و هر مطلب لینک منبع دارد:</b>
+      <ul class="source-list">
+        {% for s in country.sources %}
+        <li><span class="tag teal">{{ category_meta.get(s.cat, {}).get('label', s.cat) }}</span> <a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endif %}
 
   {% if related %}
   <div class="section-head">

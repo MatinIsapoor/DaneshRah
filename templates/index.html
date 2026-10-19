@@ -6,10 +6,10 @@
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <span class="eyebrow"><span class="dot" aria-hidden="true"></span> سلام، من متینم — این DaneshRah را از تجربه‌ی خودم و بچه‌ها جمع کردم</span>
-      <h1>هفته‌ی اول مهاجرت، <span class="grad">هیچ‌کس جوابت را نمی‌دهد</span></h1>
-      <p class="lead">خودم وقتی رسیدم برلین، سه روز بدون اینترنت ماندم چون فکر می‌کردم «سیم‌کارت که همه‌جا یکی است». بعد هم برای ودیعه‌ی خانه نزدیک بود پول را به حساب اشتباهی بفرستم. این سایت همان چیزهایی است که کاش یکی قبل از پرواز به <b style="color:#ffe9b8">من</b> می‌گفت — کشوربه‌کشور، با لینک منبع اصلی که خودت هم بتوانی چک کنی.</p>
-      <div class="author-line"><span class="avatar">م</span><span>نوشته‌ی متین، دانشجو در آلمان · با کمک تجربه‌ی بچه‌ها در {{ stats.countries }} کشور · <span class="signature">Matin</span></span></div>
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span> راهنمای فارسی زندگی دانشجویی در خارج از کشور</span>
+      <h1>هفته‌ی اول مهاجرت، <span class="grad">سؤال‌های ریز و بی‌جواب</span></h1>
+      <p class="lead">من متینم، دانشجوی پاریس. این سایت را ساختم تا جواب همان سؤال‌های روزهای اول یک‌جا باشد: سیم‌کارت، حساب بانکی، ثبت آدرس، ودیعه‌ی خانه و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع کنارش آمده تا خودت هم چک کنی. اگر جایی اشتباه یا قدیمی بود، بنویس تا درستش کنم.</p>
+      <div class="author-line"><span class="avatar">م</span><span>نوشته‌ی متین، دانشجوی پاریس · راهنما برای {{ stats.countries }} کشور · <span class="signature">Matin</span></span></div>
       <div class="hero-actions">
         <a class="btn btn-gold" href="#countries">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
@@ -21,7 +21,7 @@
         <input type="search" name="q" placeholder="بنویس چی ذهنت را مشغول کرده… مثلاً «ودیعه»" aria-label="جست‌وجو در راهنماها" data-global-search autocomplete="off" enterkeyhint="search">
         <button type="submit">بگرد</button>
       </form>
-      <div class="hand-note">راستی — اینجا تبلیغ نداریم، فقط تجربه است :)</div>
+      <div class="hand-note">اینجا تبلیغ و لینک پولی نیست؛ فقط راهنمای مبتنی بر منابع رسمی.</div>
       <div class="hero-mini">
         <span>کلید <span class="kbd" style="border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff">/</span> را بزن و مستقیم بگرد</span>
         <span>کشورت را <b>★</b> کن تا گمش نکنی</span>
@@ -83,7 +83,7 @@
           <text x="0" y="18" text-anchor="middle" fill="#ddb96f" font-size="12">تا استقرار کامل ✓</text>
         </g>
       </svg>
-      <div class="float-card fc1"><span class="fc-ico">🏠</span><span>ودیعه را کجا نریز!<br><b>اشتباه خودم بود…</b></span></div>
+      <div class="float-card fc1"><span class="fc-ico">🏠</span><span>ودیعه و قرارداد<br><b>قبل از امضا بخش مسکن را بخوان</b></span></div>
       <div class="float-card fc2"><span class="fc-ico">💳</span><span>حساب بانکی<br><b>بدون ثبت آدرس نمی‌شود</b></span></div>
       <div class="float-card fc3"><span class="fc-ico">📱</span><span>سیم‌کارت فرودگاه<br><b>اول اینترنت، بعد همه‌چیز</b></span></div>
     </div>
@@ -94,18 +94,18 @@
 <div class="container">
   <!-- ================= STATS ================= -->
   <div class="stats" role="list">
-    <div class="stat reveal" role="listitem"><b data-count="{{ stats.countries }}">{{ stats.countries }}</b><span>کشوری که برایش راهنما نوشتم</span></div>
+    <div class="stat reveal" role="listitem"><b data-count="{{ stats.countries }}">{{ stats.countries }}</b><span>کشور با راهنمای جداگانه</span></div>
     <div class="stat reveal" role="listitem"><b data-count="{{ stats['items'] }}">{{ stats['items'] }}</b><span>نکته‌ی ریز و کاربردی</span></div>
-    <div class="stat reveal" role="listitem"><b>۰</b><span>تبلیغ و حرف اضافه — قول می‌دهم</span></div>
+    <div class="stat reveal" role="listitem"><b>۰</b><span>تبلیغ و لینک پولی</span></div>
   </div>
 
   <!-- ================= FIRST STEPS BANNER ================= -->
   {% if general %}
   <section class="banner reveal" aria-label="قدم‌های اول">
     <div>
-      <span class="eyebrow">قبل از هر چیز — این را من هم دیر فهمیدم</span>
+      <span class="eyebrow">قبل از هر چیز — ترتیب معمولِ کارها</span>
       <h3>{{ general.name }}: {{ general['categories']['arrival'].title }}</h3>
-      <p>اگر فقط وقت یک صفحه را داری، همین را بخوان. ترتیبش را از اشتباه‌های خودم و بچه‌ها درآوردم: اول اینترنت و مدارک، بعد خانه و دانشگاه، آخرش بانک و بیمه. می‌توانی تیک بزنی و پیشرفتت می‌ماند.</p>
+      <p>اگر فقط وقت یک صفحه را داری، همین را بخوان. ترتیب معمول کارها این‌طور است: اول اینترنت و مدارک، بعد ثبت آدرس و خانه و دانشگاه، آخرش بانک و بیمه. می‌توانی تیک بزنی و پیشرفتت در مرورگر ذخیره می‌شود.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <a class="btn btn-gold" href="{{ url_for('checklist') }}">باز کردن چک‌لیست من</a>
         <a class="btn btn-ghost" href="{{ url_for('category_page', country_code='general', category='arrival') }}">خواندن نسخه‌ی متنی</a>
@@ -135,7 +135,7 @@
         کشور خودت را انتخاب کن
       </h2>
       <span class="count-badge">{{ countries|length }} کشور</span>
-      <p>برای هر کشور چهار تا موضوع را جدا کردم، چون قاطی‌شان گیج‌کننده است: <b>خرید و زندگی</b> (آن چیزی که هفته‌ی اول لازم داری)، <b>مسکن</b> (جایی که بیشتر کلاه سر آدم می‌رود)، <b>کارهای اداری</b> (که جریمه‌ی دیرکرد دارد) و <b>کار دانشجویی</b>. روی کشورت بزن و از اول بخوان.</p>
+      <p>برای هر کشور چهار موضوع جدا شده است تا قاطی نشوند: <b>خرید و زندگی</b> (چیزهایی که هفته‌ی اول لازم داری)، <b>مسکن</b> (ودیعه، قرارداد و ثبت آدرس)، <b>کارهای اداری</b> (اقامت، بیمه و مدارک) و <b>کار دانشجویی</b> (محدودیت‌ها و مجوزها). روی کشورت بزن و از اول بخوان.</p>
     </div>
 
     <div class="toolbar">
@@ -182,38 +182,38 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#16888a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
         چرا این راهنما به کارت می‌آید؟
       </h2>
-      <p>من از ترجمه‌های خشک و متن‌های رسمی خسته شدم، پس سعی کردم مثل حرف زدن بنویسم. هر نکته یک لینک به منبع اصلی هم دارد که خودت راستی‌آزمایی کنی.</p>
+      <p>هر نکته به منابع رسمی همان کشور وصل است (سفارت، وزارت مهاجرت، سازمان مالیات و…) تا خودت راستی‌آزمایی کنی؛ به‌علاوه‌ی تاریخ آخرین بازبینی در هر صفحه.</p>
     </div>
     <div class="grid-features">
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#16888a" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
-        <h3>جست‌وجو، مثل حرف زدن</h3>
-        <p>بنویس «ودیعه» یا «Pfand» یا حتی «IMEI» — در همه‌ی کشورها می‌گردم. خودم همیشه از <a href="{{ url_for('search_page') }}">همین‌جا</a> شروع می‌کنم.</p>
+        <h3>جست‌وجو در همه‌ی مطالب</h3>
+        <p>بنویس «ودیعه» یا «Pfand» یا «IMEI» — در همه‌ی کشورها می‌گردد، هم در تیتر هم در متن. <a href="{{ url_for('search_page') }}">از این‌جا</a> امتحان کن.</p>
       </div>
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg></div>
-        <h3>چک‌لیستی که خودم لازم داشتم</h3>
-        <p>۱۱ قدم به ترتیبی که کاش من انجام داده بودم. تیک بزن، <a href="{{ url_for('checklist') }}">پیشرفتت می‌ماند</a> حتی اگر صفحه را ببندی.</p>
+        <h3>چک‌لیست روزهای اول</h3>
+        <p>۱۱ قدم به ترتیبی که معمولاً کارها جلو می‌رود. تیک بزن؛ <a href="{{ url_for('checklist') }}">پیشرفتت در مرورگر می‌ماند</a> حتی اگر صفحه را ببندی.</p>
       </div>
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
         <h3>شماره‌هایی که باید در گوشی باشد</h3>
-        <p>اورژانس و اطلاعات پایه‌ی هر کشور را <a href="{{ url_for('emergency') }}">یک‌جا جمع کردم</a>. روز اول ذخیره‌شان کن، جدی می‌گویم.</p>
+        <p>اورژانس و اطلاعات پایه‌ی هر کشور <a href="{{ url_for('emergency') }}">یک‌جا جمع شده</a>. روز اول ذخیره‌شان کن.</p>
       </div>
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg></div>
-        <h3>مسکن: جایی که من ضربه خوردم</h3>
-        <p>ودیعه، هزینه‌های پنهان، آگهی‌های تقلبی و ثبت آدرس. این بخش را دوبار بخوان — من یک‌بار نخواندم و ضرر کردم.</p>
+        <h3>مسکن: ریزه‌کاری‌های ودیعه و قرارداد</h3>
+        <p>ودیعه، هزینه‌های پنهان، آگهی تقلبی و ثبت آدرس — با قواعد رسمی هر کشور. این بخش را با دقت بخوان و قبل از واریز پول، قرارداد و مالک را بررسی کن.</p>
       </div>
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#16888a" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
         <h3>بانک و سیم‌کارت، بدون معطلی</h3>
-        <p>برای هر کشور نوشتم کدام بانک زودتر به خارجی‌ها حساب می‌دهد و کدام سیم‌کارت اولش به‌صرفه‌تر است.</p>
+        <p>برای هر کشور نوشته شده چه مدارکی برای حساب بانکی و سیم‌کارت لازم است و کدام‌ها را بدون اقامت هم می‌شود گرفت.</p>
       </div>
       <div class="feature reveal">
         <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#b8873a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg></div>
-        <h3>تو هم اضافه کن</h3>
-        <p>اگر جایی زندگی می‌کنی که من ننوشتم، بفرست تا اضافه کنم. همه‌چیز یک فایل ساده است. <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">اینجا بنویس →</a></p>
+        <h3>کمک کن کامل‌تر شود</h3>
+        <p>اگر کشورت این‌جا نیست یا نکته‌ای را غلط دیدی، در گیت‌هاب بگو. محتوا یک فایل ساده است و اضافه‌کردن مطلب نیاز به کدنویسی ندارد. <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">اینجا بنویس →</a></p>
       </div>
     </div>
   </section>
@@ -221,17 +221,16 @@
   <!-- ================= FAQ ================= -->
   <section class="section">
     <div class="section-head">
-      <h2>سؤال‌هایی که زیاد ازم می‌پرسند</h2>
-      <p>این‌ها را از روی پیام‌های بچه‌ها نوشتم، نه از روی حدس.</p>
+      <h2>سؤال‌های پرتکرار</h2>
+      <p>جواب‌ها بر اساس روند رایج و منابع رسمی هر کشور نوشته شده‌اند.</p>
     </div>
     <div class="faq">
-      <details class="faq-item reveal"><summary>راستش از کجا شروع کنم؟ <span class="plus">+</span></summary><div class="faq-body">اگر جای من بودی، اول <a href="{{ url_for('checklist') }}">چک‌لیست</a> را باز می‌کردی و فقط قدم اول را انجام می‌دادی. بعد می‌رفتی سراغ صفحه‌ی کشورت، بخش خرید. مسکن را هم عجله نکن — من عجله کردم و پشیمان شدم.</div></details>
-      <details class="faq-item reveal"><summary>رسیدم فرودگاه، اول چی؟ <span class="plus">+</span></summary><div class="faq-body">اینترنت. باور کن بدون اینترنت حتی آدرس خوابت را پیدا نمی‌کنی. توی بیشتر فرودگاه‌ها غرفه‌ی سیم‌کارت هست؛ اگر نبود، بخش خریدِ کشورت در همین سایت را ببین که کدام پیش‌پرداخت ارزان است.</div></details>
-      <details class="faq-item reveal"><summary>این ثبت آدرس چرا همه‌جا هست؟ <span class="plus">+</span></summary><div class="faq-body">چون بدون آن عملاً هیچ‌کاری جلو نمی‌رود: نه بانک، نه اقامت، نه خیلی وقت‌ها سیم‌کارت قراردادی. اسمش در هر کشور فرق دارد (آلمان Anmeldung، هلند BSN…) و مهلت دارد — از ۲۴ ساعت تا چند هفته. ته بخش مسکن هر کشور نوشتم.</div></details>
-      <details class="faq-item reveal"><summary>این اطلاعات قدیمی نمی‌شود؟ <span class="plus">+</span></summary><div class="faq-body">چرا، ممکن است بشود — قانون عوض می‌شود. برای همین زیر هر نکته لینک منبع رسمی را گذاشتم که خودت چک کنی. اگر جایی دیدی عوض شده، بهم بگو تا درستش کنم. واقعاً درستش می‌کنم.</div></details>
-      <details class="faq-item reveal"><summary>کشور من نیست اینجا… <span class="plus">+</span></summary><div class="faq-body">شرمنده! دارم کم‌کم اضافه می‌کنم. فعلاً چک‌لیست عمومی به کارت می‌آید. و اگر خودت آنجا زندگی می‌کنی، بنویس بفرست — اسمت را هم می‌نویسم که فلانی کمک کرد.</div></details>
+      <details class="faq-item reveal"><summary>از کجا شروع کنم؟ <span class="plus">+</span></summary><div class="faq-body">با <a href="{{ url_for('checklist') }}">چک‌لیست</a> شروع کن و فقط قدم اول را انجام بده. بعد صفحه‌ی کشورت را باز کن، بخش خرید. برای مسکن عجله نکن؛ قرارداد را کامل بخوان و پول را قبل از دیدن اتاق و مالک واریز نکن.</div></details>
+      <details class="faq-item reveal"><summary>رسیدم فرودگاه، اول چه کاری؟ <span class="plus">+</span></summary><div class="faq-body">اینترنت. بدون اینترنت حتی آدرس خوابگاه را پیدا نمی‌کنی. در بیشتر فرودگاه‌ها غرفه‌ی سیم‌کارت هست؛ اگر نبود، بخش خریدِ کشورت در همین سایت را ببین که کدام اپراتور و کدام پیش‌پرداخت معمول‌تر است.</div></details>
+      <details class="faq-item reveal"><summary>ثبت آدرس چرا این‌قدر مهم است؟ <span class="plus">+</span></summary><div class="faq-body">چون بدون آن عملاً هیچ‌کاری جلو نمی‌رود: نه بانک، نه اقامت، نه سیم‌کارت قراردادی. اسمش در هر کشور فرق دارد (در آلمان Anmeldung، در هلند BSN…) و مهلت دارد — از چند روز تا چند هفته. جزئیات در بخش مسکن هر کشور آمده است.</div></details>
+      <details class="faq-item reveal"><summary>این اطلاعات قدیمی نمی‌شود؟ <span class="plus">+</span></summary><div class="faq-body">بله، ممکن است بشود — قانون و قیمت دائم عوض می‌شود. برای همین در هر صفحه لینک منبع رسمی و تاریخ آخرین بازبینی گذاشته شده تا خودت چک کنی. اگر جایی عوض شده بود، در گیت‌هاب بگو تا اصلاح کنم.</div></details>
+      <details class="faq-item reveal"><summary>کشور من این‌جا نیست <span class="plus">+</span></summary><div class="faq-body">کم‌کم اضافه می‌شود. فعلاً <a href="{{ url_for('checklist') }}">چک‌لیست عمومی</a> و <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a> به کارت می‌آید. اگر آن‌جا زندگی می‌کنی و منبع رسمی خوبی می‌شناسی، در گیت‌هاب بنویس.</div></details>
     </div>
-    <div class="quote-human">«کاش بخش ودیعه را قبل از امضا خوانده بودم. ۶۰۰ یورو خوابید دو ماه.» — سارا، مونیخ<cite>پیام واقعی یکی از خواننده‌ها، با اجازه‌اش گذاشتم</cite></div>
     <div class="center mt">
       <a class="btn btn-outline" href="{{ url_for('emergency') }}">دیدن شماره‌های اضطراری همه‌ی کشورها</a>
     </div>

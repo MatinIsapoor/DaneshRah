@@ -4,11 +4,11 @@
 
 🌐 **Live Demo:** [daneshrah.onrender.com](https://daneshrah.onrender.com)
 
-> من متینم. این سایت را بعد از کلی اشتباهِ هفته‌های اول مهاجرت شروع کردم — همان سؤال‌های کوچکی که هیچ‌کس جوابش را یک‌جا نمی‌دهد. بچه‌های کشورهای دیگر هم تجربه‌شان را فرستادند و کم‌کم جمع شد. اگر غلطی دیدی بگو، ناراحت نمی‌شوم. — Matin
+> من متینم؛ دانشجوی ایرانی در پاریس. دانش‌راه را ساختم تا جواب همان سؤال‌های ریزِ هفته‌های اولِ مهاجرت — از ودیعه و سیم‌کارت تا بیمه و اقامت — یک‌جا و همراه با لینک منبع رسمی در دسترس باشد. اطلاعات هر کشور در یک فایل JSON نگهداری می‌شود و هر صفحه تاریخ آخرین بازبینی دارد. اگر جایی اشتباه یا قدیمی بود، از طریق GitHub بگو تا اصلاح شود.
 
 ## ✨ Features
 
-* 🌍 **31 country guides** — Germany, Canada, USA, Turkey, UK, Italy, Netherlands, Australia, Malaysia, France, Austria, China, Russia, UAE, Spain, Sweden, Armenia, Hungary, Poland, Cyprus, Georgia, South Korea, Japan, Finland, Ireland, Norway, Denmark, Belgium, Switzerland, Portugal, Czechia
+* 🌍 **42 country guides** — Germany, Canada, USA, Turkey, UK, Italy, Netherlands, Australia, Malaysia, France, Austria, China, Russia, UAE, Spain, Sweden, Armenia, Hungary, Poland, Cyprus, Georgia, South Korea, Japan, Finland, Ireland, Norway, Denmark, Belgium, Switzerland, Portugal, Czechia, Azerbaijan, Qatar, Kuwait, Oman, Uzbekistan, India, Singapore, New Zealand, Saudi Arabia, Jordan, Egypt
 * 🔎 **Smart Persian search** — normalization (ی/ک عربی، نیم‌فاصله، اعداد فارسی), multi-word queries, ranked results (title > country name > category > content), clean snippets (`/search` + live API `/api/search?limit=30`)
 * 🕓 **`last_updated` per country** — every guide shows «به‌روز شده: …» so you know how fresh it is
 * 🧭 **First-days arrival checklist** — interactive, saved in your browser (`/checklist`, with progressbar + ARIA)
@@ -85,7 +85,7 @@ daneshrah/
       "region": "europe",
       "region_label": "اروپا"
     },
-    "last_updated": "2026-09-18",
+    "last_updated": "2026-10-19",
     "categories": {
       "shopping": {
         "title": "خرید و زندگی روزمره",
@@ -99,7 +99,14 @@ daneshrah/
       "housing": { "title": "مسکن", "items": [] },
       "admin": { "title": "اقامت و امور اداری", "items": [] },
       "work": { "title": "کار دانشجویی", "items": [] }
-    }
+    },
+    "sources": [
+      {
+        "title": "DAAD — کار دانشجویی",
+        "url": "https://www.daad.de/en/studying-in-germany/living-in-germany/working-in-germany/",
+        "cat": "work"
+      }
+    ]
   }
 }
 ```
@@ -107,8 +114,9 @@ daneshrah/
 Rules:
 
 * `meta.region` should reuse one of `europe`, `north_america`, `asia`, `oceania` when possible (anything else shows under «سایر» automatically).
-* `last_updated` is Gregorian `YYYY-MM-DD` and renders as e.g. «۱۸ سپتامبر ۲۰۲۶».
+* `last_updated` is Gregorian `YYYY-MM-DD` and renders as e.g. «۱۹ اکتبر ۲۰۲۶».
 * Item `content` supports `[label](https://…)` links — they open in a new tab safely.
+* `sources` is an optional per-country list of `{title, url, cat}` — it renders as «منابع رسمی» on the country page; `cat` is one of `shopping`/`housing`/`admin`/`work`.
 * Categories currently supported: `shopping`, `housing`, `admin`, `work` (labels/icons via `CATEGORY_META` in `app.py`; `general.categories.arrival` powers `/checklist`).
 
 ## 🔎 How search works
@@ -143,7 +151,7 @@ Client-side country/emergency filters use the same normalization, so «سیم‌
 
 ## 🎯 Goal
 
-One accessible place for the small-but-critical questions: where to buy a SIM, how to open a bank account, how deposits work, how to register your address — written like a friend talks, with a link to the official source so you can double-check.
+One accessible place for the small-but-critical questions: where to buy a SIM, how to open a bank account, how deposits work, how to register your address — written plainly, without hype, and with a link to the official source so you can double-check.
 
 ## 👨‍💻 Author
 
@@ -160,7 +168,7 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 **دانش‌راه (DaneshRah)** یک وب‌اپ Flask برای راهنمای زندگی دانشجویی ایرانی‌ها در کشورهای مختلف است: خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول.
 
 * اجرای محلی: دستورات بالا (بعدش `http://127.0.0.1:5000`)
-* افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه) و `last_updated` (مثل `2026-09-18`) دارد.
+* افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه)، `last_updated` (مثل `2026-10-19`) و فهرست اختیاری `sources` (`{title, url, cat}`) دارد که در صفحه‌ی کشور به‌عنوان «منابع رسمی» نمایش داده می‌شود.
 * جست‌وجو نیم‌فاصله و ی/ک را خودش درست می‌کند؛ ترتیب نتایج: تیتر، بعد نام کشور، بعد متن.
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
 
