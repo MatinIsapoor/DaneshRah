@@ -1,38 +1,156 @@
 {% extends "base.html" %}
 {% block title %}DaneshRah | دانش‌راه — از فرودگاه تا استقرار کامل{% endblock %}
 
+{% macro icon(name) %}
+  {% if name == 'search' %}
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+  {% elif name == 'check' %}
+  <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>
+  {% elif name == 'sos' %}
+  <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+  {% elif name == 'home' %}
+  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+  {% elif name == 'card' %}
+  <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+  {% elif name == 'users' %}
+  <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg>
+  {% else %}
+  <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+  {% endif %}
+{% endmacro %}
+
 {% block content %}
 <header class="hero">
-  <div class="container">
-    <div class="masthead-rule">
-      <b>دفتر راهنمای زندگی دانشجویی</b>
-      <span class="mh-line" aria-hidden="true"></span>
-      <span>آخرین بازبینی: {{ latest_updated|format_updated }}</span>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <div class="masthead-rule">
+        <b>دفتر راهنمای زندگی دانشجویی</b>
+        <span class="mh-line" aria-hidden="true"></span>
+        <span>آخرین بازبینی: {{ latest_updated|format_updated }}</span>
+      </div>
+      <h1>هفته‌ی اول مهاجرت،<br><span class="grad">سؤال‌های ریز و بی‌جواب</span></h1>
+      <svg class="squiggle" viewBox="0 0 300 16" aria-hidden="true"><path class="draw" d="M3 10 C 62 2 118 14 176 6 S 272 12 297 6"/></svg>
+      <p class="lead">من متینم، دانشجوی پاریس. این سایت را ساختم تا جواب همان سؤال‌های روزهای اول یک‌جا باشد: سیم‌کارت، حساب بانکی، ثبت آدرس، ودیعه‌ی خانه و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع کنارش آمده تا خودت هم چک کنی.</p>
+      <form class="search-bar" data-hero-search action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماهای DaneshRah">
+        <svg class="sb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" name="q" placeholder="چه چیزی ذهنت را مشغول کرده؟ مثلاً «ودیعه»" aria-label="جست‌وجو در راهنماها" data-global-search autocomplete="off" enterkeyhint="search">
+        <button type="submit">بگرد</button>
+      </form>
+      <div class="masthead-links">
+        <a href="#countries">{{ stats.countries|fa_digits }} کشور</a>
+        <a href="{{ url_for('checklist') }}">چک‌لیست ورود</a>
+        <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
+        <a href="{{ url_for('search_page') }}">جست‌وجوی کامل</a>
+      </div>
+      <div class="author-line">
+        <span class="avatar" aria-hidden="true">م</span>
+        <span>نوشته‌ی متین، دانشجوی پاریس · راهنما برای {{ stats.countries|fa_digits }} کشور</span>
+      </div>
     </div>
-    <h1>هفته‌ی اول مهاجرت، <span class="grad">سؤال‌های ریز و بی‌جواب</span></h1>
-    <p class="lead">من متینم، دانشجوی پاریس. این سایت را ساختم تا جواب همان سؤال‌های روزهای اول یک‌جا باشد: سیم‌کارت، حساب بانکی، ثبت آدرس، ودیعه‌ی خانه و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع کنارش آمده تا خودت هم چک کنی.</p>
-    <form class="search-bar" data-hero-search action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماهای DaneshRah">
-      <input type="search" name="q" placeholder="چه چیزی ذهنت را مشغول کرده؟ مثلاً «ودیعه»" aria-label="جست‌وجو در راهنماها" data-global-search autocomplete="off" enterkeyhint="search">
-      <button type="submit">بگرد</button>
-    </form>
-    <div class="masthead-links">
-      <a href="#countries">{{ stats.countries|fa_digits }} کشور</a>
-      <a href="{{ url_for('checklist') }}">چک‌لیست ورود</a>
-      <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
-      <a href="{{ url_for('search_page') }}">جست‌وجوی کامل</a>
-    </div>
-    <div class="author-line">
-      <span class="avatar" aria-hidden="true">م</span>
-      <span>نوشته‌ی متین، دانشجوی پاریس · راهنما برای {{ stats.countries|fa_digits }} کشور</span>
+
+    <div class="hero-art">
+      <div class="art-card">
+        <svg viewBox="0 0 520 400" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="rtGrad" x1="1" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="var(--teal)"/>
+              <stop offset="1" stop-color="var(--accent)"/>
+            </linearGradient>
+            <linearGradient id="capGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--accent)"/>
+              <stop offset="1" stop-color="var(--gold)"/>
+            </linearGradient>
+            <pattern id="dotGrid" width="26" height="26" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="1.5" fill="var(--line-strong)"/>
+            </pattern>
+          </defs>
+
+          <rect width="520" height="400" fill="url(#dotGrid)" opacity=".45"/>
+
+          <path d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="10" stroke-linecap="round" opacity=".12"/>
+          <path d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="2.5" stroke-linecap="round" opacity=".4"/>
+          <path class="route-dash" d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="3.2" stroke-linecap="round"/>
+
+          <g class="twinkle"><circle cx="150" cy="70" r="3.4" fill="var(--gold)"/></g>
+          <g class="twinkle d2"><circle cx="238" cy="330" r="2.4" fill="var(--teal)"/></g>
+          <g class="twinkle d3"><circle cx="400" cy="150" r="2.8" fill="var(--accent)"/></g>
+          <g class="twinkle d2"><circle cx="330" cy="70" r="2.2" fill="var(--gold)"/></g>
+
+          <g>
+            <circle class="pulse-ring" cx="436" cy="330" r="18" fill="none" stroke="var(--teal)" stroke-width="2"/>
+            <circle cx="436" cy="330" r="10.5" fill="var(--teal)"/>
+            <circle cx="436" cy="330" r="3.8" fill="var(--card)"/>
+          </g>
+
+          <g>
+            <circle class="pulse-ring d2" cx="84" cy="88" r="20" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <circle cx="84" cy="88" r="12" fill="url(#capGrad)"/>
+            <path d="M77.5 86l6.5-2.8 6.5 2.8-6.5 2.8z" fill="var(--card)"/>
+            <path d="M80 88.2v3.6c0 1.3 1.8 2.2 4 2.2s4-.9 4-2.2v-3.6" stroke="var(--card)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <g>
+            <path d="M-13 0 L11 -7.5 L5.5 0 L11 7.5 Z" fill="var(--ink)" opacity=".92"/>
+            <circle cx="0" cy="0" r="2.2" fill="var(--card)"/>
+            <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
+              <mpath href="#routePath" xlink:href="#routePath"/>
+            </animateMotion>
+          </g>
+
+          <g class="float-a">
+            <rect x="58" y="232" width="176" height="112" rx="14" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.2"/>
+            <rect x="76" y="252" width="66" height="9" rx="4.5" fill="var(--accent)" opacity=".85"/>
+            <circle cx="82" cy="284" r="7" fill="var(--ok)" opacity=".9"/>
+            <path d="M79 284l2.2 2.4 4-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="98" y="280" width="112" height="8" rx="4" fill="var(--line-strong)" opacity=".75"/>
+            <circle cx="82" cy="312" r="7" fill="var(--gold)" opacity=".9"/>
+            <path d="M79 312l2.2 2.4 4-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="98" y="308" width="86" height="8" rx="4" fill="var(--line-strong)" opacity=".6"/>
+            <rect x="76" y="328" width="140" height="6" rx="3" fill="var(--paper-2)"/>
+            <rect x="76" y="328" width="96" height="6" rx="3" fill="var(--teal)" opacity=".8"/>
+          </g>
+          <path id="routePath" d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="none"/>
+        </svg>
+        <span class="art-chip chip-1 float-a"><span class="dotc teal"></span>منابع رسمی هر کشور</span>
+        <span class="art-chip chip-2 float-b"><span class="dotc"></span>{{ stats.countries|fa_digits }} کشور</span>
+        <span class="art-chip chip-3 float-c"><span class="dotc gold"></span>بدون تبلیغ</span>
+      </div>
     </div>
   </div>
 </header>
 
+<div class="ticker-fade">
+  <div class="ticker">
+    <div class="ticker-track">
+      {% for i in [0, 1] %}
+      {% for code, country in countries.items() %}
+      <span class="ticker-chip" dir="rtl">
+        <span class="flag-inline">
+          <span class="flag-fb">{{ country.flag }}</span>
+          <img src="{{ country.flag|flag_url(40) }}" alt="" loading="lazy" onerror="this.remove()">
+        </span>
+        {{ country.name }}
+      </span>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="facts" role="list">
-    <div class="fact reveal" role="listitem"><b data-count="{{ stats.countries }}">{{ stats.countries|fa_digits }}</b><span>کشور با راهنمای جداگانه</span></div>
-    <div class="fact reveal" role="listitem"><b data-count="{{ stats['items'] }}">{{ stats['items']|fa_digits }}</b><span>نکته‌ی ریز و کاربردی</span></div>
-    <div class="fact reveal" role="listitem"><b>۰</b><span>تبلیغ و لینک پولی</span></div>
+    <div class="fact reveal" role="listitem">
+      <div class="fact-top"><span class="tile tile-sm g-teal">{{ icon('search') }}</span><b data-count="{{ stats.countries }}">{{ stats.countries|fa_digits }}</b></div>
+      <span>کشور با راهنمای جداگانه</span>
+    </div>
+    <div class="fact reveal" role="listitem">
+      <div class="fact-top"><span class="tile tile-sm g-amber">{{ icon('card') }}</span><b data-count="{{ stats['items'] }}">{{ stats['items']|fa_digits }}</b></div>
+      <span>نکته‌ی ریز و کاربردی</span>
+    </div>
+    <div class="fact reveal" role="listitem">
+      <div class="fact-top"><span class="tile tile-sm g-ink">{{ icon('check') }}</span><b>۰</b></div>
+      <span>تبلیغ و لینک پولی</span>
+    </div>
   </div>
 
   {% if general %}
@@ -80,7 +198,10 @@
       {% for code, country in countries.items() %}
       <div class="country-cell reveal" data-country-card data-name="{{ country.name }}" data-region="{{ country.meta.region }}">
         <a class="country-card" href="{{ url_for('country_page', country_code=code) }}" aria-label="راهنمای {{ country.name }} در DaneshRah">
-          <span class="cc-flag" aria-hidden="true">{{ country.flag }}</span>
+          <span class="cc-flag" aria-hidden="true">
+            <span class="flag-fb">{{ country.flag }}</span>
+            <img src="{{ country.flag|flag_url(80) }}" alt="" loading="lazy" onerror="this.remove()">
+          </span>
           <div>
             <h3>{{ country.name }}</h3>
             <p class="cc-sub">{{ country.meta.capital|default('') }}{% if country.meta.capital %} · {% endif %}{{ country.n_items|fa_digits }} راهنما</p>
@@ -105,43 +226,43 @@
     </div>
     <ol class="feature-list">
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۱</span>
-        <div>
+        <span class="f-ico g-teal">{{ icon('search') }}</span>
+        <div class="f-body">
           <h3>جست‌وجو در همه‌ی مطالب</h3>
           <p>بنویس «ودیعه» یا «Pfand» یا «IMEI» — در همه‌ی کشورها می‌گردد، هم در تیتر هم در متن. <a href="{{ url_for('search_page') }}">از این‌جا</a> امتحان کن.</p>
         </div>
       </li>
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۲</span>
-        <div>
+        <span class="f-ico g-amber">{{ icon('check') }}</span>
+        <div class="f-body">
           <h3>چک‌لیست روزهای اول</h3>
           <p>۱۱ قدم به ترتیبی که معمولاً کارها جلو می‌رود. تیک بزن؛ <a href="{{ url_for('checklist') }}">پیشرفتت در مرورگر می‌ماند</a> حتی اگر صفحه را ببندی.</p>
         </div>
       </li>
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۳</span>
-        <div>
+        <span class="f-ico g-rose">{{ icon('sos') }}</span>
+        <div class="f-body">
           <h3>شماره‌هایی که باید در گوشی باشد</h3>
           <p>اورژانس و اطلاعات پایه‌ی هر کشور <a href="{{ url_for('emergency') }}">یک‌جا جمع شده</a>. روز اول ذخیره‌شان کن.</p>
         </div>
       </li>
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۴</span>
-        <div>
+        <span class="f-ico g-indigo">{{ icon('home') }}</span>
+        <div class="f-body">
           <h3>مسکن: ریزه‌کاری‌های ودیعه و قرارداد</h3>
           <p>ودیعه، هزینه‌های پنهان، آگهی تقلبی و ثبت آدرس — با قواعد رسمی هر کشور. قبل از واریز پول، قرارداد و مالک را بررسی کن.</p>
         </div>
       </li>
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۵</span>
-        <div>
+        <span class="f-ico g-teal">{{ icon('card') }}</span>
+        <div class="f-body">
           <h3>بانک و سیم‌کارت، بدون معطلی</h3>
           <p>برای هر کشور نوشته شده چه مدارکی برای حساب بانکی و سیم‌کارت لازم است و کدام‌ها را بدون اقامت هم می‌شود گرفت.</p>
         </div>
       </li>
       <li class="feature reveal">
-        <span class="f-num" aria-hidden="true">۰۶</span>
-        <div>
+        <span class="f-ico g-ink">{{ icon('users') }}</span>
+        <div class="f-body">
           <h3>کمک کن کامل‌تر شود</h3>
           <p>اگر کشورت این‌جا نیست یا نکته‌ای را غلط دیدی، در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a> بگو. محتوا یک فایل ساده است و افزودن مطلب نیاز به کدنویسی ندارد.</p>
         </div>

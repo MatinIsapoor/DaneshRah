@@ -527,9 +527,35 @@ def search_guides(
 app = Flask(__name__)
 app.config["APP_NAME"] = APP_NAME
 
+def flag_code(flag: str | None) -> str:
+    """Convert a flag emoji into an ISO-3166 alpha-2 code.
+
+    ``"🇩🇪"`` -> ``"de"``. Returns an empty string when the flag is not made
+    of regional-indicator symbols.
+    """
+    if not flag:
+        return ""
+    letters = []
+    for ch in str(flag):
+        cp = ord(ch)
+        if 0x1F1E6 <= cp <= 0x1F1FF:
+            letters.append(chr(cp - 0x1F1E6 + ord("A")))
+    return "".join(letters).lower()
+
+
+def flag_url(flag: str | None, size: int = 80) -> str:
+    """Return a crisp flag image URL for a flag emoji (empty when unknown)."""
+    code = flag_code(flag)
+    if not code:
+        return ""
+    return f"https://flagcdn.com/w{size}/{code}.png"
+
+
 app.jinja_env.filters["linkify"] = linkify
 app.jinja_env.filters["fa_digits"] = fa_digits
 app.jinja_env.filters["format_updated"] = format_updated
+app.jinja_env.filters["flag_code"] = flag_code
+app.jinja_env.filters["flag_url"] = flag_url
 
 
 @app.context_processor

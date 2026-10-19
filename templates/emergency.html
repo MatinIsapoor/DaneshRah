@@ -28,7 +28,7 @@
       <tbody>
         {% for r in rows %}
         <tr data-em-row data-search="{{ r.name }} {{ r.emergency }} {{ r.capital }}">
-          <td><b>{{ r.flag }} {{ r.name }}</b>{% if r.last_updated %}<br><small class="muted">{{ r.last_updated|format_updated }}</small>{% endif %}</td>
+          <td><b><span class="flag-inline"><span class="flag-fb">{{ r.flag }}</span><img src="{{ r.flag|flag_url(40) }}" alt="" loading="lazy" onerror="this.remove()"></span> {{ r.name }}</b>{% if r.last_updated %}<br><small class="muted">{{ r.last_updated|format_updated }}</small>{% endif %}</td>
           <td>{{ r.capital }}</td>
           <td><span class="em-num">{{ r.emergency }}</span></td>
           <td>{{ r.currency }}</td>
