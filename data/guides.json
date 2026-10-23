@@ -63,7 +63,7 @@
         "items": [
           {
             "title": "اجازه‌ی اقامت دانشجویی",
-            "content": "بعد از ورود با پذیرش، بیمه و اثبات تمکن مالی (حساب مسدودشده‌ی Sperrkonto؛ مبلغ ۲۰۲۶: ۱۱٬۹۰۴ یورو در سال، یعنی ۹۹۲ یورو در ماه) به اداره‌ی اتباع خارجی شهرت (Ausländerbehörde) وقت بگیر. راهنمای رسمی: [BAMF](https://www.bamf.de) و [DAAD](https://www.daad.de)."
+            "content": "بعد از ورود با پذیرش، بیمه و اثبات تمکن مالی (حساب مسدودشده‌ی Sperrkonto؛ مبلغ ۲۰۲۶: ۱۱٬۹۰۴ یورو در سال، یعنی ۹۹۲ یورو در ماه) به اداره‌ی اتباع خارجی شهرت (Ausländerbehörde) وقت بگیر. راهنمای رسمی: [BAMF](https://www.bamf.de) و [DAAD](https://www.daad.de). نرخ روز اثبات تمکن مالی: [DAAD — هزینه‌های تحصیل و زندگی](https://www.daad.de/en/studying-in-germany/living-in-germany/finances/) که ۹۹۲ یورو در ماه را اعلام می‌کنه."
           },
           {
             "title": "بیمه‌ی سلامت",
@@ -71,7 +71,7 @@
           },
           {
             "title": "شماره‌ی مالیاتی",
-            "content": "بعد از Anmeldung (ثبت آدرس)، شماره‌ی مالیاتی (Steuer-ID) خودکار با پست به دستت می‌رسه؛ برای هر کار دانشجویی لازمه، پس زود ثبت آدرس کن.\nمنبع رسمی: [Make it in Germany — حساب مسدودشده](https://www.make-it-in-germany.com/en/looking-for-foreign-professionals/plan-your-move/financing/blocked-account)."
+            "content": "بعد از Anmeldung (ثبت آدرس)، شماره‌ی مالیاتی (Steuer-ID) خودکار با پست به دستت می‌رسه؛ برای هر کار دانشجویی لازمه، پس زود ثبت آدرس کن.\nمنبع رسمی: [DAAD — زندگی در آلمان (ثبت آدرس و مدارک)](https://www.daad.de/en/studying-in-germany/living-in-germany/)."
           },
           {
             "title": "سفارت ایران",
@@ -88,7 +88,7 @@
           },
           {
             "title": "مینی‌جاب",
-            "content": "کارهای Minijob تا سقف ماهانه‌ی مشخص از مالیات و بیمه معافن و محبوب‌ترین مدل کار دانشجویی‌ان؛ برای درآمد بالاتر، مالیات و بیمه کم می‌شه.\nمنبع رسمی: [DAAD — کار دانشجویی در آلمان](https://www.daad.de/en/studying-in-germany/living-in-germany/working-in-germany/)."
+            "content": "کارهای Minijob تا سقف ماهانه‌ی مشخص از مالیات و بیمه معافن و محبوب‌ترین مدل کار دانشجویی‌ان؛ برای درآمد بالاتر، مالیات و بیمه کم می‌شه.\nمنبع رسمی: [DAAD — کار دانشجویی در آلمان](https://www.daad.de/en/studying-in-germany/work-career/)."
           },
           {
             "title": "کجا کار پیدا کنی",
@@ -96,7 +96,7 @@
           },
           {
             "title": "بازگشت مالیات",
-            "content": "با شروع کار به کلاس مالیاتی‌ات (Steuerklasse) توجه کن و هر سال اظهارنامه‌ی مالیاتی بده؛ خیلی از دانشجوها بخشی از مالیات را پس می‌گیرن.\nمنبع رسمی: [DAAD — کار دانشجویی در آلمان](https://www.daad.de/en/studying-in-germany/living-in-germany/working-in-germany/)."
+            "content": "با شروع کار به کلاس مالیاتی‌ات (Steuerklasse) توجه کن و هر سال اظهارنامه‌ی مالیاتی بده؛ خیلی از دانشجوها بخشی از مالیات را پس می‌گیرن.\nمنبع رسمی: [DAAD — کار دانشجویی در آلمان](https://www.daad.de/en/studying-in-germany/work-career/)."
           }
         ]
       }
@@ -112,7 +112,7 @@
     "sources": [
       {
         "title": "DAAD — کار دانشجویی در آلمان",
-        "url": "https://www.daad.de/en/studying-in-germany/living-in-germany/working-in-germany/",
+        "url": "https://www.daad.de/en/studying-in-germany/work-career/",
         "cat": "work"
       },
       {
@@ -151,7 +151,7 @@
           },
           {
             "title": "افتتاح حساب بانکی",
-            "content": "بانک‌های بزرگ مثل [RBC](https://www.rbcroyalbank.com/student)، [TD](https://www.td.com)، [Scotiabank](https://www.scotiabank.com) و [CIBC](https://www.cibc.com) معمولاً چند سال اول حساب دانشجویی بدون کارمزد ماهانه می‌دن. پاسپورت، ویزای تحصیلی معتبر و نامه‌ی پذیرش دانشگاه معمولاً کافیه، حتی قبل از رسیدن هم می‌تونی فرآیندش رو آنلاین شروع کنی."
+            "content": "بانک‌های بزرگ مثل [RBC](https://www.rbcroyalbank.com/bank-accounts/youth-student-banking/advantage-banking-students.html)، [TD](https://www.td.com)، [Scotiabank](https://www.scotiabank.com) و [CIBC](https://www.cibc.com) معمولاً چند سال اول حساب دانشجویی بدون کارمزد ماهانه می‌دن. پاسپورت، ویزای تحصیلی معتبر و نامه‌ی پذیرش دانشگاه معمولاً کافیه، حتی قبل از رسیدن هم می‌تونی فرآیندش رو آنلاین شروع کنی."
           },
           {
             "title": "کارت تخفیف دانشجویی و حمل‌ونقل",
@@ -214,7 +214,7 @@
         "items": [
           {
             "title": "سقف ساعت کار",
-            "content": "با استادی‌پرمیت تمام‌وقت، کار خارج دانشگاه تا ۲۴ ساعت در هفته در طول ترم مجازه (قانون ۲۰۲۴) و در تعطیلات رسمی تمام‌وقت. منبع: [canada.ca](https://www.canada.ca)."
+            "content": "با استادی‌پرمیت تمام‌وقت، کار خارج دانشگاه تا ۲۴ ساعت در هفته در طول ترم مجازه (قانون ۲۰۲۴) و در تعطیلات رسمی تمام‌وقت. منبع: [IRCC — کار خارج دانشگاه](https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/work/work-off-campus.html)."
           },
           {
             "title": "حداقل دستمزد استانی",
@@ -281,7 +281,7 @@
           },
           {
             "title": "باز کردن حساب بانکی",
-            "content": "[Chase](https://www.chase.com/personal/checking/college-checking) و [Bank of America](https://www.bankofamerica.com) معمولاً حساب دانشجویی بدون کارمزد ارائه می‌دن. با I-20، پاسپورت و گاهی SSN یا ITIN؛ بدون SSN هم خیلی بانک‌ها با نامه‌ی دانشگاه حساب باز می‌کنن، فقط باید حضوری به شعبه بری."
+            "content": "[Chase](https://www.chase.com/personal/banking/education/student/opening-student-checking-and-savings-accounts) و [Bank of America](https://www.bankofamerica.com) معمولاً حساب دانشجویی بدون کارمزد ارائه می‌دن. با I-20، پاسپورت و گاهی SSN یا ITIN؛ بدون SSN هم خیلی بانک‌ها با نامه‌ی دانشگاه حساب باز می‌کنن، فقط باید حضوری به شعبه بری."
           },
           {
             "title": "تخفیف دانشجویی",
@@ -1170,7 +1170,7 @@
           },
           {
             "title": "تخفیف دانشجویی و غذای ارزان",
-            "content": "از ۴ مه ۲۰۲۶ وعده‌ی کامل در رستوران‌های CROUS برای همه‌ی دانشجوها ۱ یورو است (بقیه‌ی منوها حداکثر ۳٫۳۰ یورو). جزئیات: [etudiant.gouv.fr](https://www.etudiant.gouv.fr) و [CROUS Paris](https://www.crous-paris.fr). کارت دانشجویی هم تخفیف موزه، سینما و حمل‌ونقل می‌دهد."
+            "content": "در رستوران‌های دانشجویی CROUS یک وعده‌ی کامل روزانه با قیمت یارانه‌ای (از ۱ یورو) ارائه می‌شه؛ نرخ‌ها و شرایط هر سال عوض می‌شه، پس نرخ روز رو از [etudiant.gouv.fr](https://www.etudiant.gouv.fr) و [CROUS Paris](https://www.crous-paris.fr) چک کن. کارت دانشجویی هم تخفیف موزه، سینما و حمل‌ونقل می‌دهد."
           },
           {
             "title": "خرید سیم‌کارت",
@@ -1195,7 +1195,7 @@
           },
           {
             "title": "کمک‌هزینه‌ی مسکن (APL/CAF)",
-            "content": "تقریباً همه‌ی دانشجویان (حتی بین‌المللی‌ها) واجد شرایط دریافت کمک‌هزینه‌ی ماهانه‌ی مسکن از [CAF](https://www.caf.fr) هستن که بخشی از اجاره رو جبران می‌کنه. حتماً بعد از اجاره‌ی خونه برای APL ثبت‌نام کن."
+            "content": "از ۱ ژوئیه ۲۰۲۶ قوانین APL عوض شده: دانشجویی که از خارج اتحادیه اروپا/فضای اقتصادی اروپا/سوئیس می‌آید و titre de séjour تحصیلی داره، فقط در سه حالت APL می‌گیره: ۱) بورسیه بر پایه‌ی معیارهای اجتماعی (bourse sur critères sociaux)، ۲) داشتن فعالیت حرفه‌ای، ۳) قرارداد کارآموزی (apprentissage) یا حرفه‌ای‌سازی (professionnalisation). دانشجویان پناهنده، بی‌کشور و همسران دانشجویان خارج اتحادیه همچنان APL می‌گیرن و دانشجویان اتحادیه اروپا و سوئیس طبق شرایط عمومی واجد شرایط‌ان. منبع رسمی: [Service-Public — کمک‌هزینه‌ی مسکن دانشجو](https://www.service-public.gouv.fr/particuliers/vosdroits/F1563) و [خبر تغییر قانون](https://www.service-public.gouv.fr/particuliers/actualites/A18981). قبل از امضای قرارداد، وضعیت خودت رو در [CAF](https://www.caf.fr) چک کن."
           },
           {
             "title": "هزینه‌های جانبی",
@@ -1216,7 +1216,7 @@
           },
           {
             "title": "کمک‌هزینه‌ی مسکن CAF",
-            "content": "بلافاصله بعد از اجاره از [CAF](https://www.caf.fr) برای APL درخواست بده؛ بررسی‌اش چند ماه طول می‌کشه ولی معوقه پرداخت می‌شه، پس زود اقدام کن."
+            "content": "بلافاصله بعد از اجاره از [CAF](https://www.caf.fr) برای APL درخواست بده؛ بررسی‌اش چند ماه طول می‌کشه ولی معوقه پرداخت می‌شه، پس زود اقدام کن. شرط واجد شرایط بودن دانشجویان خارجی از ۱ ژوئیه ۲۰۲۶ سخت‌تر شده — قبل از امضای قرارداد، [شرایط APL](https://www.service-public.gouv.fr/particuliers/vosdroits/F1563) رو چک کن."
           },
           {
             "title": "سفارت ایران",
@@ -1229,11 +1229,11 @@
         "items": [
           {
             "title": "سقف ۹۶۴ ساعت",
-            "content": "با titre دانشجویی تا ۹۶۴ ساعت در سال (حدود ۶۰٪ تمام‌وقت)؛ بیشترش نیاز به autorisation de travail جدا داره.\nمنبع رسمی: [service-public.fr — SMIC](https://www.service-public.fr/particuliers/vosdroits/F2300)."
+            "content": "با titre دانشجویی (VLS-TS یا carte de séjour étudiant) می‌تونی تا ۹۶۴ ساعت در سال — ۶۰٪ وقت کار قانونی — بدون مجوز کار اضافه کار کنی؛ برای بیشتر از ۹۶۴ ساعت، کارفرما باید از قبل مجوز کار (autorisation de travail) بگیره. نکته‌ی مهم: کارفرما باید حداقل ۲ روز کاری قبل از شروع کار، درخواست رو به‌صورت nominative به préfecture بفرسته و استخدام قبل از این اعلان انجام نشه.\nمنبع رسمی: [Service-Public — کار دانشجویی در فرانسه](https://www.service-public.gouv.fr/particuliers/vosdroits/F2713)."
           },
           {
             "title": "SMIC",
-            "content": "حداقل دستمزد ساعتی فرانسه (SMIC) از ژانویه ۲۰۲۶ حدود ۱۲٫۳۱ یورو ناخالص است؛ نرخ رسمی: [service-public.fr](https://www.service-public.fr/particuliers/vosdroits/F2300). فرق CDD (موقت) و CDI (دائم) را بشناس."
+            "content": "حداقل دستمزد ساعتی فرانسه (SMIC) طبق آخرین بازبینی رسمی (۱ ژوئن ۲۰۲۶) ۱۲٫۳۱ یورو ناخالص در ساعت و ۱٬۸۶۷٫۰۲ یورو ناخالص در ماه (بر پایه‌ی ۳۵ ساعت کار در هفته) است؛ آخرین بازنگری نرخ با arrêté du 22 mai 2026 انجام شده. نرخ رسمی روز: [Service-Public — SMIC](https://www.service-public.gouv.fr/particuliers/vosdroits/F2300). فرق CDD (موقت) و CDI (دائم) را بشناس."
           },
           {
             "title": "کجا کار پیدا کنی",
@@ -1241,7 +1241,7 @@
           },
           {
             "title": "فرانسه = کار",
-            "content": "بدون فرانسه فقط کارهای انگلیسی‌زبان توریستی؛ دوره‌های FLE ارزون دانشگاه را جدی بگیر.\nمنبع رسمی: [service-public.fr — SMIC](https://www.service-public.fr/particuliers/vosdroits/F2300)."
+            "content": "بدون فرانسه فقط کارهای انگلیسی‌زبان توریستی؛ دوره‌های FLE ارزون دانشگاه را جدی بگیر.\nمنبع رسمی: [Campus France](https://www.campusfrance.org)."
           }
         ]
       }
@@ -1266,14 +1266,34 @@
         "cat": "shopping"
       },
       {
-        "title": "service-public.fr — SMIC",
-        "url": "https://www.service-public.fr/particuliers/vosdroits/F2300",
-        "cat": "work"
-      },
-      {
         "title": "Campus France",
         "url": "https://www.campusfrance.org",
         "cat": "admin"
+      },
+      {
+        "title": "Service-Public — SMIC",
+        "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2300",
+        "cat": "work"
+      },
+      {
+        "title": "Service-Public — کار دانشجویی در فرانسه",
+        "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2713",
+        "cat": "work"
+      },
+      {
+        "title": "Service-Public — کمک‌هزینه‌ی مسکن دانشجویان (APL)",
+        "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1563",
+        "cat": "housing"
+      },
+      {
+        "title": "Service-Public — تغییر APL برای دانشجویان خارجی از ۱ ژوئیه ۲۰۲۶",
+        "url": "https://www.service-public.gouv.fr/particuliers/actualites/A18981",
+        "cat": "housing"
+      },
+      {
+        "title": "Visale — ضمانت اجاره‌ی دولتی فرانسه",
+        "url": "https://www.visale.fr",
+        "cat": "housing"
       }
     ],
     "last_updated": "2026-10-19"
@@ -1665,7 +1685,7 @@
           },
           {
             "title": "کارت حمل‌ونقل",
-            "content": "کارت [Nol](https://www.rta.ae) برای مترو و اتوبوس دبی نرخ تخفیف‌دار دانشجویی داره؛ برای ابوظبی هم کارت [Hafilat](https://www.dot.abudhabi) مشابهه."
+            "content": "کارت [Nol](https://www.rta.ae) برای مترو و اتوبوس دبی نرخ تخفیف‌دار دانشجویی داره؛ برای ابوظبی هم کارت Hafilat هست (سایت رسمی: [ITC / AD Mobility](https://www.itc.gov.ae/en/))."
           },
           {
             "title": "خرید سیم‌کارت",
@@ -1682,15 +1702,15 @@
           },
           {
             "title": "خوابگاه در برابر اجاره‌ی خصوصی",
-            "content": "بعضی دانشگاه‌ها (مخصوصاً در دبی و ابوظبی) خوابگاه داخل پردیس دارن که گران ولی راحته. خیلی از دانشجوها به‌جای اجاره‌ی آپارتمان کامل، فقط یه اتاق در آپارتمان اشتراکی اجاره می‌کنن که هزینه رو خیلی پایین می‌آره.\nمنبع رسمی: [Dubai Land — ثبت قرارداد Ejari](https://www.dubailand.gov.ae/en/eservices/ejari-services/)."
+            "content": "بعضی دانشگاه‌ها (مخصوصاً در دبی و ابوظبی) خوابگاه داخل پردیس دارن که گران ولی راحته. خیلی از دانشجوها به‌جای اجاره‌ی آپارتمان کامل، فقط یه اتاق در آپارتمان اشتراکی اجاره می‌کنن که هزینه رو خیلی پایین می‌آره.\nمنبع رسمی: [Dubai Land — ثبت قرارداد Ejari](https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/)."
           },
           {
             "title": "ودیعه و پرداخت چک",
-            "content": "روش رایج پرداخت اجاره در امارات چک‌های پسادار (Post-Dated Cheques) هست؛ معمولاً کل سال رو در ۱ تا ۴ چک از قبل امضا می‌کنی. ودیعه معمولاً ۵٪ ارزش اجاره‌ی سالانه‌ست.\nمنبع رسمی: [Dubai Land — ثبت قرارداد Ejari](https://www.dubailand.gov.ae/en/eservices/ejari-services/)."
+            "content": "روش رایج پرداخت اجاره در امارات چک‌های پسادار (Post-Dated Cheques) هست؛ معمولاً کل سال رو در ۱ تا ۴ چک از قبل امضا می‌کنی. ودیعه معمولاً ۵٪ ارزش اجاره‌ی سالانه‌ست.\nمنبع رسمی: [Dubai Land — ثبت قرارداد Ejari](https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/)."
           },
           {
             "title": "ثبت Ejari (اجباری در دبی)",
-            "content": "در دبی، هر قرارداد اجاره باید در سامانه‌ی رسمی [Ejari](https://www.dubailand.gov.ae) ثبت بشه تا از نظر قانونی معتبر باشه؛ این مدرک برای گرفتن قبض برق (DEWA)، اینترنت و حتی تمدید اقامت لازمه."
+            "content": "در دبی، هر قرارداد اجاره باید در سامانه‌ی رسمی [Ejari](https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/) ثبت بشه تا از نظر قانونی معتبر باشه؛ این مدرک برای گرفتن قبض برق (DEWA)، اینترنت و حتی تمدید اقامت لازمه."
           },
           {
             "title": "هزینه‌های جانبی",
@@ -1752,7 +1772,7 @@
     "sources": [
       {
         "title": "Dubai Land — ثبت قرارداد Ejari",
-        "url": "https://www.dubailand.gov.ae/en/eservices/ejari-services/",
+        "url": "https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/",
         "cat": "housing"
       },
       {
@@ -1932,15 +1952,15 @@
           },
           {
             "title": "خوابگاه در برابر اجاره‌ی خصوصی",
-            "content": "اکثر شهرهای دانشگاهی سوئد (غیر از استکهلم) خوابگاه دانشجویی نسبتاً در دسترسی دارن. در استکهلم و شهرهای بزرگ، به‌خاطر کمبود شدید مسکن، خیلی از دانشجوها مجبورن اجاره‌ی دست‌دوم (andrahandskontrakt) از یه مستأجر دیگه بگیرن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "اکثر شهرهای دانشگاهی سوئد (غیر از استکهلم) خوابگاه دانشجویی نسبتاً در دسترسی دارن. در استکهلم و شهرهای بزرگ، به‌خاطر کمبود شدید مسکن، خیلی از دانشجوها مجبورن اجاره‌ی دست‌دوم (andrahandskontrakt) از یه مستأجر دیگه بگیرن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           },
           {
             "title": "قرارداد رسمی در برابر «سیاه»",
-            "content": "مراقب اجاره‌ی «سیاه» (svart kontrakt) باش - قراردادهای غیررسمی که هیچ حفاظت قانونی ندارن و گاهی کلاهبرداری‌ان. همیشه دنبال قرارداد رسمی (andrahandskontrakt رسمی با اجازه‌ی صاحب‌ملک اصلی) باش.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "مراقب اجاره‌ی «سیاه» (svart kontrakt) باش - قراردادهای غیررسمی که هیچ حفاظت قانونی ندارن و گاهی کلاهبرداری‌ان. همیشه دنبال قرارداد رسمی (andrahandskontrakt رسمی با اجازه‌ی صاحب‌ملک اصلی) باش.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           },
           {
             "title": "ودیعه و هزینه‌های جانبی",
-            "content": "ودیعه در سوئد رایج نیست به همون شکلی که در کشورهای دیگه هست، ولی برخی صاحب‌خونه درخواست می‌کنن. اجاره‌ی آپارتمان‌های سوئدی معمولاً شامل گرمایش و آب می‌شه؛ برق و اینترنت اغلب جداست.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "ودیعه در سوئد رایج نیست به همون شکلی که در کشورهای دیگه هست، ولی برخی صاحب‌خونه درخواست می‌کنن. اجاره‌ی آپارتمان‌های سوئدی معمولاً شامل گرمایش و آب می‌شه؛ برق و اینترنت اغلب جداست.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           },
           {
             "title": "ثبت آدرس",
@@ -1957,7 +1977,7 @@
           },
           {
             "title": "بیمه‌ی دانشجویی FAS",
-            "content": "دانشگاه برای دانشجوهای بین‌المللی بیمه‌ی رایگان FAS (از Kammarkollegiet) داره؛ جزئیات پوشش را از International Office بگیر.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "دانشگاه برای دانشجوهای بین‌المللی بیمه‌ی رایگان FAS (از Kammarkollegiet) داره؛ جزئیات پوشش را از International Office بگیر.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           },
           {
             "title": "personnummer",
@@ -1965,7 +1985,7 @@
           },
           {
             "title": "BankID",
-            "content": "امضای دیجیتال سوئد (BankID) برای همه‌ی کارهای آنلاین — بانک، مالیات، بیمه، حتی تحویل بسته — ضروریه؛ بعد از personnummer فعالش کن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "امضای دیجیتال سوئد (BankID) برای همه‌ی کارهای آنلاین — بانک، مالیات، بیمه، حتی تحویل بسته — ضروریه؛ بعد از personnummer فعالش کن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           }
         ]
       },
@@ -1974,11 +1994,11 @@
         "items": [
           {
             "title": "سقف ساعت کار (قانون جدید)",
-            "content": "تا ۱۰ ژوئن ۲۰۲۶ اقامت دانشجویی سوئد سقف ساعت نداشت، اما از ۱۱ ژوئن ۲۰۲۶ برای مجوزهای جدید سقف ۱۵ ساعت در هفته در دوره‌ی تحصیل اعمال می‌شود (تعطیلات معمولاً محدود نمی‌شود). منبع: [Migrationsverket](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html). اگر مجوز قدیمی داری شرایط مجوز خودت را چک کن."
+            "content": "تا ۱۰ ژوئن ۲۰۲۶ اقامت دانشجویی سوئد سقف ساعت نداشت، اما از ۱۱ ژوئن ۲۰۲۶ برای مجوزهای جدید سقف ۱۵ ساعت در هفته در دوره‌ی تحصیل اعمال می‌شود (تعطیلات معمولاً محدود نمی‌شود). منبع: [Migrationsverket](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html). اگر مجوز قدیمی داری شرایط مجوز خودت را چک کن."
           },
           {
             "title": "کف دستمزد صنفی",
-            "content": "حداقل قانونی نیست ولی قراردادهای جمعی کف دارن (حدود ۱۳۰-۱۵۰ کرون در ساعت برای کارهای ساده)؛ کمتر از آن را قبول نکن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "حداقل قانونی نیست ولی قراردادهای جمعی کف دارن (حدود ۱۳۰-۱۵۰ کرون در ساعت برای کارهای ساده)؛ کمتر از آن را قبول نکن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           },
           {
             "title": "کجا کار پیدا کنی",
@@ -1986,7 +2006,7 @@
           },
           {
             "title": "سوئدی یاد بگیر",
-            "content": "برای ۹۰٪ کارها سوئدی می‌خوان؛ دوره‌ی رایگان SFI شهرداری را از همان ماه اول شروع کن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html)."
+            "content": "برای ۹۰٪ کارها سوئدی می‌خوان؛ دوره‌ی رایگان SFI شهرداری را از همان ماه اول شروع کن.\nمنبع رسمی: [Migrationsverket — تحصیل در سوئد](https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html)."
           }
         ]
       }
@@ -2002,7 +2022,7 @@
     "sources": [
       {
         "title": "Migrationsverket — تحصیل در سوئد",
-        "url": "https://www.migrationsverket.se/English/Private-individuals/Studying-and-researching-in-Sweden.html",
+        "url": "https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html",
         "cat": "admin"
       },
       {
@@ -2107,7 +2127,7 @@
           },
           {
             "title": "کجا کار پیدا کنی",
-            "content": "[staff.am](https://www.staff.am)، [job.am](https://www.job.am) و شرکت‌های IT ایروان که انگلیسی یا روسی می‌خوان."
+            "content": "[staff.am](https://www.staff.am)، [job.am](https://job.am) و شرکت‌های IT ایروان که انگلیسی یا روسی می‌خوان."
           },
           {
             "title": "سه زبان به درد می‌خوره",

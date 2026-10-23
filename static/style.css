@@ -315,7 +315,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
   border: 1px solid var(--band-2); display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
 }
 .banner .eyebrow { color: #d9b36a; }
-.banner h3 { margin: 6px 0 6px; font-size: 1.35rem; color: #f5efe3; }
+.banner h2 { margin: 6px 0 6px; font-size: 1.35rem; color: #f5efe3; }
 .banner p { margin: 0 0 16px; color: #b7ab97; font-size: .9rem; max-width: 36rem; }
 .banner-ico { display: none; }
 .steps-mini { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
@@ -419,7 +419,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm);
   padding: 15px; font-size: .84rem;
 }
-.toc h4 { margin: 0 0 10px; font-size: .78rem; color: var(--muted); font-weight: 600; font-family: var(--font-body); }
+.toc h2 { margin: 0 0 10px; font-size: .78rem; color: var(--muted); font-weight: 600; font-family: var(--font-body); }
+.toc-list { list-style: none; margin: 0; padding: 0; }
+.toc-list li { margin: 0; padding: 0; }
 .toc a { display: block; text-decoration: none; color: var(--ink-soft); padding: 6px 9px; border-radius: 5px; line-height: 1.7; font-size: .82rem; }
 .toc a:hover { background: var(--paper-2); color: var(--ink); }
 .toc a.active, .toc a[aria-current="true"] { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
@@ -431,13 +433,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
   transition: border-color .15s, box-shadow .15s;
 }
 .guide-item:target, .guide-item.highlight { border-color: var(--gold); box-shadow: var(--shadow); }
-.guide-item-head { display: flex; gap: 14px; align-items: baseline; cursor: pointer; }
+.guide-item-head { margin: 0; }
+.g-head-btn {
+  display: flex; gap: 14px; align-items: baseline; width: 100%;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: start; cursor: pointer;
+}
 .g-num {
   font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--accent);
   flex-shrink: 0; line-height: 1.5; min-width: 1.7rem;
 }
 .guide-item h3 { margin: 0; font-size: 1.08rem; font-family: var(--font-display); flex: 1; }
-.g-toggle { color: var(--muted); transition: transform .2s; background: none; border: 0; font-size: 1rem; cursor: pointer; padding: 0 4px; }
+.g-title { flex: 1; }
+.g-toggle { color: var(--muted); transition: transform .2s; background: none; border: 0; font-size: 1rem; cursor: inherit; padding: 0 4px; }
 .guide-item.closed .g-body { display: none; }
 .guide-item.closed .g-toggle { transform: rotate(-90deg); }
 .g-body { margin-top: 10px; padding-inline-start: 2.7rem; }
@@ -499,13 +507,21 @@ mark { background: var(--gold-soft); color: inherit; border-radius: 3px; padding
 }
 .check-item:hover { border-color: var(--ink); }
 .check-item.done { border-color: var(--ok); background: var(--ok-soft); }
-.check-box {
-  width: 24px; height: 24px; border-radius: 6px; border: 1.5px solid var(--line-strong); flex-shrink: 0;
-  display: grid; place-items: center; font-size: .85rem; transition: .15s; margin-top: 3px; background: var(--card);
+/* native checkbox, styled to look like the old custom box */
+.check-input {
+  appearance: none; -webkit-appearance: none; margin: 3px 0 0; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: 6px; border: 1.5px solid var(--line-strong);
+  background: var(--card); display: grid; place-content: center; cursor: pointer; transition: .15s;
 }
-.check-item.done .check-box { background: var(--ok); border-color: var(--ok); color: #fff; }
-.check-item h3 { margin: 0 0 4px; font-size: .97rem; font-family: var(--font-display); }
-.check-item.done h3 { text-decoration: line-through; text-decoration-color: var(--muted); }
+.check-input::before {
+  content: ""; width: 12px; height: 12px; transform: scale(0); transition: transform .12s ease-in-out;
+  background: #fff; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.check-input:checked { background: var(--ok); border-color: var(--ok); }
+.check-input:checked::before { transform: scale(1); }
+.check-item h2 { margin: 0 0 4px; font-size: .97rem; font-family: var(--font-display); }
+.check-item h2 label { cursor: pointer; }
+.check-item.done h2 { text-decoration: line-through; text-decoration-color: var(--muted); }
 .check-item p { margin: 0; font-size: .85rem; color: var(--ink-soft); line-height: 1.9; }
 .celebrate {
   display: none; text-align: center; background: var(--card); color: var(--ink);
@@ -513,7 +529,7 @@ mark { background: var(--gold-soft); color: inherit; border-radius: 3px; padding
 }
 .celebrate.show { display: block; animation: pop .35s ease; }
 @keyframes pop { from { transform: scale(.97); opacity: 0; } }
-.celebrate h3 { font-size: 1.3rem; }
+.celebrate h2 { font-size: 1.3rem; }
 
 /* ============ Emergency table ============ */
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
@@ -540,7 +556,7 @@ footer.site {
 }
 .footer-grid { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 26px; }
 @media (max-width: 700px) { .footer-grid { grid-template-columns: minmax(0, 1fr); } }
-footer.site h4 { color: #f0e9db; margin: 0 0 10px; font-size: .92rem; font-family: var(--font-body); font-weight: 700; }
+footer.site h2 { color: #f0e9db; margin: 0 0 10px; font-size: .92rem; font-family: var(--font-body); font-weight: 700; }
 footer.site a { color: #c9bda6; text-decoration: none; display: inline-block; padding: 3px 0; border-bottom: 1px solid transparent; }
 footer.site a:hover { color: #f0e9db; border-bottom-color: #f0e9db; }
 footer.site .muted { color: #8d8270; }

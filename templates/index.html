@@ -127,7 +127,7 @@
       <span class="ticker-chip" dir="rtl">
         <span class="flag-inline">
           <span class="flag-fb">{{ country.flag }}</span>
-          <img src="{{ country.flag|flag_url(40) }}" alt="" loading="lazy" onerror="this.remove()">
+          <img src="{{ country.flag|flag_url(40) }}" alt="" loading="lazy">
         </span>
         {{ country.name }}
       </span>
@@ -156,7 +156,7 @@
   {% if general %}
   <section class="banner reveal" aria-label="قدم‌های اول">
     <span class="eyebrow">قبل از هر چیز — ترتیب معمول کارها</span>
-    <h3>{{ general.name }}: {{ general['categories']['arrival'].title }}</h3>
+    <h2>{{ general.name }}: {{ general['categories']['arrival'].title }}</h2>
     <p>اگر فقط وقت یک صفحه را داری، همین را بخوان. اول اینترنت و مدارک، بعد ثبت آدرس و خانه و دانشگاه، آخرش بانک و بیمه. می‌توانی تیک بزنی و پیشرفتت در مرورگر ذخیره می‌شود.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <a class="btn btn-gold" href="{{ url_for('checklist') }}">باز کردن چک‌لیست من</a>
@@ -200,7 +200,7 @@
         <a class="country-card" href="{{ url_for('country_page', country_code=code) }}" aria-label="راهنمای {{ country.name }} در DaneshRah">
           <span class="cc-flag" aria-hidden="true">
             <span class="flag-fb">{{ country.flag }}</span>
-            <img src="{{ country.flag|flag_url(80) }}" alt="" loading="lazy" onerror="this.remove()">
+            <img src="{{ country.flag|flag_url(80) }}" alt="" loading="lazy">
           </span>
           <div>
             <h3>{{ country.name }}</h3>

@@ -3,22 +3,27 @@
   'use strict';
   var root = document.documentElement;
 
-  /* ---------- Persian-aware normalize (mirrors server normalize_fa) ---------- */
-  function normalizeFa(s) {
+  /* ---------- shared helpers (static/utils.js) ---------- */
+  var utils = window.DaneshRahUtils || {};
+
+  /* Fallback only used when utils.js failed to load (same-origin static file). */
+  function fallbackNormalizeFa(s) {
     s = (s || '').toString();
     s = s.replace(/[\u200c\u200b\u200d\ufeff\u00a0]/g, ' ');
-    s = s.replace(/[ً-ٰٟ]/g, '');
+    s = s.replace(/[\u064B-\u0652\u0670]/g, '');
     s = s.replace(/\u0640/g, '');
     s = s.replace(/\u0643/g, '\u06a9').replace(/\u064a/g, '\u06cc').replace(/\u0649/g, '\u06cc');
     s = s.replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/[إأآ]/g, 'ا');
     s = s.toLowerCase();
-    s = s.replace(/[۰-۹٠-٩]/g, function (d) {
-      var fa = '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);
-      if (fa !== -1) return String(fa);
-      return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));
-    });
+    s = s.replace(/[۰-۹]/g, function (d) { return String(d.charCodeAt(0) - 0x06F0); });
+    s = s.replace(/[٠-٩]/g, function (d) { return String(d.charCodeAt(0) - 0x0660); });
     return s.replace(/\s+/g, ' ').trim();
   }
+
+  var normalizeFa = typeof utils.normalizeFa === 'function' ? utils.normalizeFa : fallbackNormalizeFa;
+  var copyText = typeof utils.copyText === 'function'
+    ? utils.copyText
+    : function () { return Promise.resolve(false); };
 
   /* ---------- storage (DaneshRah keys, migrate old isg-* silently) ---------- */
   function readJSON(key, fallback) {
@@ -41,13 +46,17 @@
   /* ---------- theme ---------- */
   function currentTheme() {
     try {
-      return localStorage.getItem('daneshrah-theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var t = localStorage.getItem('daneshrah-theme');
+      if (t === 'dark' || t === 'light') return t;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } catch (e) { return 'light'; }
   }
-  function applyTheme(t) {
+  function applyTheme(t, persist) {
+    if (t !== 'dark' && t !== 'light') t = 'light';
     root.setAttribute('data-theme', t);
-    try { localStorage.setItem('daneshrah-theme', t); } catch (e) {}
+    if (persist) {
+      try { localStorage.setItem('daneshrah-theme', t); } catch (e) {}
+    }
     var meta = document.querySelector('meta[data-theme-color]');
     if (meta) meta.setAttribute('content', t === 'dark' ? '#171512' : '#f6f2ea');
     document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
@@ -59,13 +68,20 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
   }
   function sunIcon() {
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   }
-  applyTheme(currentTheme());
+  applyTheme(currentTheme(), false);
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-theme-btn]');
-    if (b) applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    if (b) applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
   });
+
+  /* ---------- flag images: drop the <img> when it fails to load ---------- */
+  document.addEventListener('error', function (e) {
+    var t = e.target;
+    if (!t || t.tagName !== 'IMG') return;
+    if (t.closest && t.closest('.flag-inline, .cc-flag')) t.parentNode && t.parentNode.removeChild(t);
+  }, true);
 
   /* ---------- mobile nav ---------- */
   var menuBtn = document.querySelector('[data-menu-btn]');
@@ -81,7 +97,7 @@
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-menu-btn]');
-    if (b) { setMenu(!navLinks.classList.contains('open')); return; }
+    if (b) { setMenu(!(navLinks && navLinks.classList.contains('open'))); return; }
     if (navLinks && navLinks.classList.contains('open')) {
       if (!e.target.closest('[data-nav-links]')) setMenu(false);
     }
@@ -89,50 +105,56 @@
   document.querySelectorAll('[data-nav-links] a').forEach(function (a) {
     a.addEventListener('click', function () { setMenu(false); });
   });
-  // Keyboard: Escape closes menu / blurs; Enter/Space activates custom toggles.
+  // Keyboard: Escape closes the menu / blurs the focused element.
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (navLinks && navLinks.classList.contains('open')) { setMenu(false); if (menuBtn) menuBtn.focus(); return; }
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-      return;
-    }
-    if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.closest) {
-      if (e.target.closest('a, button, input, textarea, select')) return;
-      var t = e.target.closest('[data-guide-head]') || e.target.closest('[data-check-item]');
-      if (t) { e.preventDefault(); t.click(); }
     }
   });
 
   /* ---------- reveal on scroll ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-      });
-    }, { threshold: 0.08 });
-    revealEls.forEach(function (el) { io.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add('in'); });
+  function setupReveal() {
+    var revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.08 });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('in'); });
+    }
+  }
+  // `js` is added here (not in the inline <head> script) so that a broken or
+  // blocked app.js can never leave the page content hidden.
+  root.classList.add('js');
+  try {
+    setupReveal();
+  } catch (e) {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
   }
 
   /* ---------- animated counters ---------- */
-  var cio = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (!en.isIntersecting) return;
-      var el = en.target, target = parseInt(el.dataset.count || '0', 10), t0 = null;
-      function tick(t) {
-        if (!t0) t0 = t;
-        var p = Math.min(1, (t - t0) / 1200);
-        el.textContent = Math.round(target * (0.2 + 0.8 * (1 - Math.pow(1 - p, 3)))).toLocaleString('fa-IR');
-        if (p < 1) requestAnimationFrame(tick);
-        else el.textContent = target.toLocaleString('fa-IR');
-      }
-      requestAnimationFrame(tick);
-      cio.unobserve(el);
-    });
-  }, { threshold: 0.4 });
-  document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+  if ('IntersectionObserver' in window) {
+    var cio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, target = parseInt(el.dataset.count || '0', 10), t0 = null;
+        function tick(t) {
+          if (!t0) t0 = t;
+          var p = Math.min(1, (t - t0) / 1200);
+          el.textContent = Math.round(target * (0.2 + 0.8 * (1 - Math.pow(1 - p, 3)))).toLocaleString('fa-IR');
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = target.toLocaleString('fa-IR');
+        }
+        requestAnimationFrame(tick);
+        cio.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('[data-count]').forEach(function (el) { cio.observe(el); });
+  }
 
   /* ---------- homepage: filter + search countries ---------- */
   var q = document.querySelector('[data-country-search]');
@@ -172,7 +194,11 @@
   });
 
   /* ---------- favorites ---------- */
-  function getFavs() { return readJSON('daneshrah-favs', []); }
+  function getFavs() {
+    var v = readJSON('daneshrah-favs', []);
+    if (!Array.isArray(v)) return [];
+    return v.filter(function (x) { return typeof x === 'string' && x.length; });
+  }
   function paintFavs() {
     var favs = getFavs();
     document.querySelectorAll('[data-fav-btn]').forEach(function (b) {
@@ -216,10 +242,11 @@
   var toTop = document.querySelector('[data-to-top]');
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('[data-toc-link]'));
   function onScroll() {
-    var h = document.documentElement;
-    var max = h.scrollHeight - h.clientHeight;
-    if (prog) prog.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
-    if (toTop) toTop.classList.toggle('show', h.scrollTop > 600);
+    var doc = document.documentElement;
+    var scrollTop = window.pageYOffset || doc.scrollTop || 0;
+    var max = (doc.scrollHeight - (window.innerHeight || doc.clientHeight)) || 0;
+    if (prog) prog.style.width = (max > 0 ? Math.min(100, (scrollTop / max) * 100) : 0) + '%';
+    if (toTop) toTop.classList.toggle('show', scrollTop > 600);
     if (tocLinks.length) {
       var cur = null;
       document.querySelectorAll('[data-guide-item]').forEach(function (sec) {
@@ -255,32 +282,48 @@
     if (copy) {
       e.preventDefault(); e.stopPropagation();
       var url = location.origin + location.pathname + copy.dataset.copyLink;
-      var done = function () {
-        copy.textContent = '✓ کپی شد';
-        setTimeout(function () { copy.textContent = 'کپی لینک'; }, 1500);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(done, done);
-      } else { done(); }
+      var label = copy.textContent;
+      copyText(url).then(function (ok) {
+        if (ok) {
+          copy.textContent = '✓ کپی شد';
+          setTimeout(function () { copy.textContent = label; }, 1500);
+        } else {
+          copy.textContent = 'کپی نشد — دستی کپی کن';
+          setTimeout(function () { copy.textContent = label; }, 3000);
+        }
+      }, function () {
+        copy.textContent = 'کپی نشد — دستی کپی کن';
+        setTimeout(function () { copy.textContent = label; }, 3000);
+      });
       return;
     }
     var print = e.target.closest('[data-print]');
     if (print) window.print();
   });
 
-  /* ---------- checklist ---------- */
+  /* ---------- checklist (native checkboxes) ---------- */
   var boxes = document.querySelectorAll('[data-check-item]');
   if (boxes.length) {
     var KEY = 'daneshrah-checklist-v1';
-    var state = readJSON(KEY, {});
+    function loadState() {
+      var raw = readJSON(KEY, {});
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+      var clean = {};
+      Object.keys(raw).forEach(function (k) { if (raw[k] === true) clean[k] = true; });
+      return clean;
+    }
+    var state = loadState();
+    function persist() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (err) {}
+    }
     function paintCheck() {
       var done = 0;
       boxes.forEach(function (box) {
         var id = box.dataset.checkItem;
-        var on = !!state[id];
+        var on = state[id] === true;
         box.classList.toggle('done', on);
-        box.querySelector('.check-box').textContent = on ? '✓' : '';
-        box.setAttribute('aria-checked', on ? 'true' : 'false');
+        var input = box.querySelector('[data-check-input]');
+        if (input && input.checked !== on) input.checked = on;
         if (on) done++;
       });
       var pct = Math.round((done / boxes.length) * 100);
@@ -294,11 +337,22 @@
       if (cel) cel.classList.toggle('show', pct === 100);
     }
     boxes.forEach(function (box) {
+      var id = box.dataset.checkItem;
+      var input = box.querySelector('[data-check-input]');
+      if (input) {
+        input.addEventListener('change', function () {
+          state[id] = input.checked;
+          persist();
+          paintCheck();
+        });
+      }
       box.addEventListener('click', function (e) {
-        if (e.target.closest('a')) return;
-        var id = box.dataset.checkItem;
-        state[id] = !state[id];
-        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (err) {}
+        // Native control and its label handle their own activation.
+        if (e.target.closest('a, label, input, button, select, textarea')) return;
+        if (!input) return;
+        input.checked = !input.checked;
+        state[id] = input.checked;
+        persist();
         paintCheck();
       });
     });

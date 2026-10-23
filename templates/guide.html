@@ -30,12 +30,12 @@
 
   <div class="guide-layout">
     <nav class="toc" aria-label="فهرست مطالب">
-      <h4 id="toc-heading">فهرست این صفحه</h4>
-      <div role="list" aria-labelledby="toc-heading">
+      <h2 id="toc-heading">فهرست این صفحه</h2>
+      <ul class="toc-list">
         {% for item in category['items'] %}
-        <a href="#item-{{ loop.index }}" data-toc-link role="listitem">{{ loop.index|fa_digits }}. {{ item.title }}</a>
+        <li><a href="#item-{{ loop.index }}" data-toc-link>{{ loop.index|fa_digits }}. {{ item.title }}</a></li>
         {% endfor %}
-      </div>
+      </ul>
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
         <a href="{{ url_for('country_page', country_code=country_code) }}">→ همه‌ی دسته‌های {{ country.name }}</a>
       </div>
@@ -43,19 +43,22 @@
 
     <div>
       {% for item in category['items'] %}
+      {% set source_link = item.link|safe_url %}
       <article class="guide-item reveal" id="item-{{ loop.index }}" data-guide-item>
-        <div class="guide-item-head" data-guide-head role="button" tabindex="0" aria-expanded="true" aria-controls="item-body-{{ loop.index }}" id="item-head-{{ loop.index }}">
-          <span class="g-num" aria-hidden="true">{{ loop.index|fa_digits }}</span>
-          <h3>{{ item.title }}</h3>
-          <button class="g-toggle" aria-label="باز/بسته کردن {{ item.title }}" tabindex="-1">▾</button>
-        </div>
+        <h3 class="guide-item-head" id="item-head-{{ loop.index }}">
+          <button type="button" class="g-head-btn" data-guide-head aria-expanded="true" aria-controls="item-body-{{ loop.index }}">
+            <span class="g-num" aria-hidden="true">{{ loop.index|fa_digits }}</span>
+            <span class="g-title">{{ item.title }}</span>
+            <span class="g-toggle" aria-hidden="true">▾</span>
+          </button>
+        </h3>
         <div class="g-body" id="item-body-{{ loop.index }}" role="region" aria-labelledby="item-head-{{ loop.index }}">
           <p>{{ item.content | linkify }}</p>
-          {% if item.link %}
-          <a class="source-link" href="{{ item.link }}" target="_blank" rel="noopener">صفحه‌ی اصلی منبع ↗</a>
+          {% if source_link %}
+          <a class="source-link" href="{{ source_link }}" target="_blank" rel="noopener">صفحه‌ی اصلی منبع ↗</a>
           {% endif %}
           <div class="g-actions">
-            <button class="mini-btn" data-copy-link="#item-{{ loop.index }}">کپی لینک</button>
+            <button class="mini-btn" data-copy-link="#item-{{ loop.index }}" aria-live="polite">کپی لینک</button>
           </div>
         </div>
       </article>

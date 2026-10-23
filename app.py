@@ -13,6 +13,7 @@ import json
 import logging
 import os
 import re
+import secrets
 import threading
 import time
 import urllib.request
@@ -20,8 +21,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, TypedDict
 
-from flask import Flask, abort, jsonify, render_template, request
+from flask import Flask, abort, g, jsonify, render_template, request
 from markupsafe import Markup, escape
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+from guide_validation import is_safe_url, validate_guides
 
 log = logging.getLogger(__name__)
 
@@ -37,6 +41,17 @@ APP_DESCRIPTION_FA = (
 )
 
 DATA_PATH = Path(__file__).parent / "data" / "guides.json"
+
+#: Longest search query accepted (characters). Longer input is truncated.
+MAX_QUERY_LENGTH = 200
+
+#: Bounds for the ``limit`` parameter of the search API.
+DEFAULT_SEARCH_LIMIT = 30
+MAX_SEARCH_LIMIT = 50
+
+#: Maximum accepted request body (the app has no POST endpoints, but a
+#: runaway request must not be able to buffer arbitrary data).
+MAX_CONTENT_LENGTH = 1 * 1024 * 1024
 
 CATEGORY_META: dict[str, dict[str, str]] = {
     "shopping": {"icon": "cart", "label": "خرید و زندگی روزمره"},
@@ -105,6 +120,31 @@ def strip_markdown(text: str | None) -> str:
     if not text:
         return ""
     return _MD_LINK_PATTERN.sub(r"\1", text)
+
+
+def safe_url(value: Any) -> str:
+    """Return ``value`` when it is a safe absolute ``http(s)`` URL.
+
+    Used for every URL that comes from ``data/guides.json`` so that a
+    ``javascript:`` or ``data:`` payload can never reach an ``href``.
+    Unsafe or malformed values render as an empty string.
+    """
+    if not isinstance(value, str):
+        return ""
+    url = value.strip()
+    if not url or not is_safe_url(url):
+        return ""
+    return url
+
+
+def clean_query(raw: Any) -> str:
+    """Normalize a raw user query: strip control chars, collapse spaces, cap length."""
+    if raw is None:
+        return ""
+    text = str(raw)
+    text = "".join(ch for ch in text if ch in "\t\n\r" or ord(ch) >= 32)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:MAX_QUERY_LENGTH]
 
 
 def fa_digits(value: Any) -> str:
@@ -178,14 +218,32 @@ Guides = dict[str, dict[str, Any]]
 
 _GUIDES: Guides | None = None
 _GUIDES_MTIME: float = 0.0
+_GUIDES_LOCK = threading.RLock()
 
 
 def load_guides_from_disk() -> Guides:
-    """Read and parse ``data/guides.json`` from disk (single place)."""
+    """Read and parse ``data/guides.json`` from disk (single place).
+
+    The file is also validated structurally; problems are logged (they never
+    break the running app, but they show up in the logs and in
+    ``python guide_validation.py``).
+    """
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
     if not isinstance(data, dict):
         raise ValueError("guides.json must contain a top-level object")
+
+    issues = validate_guides(data)
+    errors = [i for i in issues if i.severity == "error"]
+    warnings = [i for i in issues if i.severity == "warning"]
+    if errors:
+        log.error(
+            "guides.json: %d validation error(s); first: %s", len(errors), errors[0]
+        )
+    if warnings:
+        log.warning(
+            "guides.json: %d validation warning(s); first: %s", len(warnings), warnings[0]
+        )
     return data
 
 
@@ -197,14 +255,15 @@ def get_guides(force_reload: bool = False) -> Guides:
     so you don't need to restart the server.
     """
     global _GUIDES, _GUIDES_MTIME
-    try:
-        mtime = DATA_PATH.stat().st_mtime
-    except OSError:
-        mtime = 0.0
-    if _GUIDES is None or force_reload or mtime != _GUIDES_MTIME:
-        _GUIDES = load_guides_from_disk()
-        _GUIDES_MTIME = mtime
-    return _GUIDES
+    with _GUIDES_LOCK:
+        try:
+            mtime = DATA_PATH.stat().st_mtime
+        except OSError:
+            mtime = 0.0
+        if _GUIDES is None or force_reload or mtime != _GUIDES_MTIME:
+            _GUIDES = load_guides_from_disk()
+            _GUIDES_MTIME = mtime
+        return _GUIDES
 
 
 # Backwards-compat alias (old code called load_guides() per request).
@@ -348,11 +407,12 @@ def build_search_index(guides: Guides | None = None) -> list[SearchDoc]:
 def get_search_index() -> list[SearchDoc]:
     """Cached search index; rebuilt when guides.json changes."""
     global _SEARCH_INDEX, _SEARCH_INDEX_MTIME
-    guides = get_guides()
-    if _SEARCH_INDEX is None or _GUIDES_MTIME != _SEARCH_INDEX_MTIME:
-        _SEARCH_INDEX = build_search_index(guides)
-        _SEARCH_INDEX_MTIME = _GUIDES_MTIME
-    return _SEARCH_INDEX
+    with _GUIDES_LOCK:
+        guides = get_guides()
+        if _SEARCH_INDEX is None or _GUIDES_MTIME != _SEARCH_INDEX_MTIME:
+            _SEARCH_INDEX = build_search_index(guides)
+            _SEARCH_INDEX_MTIME = _GUIDES_MTIME
+        return _SEARCH_INDEX
 
 
 def make_snippet(content: str, norm_content: str, tokens: list[str], width: int = 150) -> str:
@@ -421,7 +481,7 @@ class SearchResult(TypedDict):
 
 
 def search_guides(
-    query: str | None, guides: Guides | None = None, limit: int = 30
+    query: str | None, guides: Guides | None = None, limit: int = DEFAULT_SEARCH_LIMIT
 ) -> list[SearchResult]:
     """Ranked Persian full-text search.
 
@@ -437,6 +497,11 @@ def search_guides(
     tokens = tokenize_query(q_norm)
     if not tokens:
         return []
+    try:
+        limit = int(limit)
+    except (TypeError, ValueError):
+        limit = DEFAULT_SEARCH_LIMIT
+    limit = max(1, min(limit, MAX_SEARCH_LIMIT))
 
     docs = get_search_index() if guides is None else build_search_index(guides)
 
@@ -503,7 +568,7 @@ def search_guides(
     pool.sort(key=lambda s: (-s[0], s[2]["country_name"], s[2]["item_title"]))
 
     results: list[SearchResult] = []
-    for score, _count, doc, matched_in in pool[: max(1, limit)]:
+    for score, _count, doc, matched_in in pool[:limit]:
         results.append(
             {
                 "country_code": doc["country_code"],
@@ -526,6 +591,15 @@ def search_guides(
 
 app = Flask(__name__)
 app.config["APP_NAME"] = APP_NAME
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+# Keep Persian characters readable in the JSON API responses.
+app.json.ensure_ascii = False
+
+# Render (and any other reverse proxy) terminates TLS and forwards the
+# original scheme in ``X-Forwarded-Proto``; without ProxyFix Flask would
+# believe every request is plain HTTP. The host header is deliberately *not*
+# trusted (no ``x_host``) so that a spoofed Host cannot change generated URLs.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 def flag_code(flag: str | None) -> str:
     """Convert a flag emoji into an ISO-3166 alpha-2 code.
@@ -556,6 +630,7 @@ app.jinja_env.filters["fa_digits"] = fa_digits
 app.jinja_env.filters["format_updated"] = format_updated
 app.jinja_env.filters["flag_code"] = flag_code
 app.jinja_env.filters["flag_url"] = flag_url
+app.jinja_env.filters["safe_url"] = safe_url
 
 
 @app.context_processor
@@ -564,7 +639,37 @@ def inject_brand() -> dict[str, Any]:
         "site_name": APP_NAME,
         "site_tagline": APP_TAGLINE_FA,
         "site_description": APP_DESCRIPTION_FA,
+        "csp_nonce": getattr(g, "csp_nonce", "") or secrets.token_urlsafe(16),
     }
+
+
+def _content_security_policy(nonce: str) -> str:
+    """Build the CSP header.
+
+    Scripts are restricted to same-origin files plus the single inline
+    bootstrap script, which carries the per-request nonce.
+    """
+    return "; ".join(
+        [
+            "default-src 'self'",
+            "base-uri 'self'",
+            "object-src 'none'",
+            "frame-ancestors 'none'",
+            "form-action 'self'",
+            "img-src 'self' data: https://flagcdn.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "font-src 'self' https://fonts.gstatic.com",
+            f"script-src 'self' 'nonce-{nonce}'",
+            "connect-src 'self'",
+            "manifest-src 'self'",
+        ]
+    )
+
+
+@app.before_request
+def assign_csp_nonce() -> None:
+    """Give every request its own CSP nonce."""
+    g.csp_nonce = secrets.token_urlsafe(16)
 
 
 @app.after_request
@@ -572,6 +677,20 @@ def add_security_headers(response):  # type: ignore[no-untyped-def]
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault(
+        "Permissions-Policy",
+        "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+    )
+    nonce = getattr(g, "csp_nonce", None) or secrets.token_urlsafe(16)
+    response.headers.setdefault(
+        "Content-Security-Policy", _content_security_policy(nonce)
+    )
+    if request.is_secure:
+        response.headers.setdefault(
+            "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+        )
+    if request.path in ("/health", "/ping"):
+        response.headers.setdefault("Cache-Control", "no-store")
     return response
 
 
@@ -674,22 +793,35 @@ def category_page(country_code: str, category: str):  # type: ignore[no-untyped-
 
 @app.route("/search")
 def search_page():  # type: ignore[no-untyped-def]
-    q = (request.args.get("q", "") or "").strip()
+    raw = request.args.get("q", "") or ""
+    q = clean_query(raw)
     results = search_guides(q) if q else []
     guides = get_guides()
     total = len([k for k in guides if k != "general"])
-    return render_template("search.html", q=q, results=results, total=total)
+    return render_template(
+        "search.html",
+        q=q,
+        results=results,
+        total=total,
+        truncated=len(raw.strip()) > MAX_QUERY_LENGTH,
+    )
 
 
 @app.route("/api/search")
 def api_search():  # type: ignore[no-untyped-def]
-    q = (request.args.get("q", "") or "").strip()
+    raw = request.args.get("q", "") or ""
+    q = clean_query(raw)
     try:
-        limit = int(request.args.get("limit", "30"))
+        limit = int(request.args.get("limit", str(DEFAULT_SEARCH_LIMIT)))
     except (TypeError, ValueError):
-        limit = 30
-    limit = max(1, min(limit, 50))
-    return jsonify(query=q, results=search_guides(q, limit=limit) if q else [])
+        limit = DEFAULT_SEARCH_LIMIT
+    limit = max(1, min(limit, MAX_SEARCH_LIMIT))
+    return jsonify(
+        query=q,
+        truncated=len(raw.strip()) > MAX_QUERY_LENGTH,
+        limit=limit,
+        results=search_guides(q, limit=limit) if q else [],
+    )
 
 
 @app.route("/api/countries")
@@ -759,7 +891,7 @@ def not_found(error):  # type: ignore[no-untyped-def]
 
 @app.errorhandler(500)
 def internal_error(error):  # type: ignore[no-untyped-def]
-    log.exception("Unhandled error: %s", error)
+    log.error("Unhandled error while serving a request", exc_info=error)
     return render_template("500.html"), 500
 
 
@@ -775,13 +907,15 @@ def _keep_alive_loop() -> None:
         interval = int(os.environ.get("KEEP_ALIVE_INTERVAL", "600"))
     except ValueError:
         interval = 600
+    # Never hammer the endpoint: 60 seconds is the shortest sensible period.
+    interval = max(60, min(interval, 3600))
     time.sleep(30)
     while True:
         try:
             with urllib.request.urlopen(f"{base_url}/health", timeout=10) as r:
-                print(f"[keep-alive] ping {base_url}/health -> {r.status}", flush=True)
+                log.info("[keep-alive] ping %s/health -> %s", base_url, r.status)
         except Exception as e:  # noqa: BLE001
-            print(f"[keep-alive] ping failed: {e}", flush=True)
+            log.warning("[keep-alive] ping failed: %s", e)
         time.sleep(interval)
 
 

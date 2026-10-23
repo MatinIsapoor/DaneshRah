@@ -18,7 +18,10 @@
 * 🌙 **Dark mode without a flash** — theme is resolved by an inline `<head>` script before first paint, and it follows the OS preference until you pick a side
 * ⭐ **Favorites** — bookmark countries (localStorage, key `daneshrah-favs`), region filters, animated stats
 * 📱 Fully responsive RTL Persian interface
-* ♿ **Accessibility** — skip link, landmarks, `aria-expanded` accordions, `role=checkbox` checklist, live-region result counts, keyboard shortcuts (`/` to search, `Esc` to close)
+* ♿ **Accessibility** — skip link, landmarks, native `<button>` accordion with `aria-expanded`/`aria-controls`, native checkboxes in the checklist, live-region result counts, keyboard shortcuts (`/` to search, `Esc` to close)
+* 🛡️ **Security headers** — per-request CSP nonce, `Strict-Transport-Security` (HTTPS), `Permissions-Policy`, `X-Frame-Options`, `nosniff`; every URL coming from the data file is scheme-checked
+* 🧪 **Tested** — `unittest` suite (routes, search, XSS, headers, HTML semantics, data validation) plus Node tests for the front-end helpers: `python -m unittest discover -s tests -t .`
+* ✅ **Data validation** — `python guide_validation.py` checks the JSON file (fields, dates, URLs, duplicate titles, malformed Markdown) and fails on errors
 * 💬 **Contact** — Telegram [@caspianix](https://t.me/caspianix), X/Twitter [@persianix](https://x.com/persianix)
 
 ## 🛠️ Tech Stack
@@ -45,26 +48,45 @@ Then open `http://127.0.0.1:5000`.
 
 Health check: `GET /health` (alias `/ping`) → `{"status": "ok", "app": "DaneshRah"}`.
 
+## 🧪 Tests & data validation
+
+The test suite uses only the standard library (no pytest needed) and Node's
+built-in test runner for the front-end helpers:
+
+```bash
+python -m unittest discover -s tests -t . -v   # 72 tests
+node --test tests/js_utils.test.js             # front-end helpers (optional)
+
+python guide_validation.py                     # validate data/guides.json
+python guide_validation.py path/to/other.json  # validate another file
+```
+
+`guide_validation.py` exits with code `1` when the data file has structural
+errors, so it can be used as a pre-commit / CI check.
+
 ## 📁 Project Structure
 
 ```text
 daneshrah/
 ├── app.py                  # DaneshRah Flask app: cached data, ranked search, routes, API
+├── guide_validation.py     # standalone validator for data/guides.json (also a CLI)
 ├── data/guides.json        # ALL content + per-country meta + last_updated (edit only this to add a country)
 ├── templates/
-│   ├── base.html           # shared layout, nav, footer, contact links, inline theme bootstrap
+│   ├── base.html           # shared layout, nav, footer, contact links, inline theme bootstrap (CSP nonce)
 │   ├── index.html          # masthead hero + search + facts strip + country grid + last_updated
 │   ├── country.html        # category cards + essentials + last_updated + related
-│   ├── guide.html          # TOC + accordion (ARIA) + progress + print
+│   ├── guide.html          # TOC + accordion (native button) + progress + print
 │   ├── search.html         # ranked results + matched-in badges + friendly empty state
-│   ├── checklist.html      # interactive arrival checklist (localStorage)
+│   ├── checklist.html      # interactive arrival checklist (native checkboxes + localStorage)
 │   ├── emergency.html      # emergency/essentials table + filter + last check
 │   ├── 404.html
 │   └── 500.html
 ├── static/
 │   ├── style.css           # editorial design system (tokens, light/dark, a11y, print)
-│   └── app.js              # theme, normalized filter, reveal, checklist, favorites, TOC
-├── requirements.txt        # Flask==3.0.3, gunicorn==22.0.0
+│   ├── utils.js            # shared helpers: Persian normalization + clipboard (unit tested)
+│   └── app.js              # theme, filters, reveal, checklist, favorites, TOC, accordion
+├── tests/                  # unittest suite (app, data, HTML semantics) + Node test
+├── requirements.txt        # Flask==3.1.3, gunicorn==22.0.0
 ├── render.yaml             # Render deploy (service: daneshrah, healthCheck: /health)
 └── README.md
 ```
@@ -105,7 +127,7 @@ daneshrah/
     "sources": [
       {
         "title": "DAAD — کار دانشجویی",
-        "url": "https://www.daad.de/en/studying-in-germany/living-in-germany/working-in-germany/",
+        "url": "https://www.daad.de/en/studying-in-germany/work-career/",
         "cat": "work"
       }
     ]
@@ -116,10 +138,11 @@ daneshrah/
 Rules:
 
 * `meta.region` should reuse one of `europe`, `north_america`, `asia`, `oceania` when possible (anything else shows under «سایر» automatically).
-* `last_updated` is Gregorian `YYYY-MM-DD` and renders as e.g. «۱۹ اکتبر ۲۰۲۶».
+* `last_updated` is Gregorian `YYYY-MM-DD` and renders as e.g. «۱۹ اکتبر ۲۰۲۶». **Every entry currently carries the same date (`2026-10-19`)**, so the per-page date shows when the file was last edited, not when each country was individually re-checked — treat it as a file-level stamp.
 * Item `content` supports `[label](https://…)` links — they open in a new tab safely.
 * `sources` is an optional per-country list of `{title, url, cat}` — it renders as «منابع رسمی» on the country page; `cat` is one of `shopping`/`housing`/`admin`/`work`.
 * Categories currently supported: `shopping`, `housing`, `admin`, `work` (labels/icons via `CATEGORY_META` in `app.py`; `general.categories.arrival` powers `/checklist`).
+* Run `python guide_validation.py` after editing: it flags missing fields, unsafe URLs, duplicate item titles, malformed Markdown links and impossible dates.
 
 ## 🔎 How search works
 
@@ -135,16 +158,19 @@ Client-side country/emergency filters use the same normalization, so «سیم‌
 
 ## ⚡ Performance
 
-* `data/guides.json` is read **once** at import (`get_guides()`), kept in RAM, and only re-read when its mtime changes (handy in dev).
+* `data/guides.json` is read **once** at import (`get_guides()`), kept in RAM, and only re-read when its mtime changes (handy in dev). The file is validated when it is loaded; problems are logged.
 * A normalized **search index** is prebuilt once (`get_search_index()`) — per-query work is just scoring, no disk I/O.
-* Security headers (`nosniff`, `DENY` framing) + no `debug=True` in production (`FLASK_DEBUG=1` only for local dev).
+* Security headers on every response: `nosniff`, `DENY` framing, `Referrer-Policy`, `Permissions-Policy`, a per-request `Content-Security-Policy` (nonce for the one inline script) and `Strict-Transport-Security` on HTTPS. No `debug=True` in production (`FLASK_DEBUG=1` only for local dev).
+* Search queries are capped at 200 characters and the API `limit` is clamped to 50.
 
 ## ♿ Accessibility & UX
 
 * Skip-to-content link, `<main id="main">`, labeled landmarks and breadcrumbs.
-* Guide accordion uses `role=button` + `aria-expanded`/`aria-controls`; checklist uses `role=checkbox` + `aria-checked` and a real `role=progressbar`.
-* Filter/result counts use `role="status"` + `aria-live="polite"`; TOC marks current section with `aria-current`.
-* Keyboard: `/` focuses search, `Enter`/`Space` toggles accordion/checklist, `Esc` closes menu, `↑` button scrolls top.
+* Guide accordion: a real `<button>` inside the heading with `aria-expanded`/`aria-controls`, and the body is a `role="region"` labelled by that heading — no nested interactive elements.
+* Checklist: native `<input type="checkbox">` + `<label>` (so the links inside a step stay reachable) and a real `role="progressbar"`.
+* Filter/result counts use `role="status"` + `aria-live="polite"`; TOC marks the current section with `aria-current`.
+* Headings never skip a level, every image has an `alt` attribute, external links carry `rel="noopener"`.
+* Keyboard: `/` focuses search, `Esc` closes the menu, `↑` button scrolls to top.
 * Empty states explain what to try next (shorter word, drop half-space) instead of a dead end.
 
 ## 🚢 Deploy (Render)
@@ -173,6 +199,8 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 * افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه)، `last_updated` (مثل `2026-10-19`) و فهرست اختیاری `sources` (`{title, url, cat}`) دارد که در صفحه‌ی کشور به‌عنوان «منابع رسمی» نمایش داده می‌شود.
 * جست‌وجو نیم‌فاصله و ی/ک را خودش درست می‌کند؛ ترتیب نتایج: تیتر، بعد نام کشور، بعد متن.
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
+* تست‌ها: `python -m unittest discover -s tests -t .` — بررسی مسیرها، جست‌وجو، امنیت، HTML و داده.
+* اعتبارسنجی داده: `python guide_validation.py` — اگر فیلدی کم، لینک ناامن، تاریخ غلط یا لینک مارک‌داون خراب باشد، خطا می‌دهد.
 * ارتباط: تلگرام [@caspianix](https://t.me/caspianix) — توییتر [@persianix](https://x.com/persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
 
 پیشنهادها و مشارکت‌ها خوش‌آمدند! 🙌

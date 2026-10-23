@@ -25,10 +25,10 @@
 
   <div role="group" aria-labelledby="check-heading">
     {% for item in arrival['items'] %}
-    <div class="check-item reveal" data-check-item="step-{{ loop.index }}" role="checkbox" tabindex="0" aria-checked="false" aria-label="قدم {{ loop.index|fa_digits }}: {{ item.title }}">
-      <span class="check-box" aria-hidden="true"></span>
+    <div class="check-item reveal" data-check-item="step-{{ loop.index }}">
+      <input class="check-input" type="checkbox" id="check-step-{{ loop.index }}" data-check-input>
       <div>
-        <h3>{{ loop.index|fa_digits }}. {{ item.title }}</h3>
+        <h2><label for="check-step-{{ loop.index }}">{{ loop.index|fa_digits }}. {{ item.title }}</label></h2>
         <p>{{ item.content | linkify }}</p>
       </div>
     </div>
@@ -36,7 +36,7 @@
   </div>
 
   <div class="celebrate" data-celebrate>
-    <h3 style="margin:6px 0">تمام شد</h3>
+    <h2 style="margin:6px 0">تمام شد</h2>
     <p style="margin:0;opacity:.9">حالا اگر تجربه‌ی دست‌اولی داری، برای نفر بعدی بفرست.</p>
     <div style="margin-top:14px"><a class="btn btn-gold" href="{{ url_for('index') }}">رفتن به کشورها</a></div>
   </div>

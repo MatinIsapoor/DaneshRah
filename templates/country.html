@@ -26,7 +26,7 @@
   </nav>
 
   <div class="page-hero">
-    <span class="eyebrow"><span class="flag-inline"><span class="flag-fb">{{ country.flag }}</span><img src="{{ country.flag|flag_url(40) }}" alt="" onerror="this.remove()"></span> {{ country.name }}{% if meta.region_label %} · {{ meta.region_label }}{% endif %}</span>
+    <span class="eyebrow"><span class="flag-inline"><span class="flag-fb">{{ country.flag }}</span><img src="{{ country.flag|flag_url(40) }}" alt=""></span> {{ country.name }}{% if meta.region_label %} · {{ meta.region_label }}{% endif %}</span>
     <h1>راهنمای زندگی دانشجویی در {{ country.name }}</h1>
     <p>{% if country.blurb %}{{ country.blurb }}{% else %}این صفحه را موضوع‌به‌موضوع جدا کردم که گیج نشوی: اول خرید و زندگی، بعد مسکن، بعد کارهای اداری.{% endif %}</p>
     <div class="meta-row">
@@ -87,7 +87,8 @@
     </div>
     <ul class="source-list">
       {% for s in country.sources %}
-      <li><span class="tag teal">{{ category_meta.get(s.cat, {}).get('label', s.cat) }}</span> <a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.title }}</a></li>
+      {% set source_url = s.url|safe_url %}
+      <li><span class="tag teal">{{ category_meta.get(s.cat, {}).get('label', s.cat) }}</span> {% if source_url %}<a href="{{ source_url }}" target="_blank" rel="noopener">{{ s.title }}</a>{% else %}{{ s.title }}{% endif %}</li>
       {% endfor %}
     </ul>
   </div>
@@ -100,7 +101,7 @@
   <div class="grid-countries">
     {% for code, c in related.items() %}
     <a class="country-card reveal" href="{{ url_for('country_page', country_code=code) }}">
-      <span class="cc-flag" aria-hidden="true"><span class="flag-fb">{{ c.flag }}</span><img src="{{ c.flag|flag_url(80) }}" alt="" loading="lazy" onerror="this.remove()"></span>
+      <span class="cc-flag" aria-hidden="true"><span class="flag-fb">{{ c.flag }}</span><img src="{{ c.flag|flag_url(80) }}" alt="" loading="lazy"></span>
       <div><h3>{{ c.name }}</h3><p class="cc-sub">دیدن راهنمای {{ c.name }}</p></div>
       <span class="cc-arrow" aria-hidden="true">←</span>
     </a>

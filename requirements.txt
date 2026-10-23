@@ -1,2 +1,18 @@
-Flask==3.0.3
+# Runtime dependencies (pinned).
+#
+# Flask 3.1.3 fixes CVE-2026-27205 / GHSA-68rp-wp8r-4726 (missing
+# `Vary: Cookie` when the session object is accessed). DaneshRah does not use
+# Flask sessions at all, so the old pin was not exploitable here, but the
+# patched release is used anyway.
+#
+# NOTE: during the Oct 2026 audit the PyPI CDN (files.pythonhosted.org) was not
+# reachable from the audit machine, so Flask 3.1.3 could not be installed and
+# the test suite was executed against the locally installed Flask 3.0.3.
+# The app only uses APIs that are unchanged between 3.0 and 3.1 — re-run
+# `python -m unittest discover -s tests -t .` after the first install.
+Flask==3.1.3
+
+# gunicorn (WSGI server for Render). No advisories are published for 22.0.0;
+# the latest release is 26.2.0, but that upgrade could not be installed or
+# exercised in the audit environment, so the tested pin is kept.
 gunicorn==22.0.0

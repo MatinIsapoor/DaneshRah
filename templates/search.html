@@ -17,21 +17,24 @@
     <button type="submit">بگرد</button>
   </form>
 
-  <div class="section" aria-live="polite">
+  <div class="section">
     {% if q %}
       <div class="section-head">
         <h2>نتایج «{{ q }}» <span class="count-badge">{{ results|length|fa_digits }} نتیجه</span></h2>
       </div>
+      {% if truncated %}
+      <p class="update-note">عبارت جست‌وجو طولانی بود و به {{ q|length|fa_digits }} نویسه کوتاه شد.</p>
+      {% endif %}
       {% if results %}
-      <div class="search-results" role="list">
+      <div class="search-results">
         {% for r in results %}
-        <a class="result-card reveal" role="listitem" href="{{ url_for('category_page', country_code=r.country_code, category=r.category_code) }}" aria-label="{{ r.item_title }} — {{ r.country_name }}">
-          <h3><span class="flag-inline"><span class="flag-fb">{{ r.flag }}</span><img src="{{ r.flag|flag_url(40) }}" alt="" loading="lazy" onerror="this.remove()"></span> {{ r.item_title }}</h3>
+        <a class="result-card reveal" href="{{ url_for('category_page', country_code=r.country_code, category=r.category_code) }}" aria-label="{{ r.item_title }} — {{ r.country_name }}">
+          <h3><span class="flag-inline"><span class="flag-fb">{{ r.flag }}</span><img src="{{ r.flag|flag_url(40) }}" alt="" loading="lazy"></span> {{ r.item_title }}</h3>
           <div class="r-meta">{{ r.country_name }} · {{ r.category_title }}
             {% if r.matched_in == 'title' %}<span class="match-badge" title="عبارت در تیتر پیدا شد">در تیتر ✓</span>{% elif r.matched_in == 'text' %}<span class="match-badge dim">در متن</span>{% endif %}
             {% if r.last_updated %}<span class="muted"> · {{ r.last_updated|format_updated }}</span>{% endif %}
           </div>
-          <p>…{{ r.snippet }}…</p>
+          <p>{{ r.snippet }}</p>
         </a>
         {% endfor %}
       </div>
