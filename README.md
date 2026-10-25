@@ -4,7 +4,7 @@
 
 🌐 **Live Demo:** [daneshrah.onrender.com](https://daneshrah.onrender.com)
 
-> من متینم؛ دانشجوی ایرانی در پاریس. دانش‌راه را ساختم تا جواب همان سؤال‌های ریزِ هفته‌های اولِ مهاجرت — از ودیعه و سیم‌کارت تا بیمه و اقامت — یک‌جا و همراه با لینک منبع رسمی در دسترس باشد. اطلاعات هر کشور در یک فایل JSON نگهداری می‌شود و هر صفحه تاریخ آخرین بازبینی دارد. اگر جایی اشتباه یا قدیمی بود، از طریق GitHub بگو تا اصلاح شود.
+> من متینم و دانش‌راه را ساختم تا جواب سؤال‌های ریزِ شروع زندگی در کشور جدید — از ودیعه و سیم‌کارت تا بیمه و اقامت — یک‌جا و همراه با لینک منبع رسمی در دسترس باشد. اطلاعات کشورها در فایل JSON نگهداری می‌شود. اگر جایی اشتباه یا قدیمی بود، از طریق GitHub بگو تا اصلاح شود.
 
 ## ✨ Features
 
@@ -28,25 +28,6 @@
 
 * 🐍 Python 3.11+ + 🌐 Flask 3 + 🎨 HTML/CSS/vanilla JS + 📄 JSON
 * No database — all content lives in `data/guides.json` (loaded **once** into memory at startup + prebuilt search index, so requests never touch disk).
-
-## 🚀 Run locally
-
-```bash
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-# source venv/bin/activate
-
-pip install -r requirements.txt
-python app.py
-# production-style (no debug):
-# FLASK_DEBUG=0 python app.py
-```
-
-Then open `http://127.0.0.1:5000`.
-
-Health check: `GET /health` (alias `/ping`) → `{"status": "ok", "app": "DaneshRah"}`.
 
 ## 🧪 Tests & data validation
 
@@ -195,7 +176,6 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 
 **دانش‌راه (DaneshRah)** یک وب‌اپ Flask برای راهنمای زندگی دانشجویی ایرانی‌ها در کشورهای مختلف است: خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول.
 
-* اجرای محلی: دستورات بالا (بعدش `http://127.0.0.1:5000`)
 * افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه)، `last_updated` (مثل `2026-10-19`) و فهرست اختیاری `sources` (`{title, url, cat}`) دارد که در صفحه‌ی کشور به‌عنوان «منابع رسمی» نمایش داده می‌شود.
 * جست‌وجو نیم‌فاصله و ی/ک را خودش درست می‌کند؛ ترتیب نتایج: تیتر، بعد نام کشور، بعد متن.
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
