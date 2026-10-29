@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}خطای {{ error_code_fa }} | {{ error_title }} | دانش‌راه{% endblock %}
+{% block meta_description %}{{ error_title }} — {{ error_message }}{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="error-page">
+  <div class="container container-reading">
+    <p class="error-code" aria-hidden="true">{{ error_code_fa }}</p>
+    <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> خطای {{ error_code_fa }}</p>
+    <h1>{{ error_title }}</h1>
+    <p class="page-lead">{{ error_message }}</p>
+
+    <form class="search-bar search-bar-page" action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماها">
+      <label class="visually-hidden" for="error-search-input">عبارت جست‌وجو</label>
+      <span class="search-bar-icon">{{ icon('search') }}</span>
+      <input id="error-search-input" type="search" name="q" placeholder="نام کشور یا موضوع را جست‌وجو کن…" autocomplete="off" enterkeyhint="search">
+      <button type="submit" class="btn btn-primary">جست‌وجو</button>
+    </form>
+
+    <div class="error-actions">
+      <a class="btn btn-primary" href="{{ url_for('index') }}">{{ icon('home') }} صفحه‌ی اصلی</a>
+      <a class="btn btn-secondary" href="{{ url_for('index') }}#countries">فهرست کشورها</a>
+      <a class="btn btn-secondary" href="{{ url_for('checklist') }}">چک‌لیست ورود</a>
+    </div>
+
+    <p class="error-help">اگر این خطا تکرار شد، از <a href="{{ url_for('about') }}#corrections">مسیر گزارش خطا</a> با کد پیگیری درخواست اطلاع بده.</p>
+  </div>
+</section>
+{% endblock %}

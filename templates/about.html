@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}درباره‌ی دانش‌راه، منابع و روش ویرایش{% endblock %}
+{% block meta_description %}دانش‌راه چیست، برای چه کسی نوشته شده، منابع و تاریخ ویرایش داده‌اش چگونه است، چه محدودیت‌هایی دارد و خطاها چطور اصلاح می‌شوند.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json" nonce="{{ csp_nonce }}">{{ {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "درباره‌ی دانش‌راه",
+  "url": site_url ~ url_for('about'),
+  "inLanguage": "fa-IR",
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "دانش‌راه",
+    "url": site_url ~ "/",
+    "description": "راهنمای مستقل زندگی دانشجویی در خارج از کشور"
+  }
+}|tojson }}</script>
+{% endblock %}
+
+{% block content %}
+<header class="page-hero about-hero">
+  <div class="container container-reading">
+    <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> پروژه، منابع، محدودیت‌ها</p>
+    <h1>درباره‌ی دانش‌راه</h1>
+    <p class="page-lead">دانش‌راه یک راهنمای فارسی و مستقل برای زندگی دانشجویی در خارج از کشور است. هدفش این نیست که جای سفارت، دانشگاه یا مشاور را بگیرد؛ هدفش این است که سؤال‌های ریزِ هفته‌های اول را یک‌جا و با لینک منبع جمع کند.</p>
+    <div class="meta-row">
+      <span class="meta-badge">{{ icon('globe') }} {{ stats.countries|fa_digits }} کشور</span>
+      <span class="meta-badge">{{ icon('book') }} {{ stats['items']|fa_digits }} نکته</span>
+      <span class="meta-badge">{{ icon('shield') }} {{ stats['sources']|fa_digits }} منبع در فهرست‌ها</span>
+      <span class="meta-badge">{{ icon('calendar') }} آخرین ویرایش داده: {{ latest_updated|format_updated }}</span>
+    </div>
+  </div>
+</header>
+
+<div class="container about-layout">
+  <aside class="about-toc" aria-label="فهرست صفحه">
+    <a href="#purpose">هدف و مخاطب</a>
+    <a href="#scope">چه چیزی پوشش داده می‌شود</a>
+    <a href="#sources">منابع و تاریخ داده</a>
+    <a href="#not">چه چیزی نیست</a>
+    <a href="#creator">استقلال و سازنده</a>
+    <a href="#corrections">گزارش خطا</a>
+  </aside>
+
+  <div class="about-content">
+    <section id="purpose" aria-labelledby="purpose-title">
+      <p class="section-kicker">هدف</p>
+      <h2 id="purpose-title">برای روزهای شلوغِ اول</h2>
+      <p>بیشتر اطلاعات مهاجرت و تحصیل پراکنده‌اند: بخشی در سایت سفارت، بخشی در نامه‌ی دانشگاه، بخشی در گروه‌های دانشجویی و بخشی در تجربه‌ی چند نفر. دانش‌راه تلاش می‌کند سؤال‌های عملی را در یک ساختار ثابت جمع کند تا بدانی اول سراغ چه چیزی بروی.</p>
+      <p>مخاطب اصلی، دانشجوی ایرانی‌ای است که تازه به یک کشور رفته یا در حال آماده‌شدن برای رفتن است. زبان راهنما فارسی است و اصطلاح‌های محلی تا حد امکان کنار معادل فارسی آمده‌اند.</p>
+    </section>
+
+    <section id="scope" aria-labelledby="scope-title">
+      <p class="section-kicker">دامنه</p>
+      <h2 id="scope-title">در هر کشور چه چیزی هست</h2>
+      <div class="about-scope-grid">
+        <div class="about-scope-item">
+          <span aria-hidden="true">{{ icon('wallet') }}</span>
+          <h3>خرید و زندگی روزمره</h3>
+          <p>سوپرمارکت، سیم‌کارت، حساب بانکی، حمل‌ونقل و وسایل اولیه.</p>
+        </div>
+        <div class="about-scope-item">
+          <span aria-hidden="true">{{ icon('home') }}</span>
+          <h3>مسکن و اجاره</h3>
+          <p>خوابگاه، قرارداد، ودیعه، هزینه‌های جانبی و ثبت آدرس.</p>
+        </div>
+        <div class="about-scope-item">
+          <span aria-hidden="true">{{ icon('file') }}</span>
+          <h3>اقامت و امور اداری</h3>
+          <p>اقامت، بیمه‌ی سلامت، مالیات و شماره‌های شناسایی.</p>
+        </div>
+        <div class="about-scope-item">
+          <span aria-hidden="true">{{ icon('briefcase') }}</span>
+          <h3>کار دانشجویی</h3>
+          <p>سقف ساعت، حداقل دستمزد، مالیات و سایت‌های کاریابی.</p>
+        </div>
+      </div>
+      <p>علاوه بر این، یک <a href="{{ url_for('checklist') }}">چک‌لیست عمومی روزهای اول</a> و یک <a href="{{ url_for('emergency') }}">فهرست شماره‌های اضطراری</a> وجود دارد. این دو بخش عمومی‌اند و به یک کشور خاص وابسته نیستند.</p>
+    </section>
+
+    <section id="sources" aria-labelledby="sources-title">
+      <p class="section-kicker">داده و شفافیت</p>
+      <h2 id="sources-title">منابع، تاریخ‌ها و محدودیت‌ها</h2>
+      <p>هر کشور یک فهرست منابع بیرونی دارد که در پایین صفحه‌ی کشور نمایش داده می‌شود. در متن بعضی نکته‌ها هم لینک منبع مرتبط آمده است. لینک‌ها به صفحه‌ی رسمی یا نهاد شناخته‌شده اشاره می‌کنند، اما ممکن است صفحه تغییر کند یا فقط بخشی از موضوع را پوشش بدهد.</p>
+
+      <div class="about-callout">
+        <span aria-hidden="true">{{ icon('calendar') }}</span>
+        <div>
+          <h3>تاریخ ویرایش داده یعنی چه؟</h3>
+          <p>تاریخی که در هر صفحه می‌بینی، تاریخ آخرین ویرایش فایل داده است. این تاریخ تضمین نمی‌کند که همه‌ی جزئیات آن کشور در همان روز خط‌به‌خط بازبینی شده‌اند. بیشتر کشورها تاریخ مشترک دارند و کشورهایی که محتوایشان جداگانه بازبینی و اصلاح شده، تاریخ جداگانه دارند.</p>
+        </div>
+      </div>
+
+      <div class="about-callout">
+        <span aria-hidden="true">{{ icon('alert') }}</span>
+        <div>
+          <h3>چیزهایی که خودکار به‌روز نمی‌شوند</h3>
+          <p>قیمت‌ها، حداقل دستمزد، سقف ساعت کار، هزینه‌ی بیمه و قوانین اقامت تغییر می‌کنند. دانش‌راه یک فایل داده‌ی ثابت دارد و به‌صورت خودکار به سایت‌های رسمی وصل نمی‌شود. برای همین، هر عدد یا قانون را به‌عنوان نقطه‌ی شروع ببین، نه پاسخ نهایی.</p>
+        </div>
+      </div>
+
+      <h3>روش بررسی ما</h3>
+      <ul class="about-list">
+        <li>تا حد امکان از صفحه‌ی رسمی کشور، دانشگاه یا نهاد دولتی به‌عنوان منبع استفاده می‌شود.</li>
+        <li>وقتی منبع رسمی در دسترس نبود یا موضوع تجربه‌محور بود، ادعای قطعی ساخته نمی‌شود.</li>
+        <li>لینک‌های شکسته و ارجاع‌های آشکارا نامرتبط باید اصلاح شوند؛ اگر چیزی هنوز بررسی نشده، به‌عنوان بررسی‌شده معرفی نمی‌شود.</li>
+        <li>تاریخ داده فقط وقتی به‌روز می‌شود که محتوای همان کشور واقعاً ویرایش شده باشد.</li>
+      </ul>
+    </section>
+
+    <section id="not" aria-labelledby="not-title">
+      <p class="section-kicker">مرزها</p>
+      <h2 id="not-title">دانش‌راه چه چیزی نیست</h2>
+      <ul class="about-list about-list-warning">
+        <li>مشاوره‌ی حقوقی، مهاجرتی یا مالی نیست.</li>
+        <li>تضمین پذیرش، ویزا، کار یا اقامت نمی‌دهد.</li>
+        <li>جایگزین صفحه‌ی رسمی سفارت، دانشگاه، اداره‌ی مالیات یا بیمه نیست.</li>
+        <li>همه‌ی کشورها، شهرها و رشته‌ها را پوشش نمی‌دهد؛ {{ stats.countries|fa_digits }} کشور و چهار محور انتخاب شده‌اند.</li>
+        <li>قیمت‌ها و تجربه‌ها می‌توانند با شهر، دانشگاه و سال متفاوت باشند.</li>
+      </ul>
+      <p>اگر تصمیم مالی یا قانونی مهمی داری، لینک منبع رسمی را باز کن و در صورت نیاز از دانشگاه یا یک مشاور معتبر بپرس.</p>
+    </section>
+
+    <section id="creator" aria-labelledby="creator-title">
+      <p class="section-kicker">استقلال</p>
+      <h2 id="creator-title">سازنده و استقلال پروژه</h2>
+      <p>دانش‌راه توسط <strong>متین</strong> ساخته و نگهداری می‌شود. این یک پروژه‌ی شخصی و مستقل است و به دانشگاه، سفارت، شرکت مهاجرتی یا نهاد دیگری وابسته نیست. در نسخه‌ی فعلی هیچ حساب کاربری، تبلیغ یا فروش خدمتی در سایت وجود ندارد.</p>
+      <p>کد پروژه در <a href="https://github.com/MatinIsapoor/DaneshRah" target="_blank" rel="noopener noreferrer">GitHub</a> نگهداری می‌شود. برای دیدن تغییرات، گزارش خطا یا پیشنهاد محتوا از همان‌جا اقدام کن.</p>
+      <p class="about-credits">فونت‌های Vazirmatn و Markazi Text با مجوز SIL Open Font License استفاده شده‌اند. پرچم‌ها از سرویس FlagCDN بارگذاری می‌شوند.</p>
+    </section>
+
+    <section id="corrections" aria-labelledby="corrections-title">
+      <p class="section-kicker">اصلاح</p>
+      <h2 id="corrections-title">خطا دیدی؟ بگو</h2>
+      <p>اگر لینکی شکسته است، عددی قدیمی شده یا منبعی به ادعای درست اشاره نمی‌کند، در <a href="https://github.com/MatinIsapoor/DaneshRah/issues" target="_blank" rel="noopener noreferrer">Issues پروژه</a> یک مورد باز کن. اگر می‌توانی، این‌ها را بنویس:</p>
+      <ol class="about-list">
+        <li>نشانی صفحه یا عنوان نکته</li>
+        <li>چیزی که به نظرت درست نیست</li>
+        <li>لینک منبع رسمی که ادعا را تأیید یا رد می‌کند</li>
+      </ol>
+      <p>پیشنهاد محتوا هم خوش‌آمد است، اما هر لینک پیش از استفاده باید بررسی شود.</p>
+      <div class="about-actions">
+        <a class="btn btn-primary" href="https://github.com/MatinIsapoor/DaneshRah/issues" target="_blank" rel="noopener noreferrer">{{ icon('github') }} باز کردن Issues</a>
+        <a class="btn btn-secondary" href="{{ url_for('index') }}#countries">شروع مطالعه {{ icon('arrow-left') }}</a>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

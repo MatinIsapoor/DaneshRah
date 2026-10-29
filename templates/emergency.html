@@ -1,48 +1,97 @@
 {% extends "base.html" %}
-{% block title %}شماره‌های اضطراری و اطلاعات پایه‌ی کشورها | DaneshRah{% endblock %}
+{% from "_icons.html" import icon %}
+{% block title %}شماره‌های اضطراری کشورها | دانش‌راه{% endblock %}
+{% block meta_description %}فهرست شماره‌های اضطراری کشورهای دانش‌راه، همراه با پایتخت، واحد پول، زبان و لینک راهنمای هر کشور. شماره‌ها را پیش از سفر از منبع رسمی بررسی کن.{% endblock %}
 
 {% block content %}
-<div class="container">
-  <nav class="breadcrumb" aria-label="مسیر"><a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">شماره‌های اضطراری</span></nav>
-
-  <div class="page-hero">
-    <span class="eyebrow">DaneshRah · این‌ها را روز اول در گوشی ذخیره کن</span>
+<header class="page-hero emergency-hero">
+  <div class="container">
+    <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> دسترسی سریع</p>
     <h1>شماره‌های اضطراری</h1>
-    <p>در بیشتر کشورها یک شماره‌ی واحد اضطراری وجود دارد: در اروپا <b>۱۱۲</b>، آمریکا و کانادا <b>۹۱۱</b>، استرالیا <b>۰۰۰</b> و انگلیس <b>۹۹۹</b>. شماره‌ی سفارت ایران در کشورت را هم جدا ذخیره کن.</p>
-  </div>
-
-  <div class="toolbar">
-    <div class="filter-search" style="max-width:380px;margin-inline-start:0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input type="search" placeholder="فیلتر: مثلاً آلمان یا ۹۱۱…" data-em-search aria-label="فیلتر جدول شماره‌های اضطراری" autocomplete="off">
+    <p class="page-lead">شماره‌ی عمومی اضطراری هر کشور را یک‌جا ببین. این فهرست جایگزین آموزش‌های ایمنی یا شماره‌ی سفارت نیست؛ پیش از سفر، شماره‌های محلی و سفارت را جداگانه ذخیره کن.</p>
+    <div class="meta-row">
+      <span class="meta-badge">{{ icon('globe') }} {{ rows|length|fa_digits }} کشور</span>
+      <span class="meta-badge">{{ icon('calendar') }} آخرین ویرایش داده: {{ site_last_updated|format_updated }}</span>
     </div>
-    <span class="muted" style="font-size:.82rem" role="status" aria-live="polite" data-em-count>{{ rows|length|fa_digits }} کشور</span>
+  </div>
+</header>
+
+<div class="container emergency-page">
+  <div class="emergency-toolbar">
+    <div class="filter-search">
+      <span class="filter-search-icon">{{ icon('search') }}</span>
+      <label class="visually-hidden" for="emergency-filter">جست‌وجوی کشور، پایتخت یا شماره</label>
+      <input id="emergency-filter" type="search" placeholder="کشور، پایتخت، واحد پول یا شماره…" data-em-search autocomplete="off">
+    </div>
+    <p class="filter-status" role="status" aria-live="polite" data-em-count>{{ rows|length|fa_digits }} کشور نمایش داده می‌شود</p>
   </div>
 
-  <div class="table-wrap reveal">
-    <table>
-      <caption class="visually-hidden">شماره‌های اضطراری و اطلاعات پایه‌ی کشورها در DaneshRah</caption>
-      <thead>
-        <tr><th scope="col">کشور</th><th scope="col">پایتخت</th><th scope="col">اضطراری</th><th scope="col">واحد پول</th><th scope="col">زبان</th><th scope="col">منطقه</th><th scope="col"><span class="visually-hidden">راهنما</span></th></tr>
-      </thead>
-      <tbody>
-        {% for r in rows %}
-        <tr data-em-row data-search="{{ r.name }} {{ r.emergency }} {{ r.capital }} {{ r.currency }} {{ r.language }} {{ r.region }}">
-          <td><b><span class="flag-inline"><span class="flag-fb">{{ r.flag }}</span><img src="{{ r.flag|flag_url(40) }}" alt="" loading="lazy"></span> {{ r.name }}</b>{% if r.last_updated %}<br><small class="muted">{{ r.last_updated|format_updated }}</small>{% endif %}</td>
-          <td>{{ r.capital }}</td>
-          <td><span class="em-num">{{ r.emergency }}</span></td>
-          <td>{{ r.currency }}</td>
-          <td>{{ r.language }}</td>
-          <td class="muted">{{ r.region }}</td>
-          <td><a href="{{ url_for('country_page', country_code=r.code) }}">راهنما ←</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <section aria-labelledby="emergency-table-title">
+    <div class="section-head section-head-inline">
+      <h2 id="emergency-table-title">فهرست کشورها</h2>
+      <a class="text-link" href="{{ url_for('index') }}#countries">راهنمای کامل هر کشور {{ icon('arrow-left') }}</a>
+    </div>
 
-  <div class="tip">
-    <div><b>نکته:</b> این‌ها شماره‌ی پلیس و اورژانس‌اند، نه اطلاعات عمومی. شماره‌ها را از منبع رسمی هر کشور چک کرده‌ایم، اما قبل از سفر یک‌بار خودت هم در سایت رسمی ببین — قانون و شماره‌ها عوض می‌شوند.</div>
-  </div>
+    {% if rows %}
+    <div class="table-wrap" role="region" aria-label="جدول شماره‌های اضطراری" tabindex="0">
+      <table class="emergency-table">
+        <caption class="visually-hidden">شماره‌ی اضطراری، پایتخت، واحد پول، زبان و منطقه‌ی هر کشور</caption>
+        <thead>
+          <tr>
+            <th scope="col">کشور</th>
+            <th scope="col">شماره‌ی اضطراری</th>
+            <th scope="col">پایتخت</th>
+            <th scope="col">واحد پول</th>
+            <th scope="col">زبان</th>
+            <th scope="col">منطقه</th>
+            <th scope="col"><span class="visually-hidden">راهنما</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr data-em-row data-search="{{ row.name }} {{ row.emergency }} {{ row.capital }} {{ row.currency }} {{ row.language }} {{ row.region }}">
+            <td data-label="کشور">
+              <span class="table-country">
+                <span class="cc-flag cc-flag-sm" aria-hidden="true"><span class="flag-fb">{{ row.flag }}</span><img src="{{ row.flag|flag_url(80) }}" alt="" width="32" height="22" loading="lazy"></span>
+                <strong>{{ row.name }}</strong>
+              </span>
+            </td>
+            <td data-label="شماره‌ی اضطراری" class="td-emergency">
+              {% if row.emergency and row.emergency != '—' %}
+              <a href="tel:{{ row.emergency|latin_digits }}" dir="ltr" class="emergency-number">{{ row.emergency|fa_digits }}</a>
+              {% else %}<span class="muted">—</span>{% endif %}
+            </td>
+            <td data-label="پایتخت">{{ row.capital }}</td>
+            <td data-label="واحد پول">{{ row.currency }}</td>
+            <td data-label="زبان">{{ row.language }}</td>
+            <td data-label="منطقه">{{ row.region }}</td>
+            <td data-label="راهنما" class="td-link">
+              <a class="mini-link" href="{{ url_for('country_page', country_code=row.code) }}">راهنمای {{ row.name }} {{ icon('arrow-left') }}</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="empty-state empty-state-compact" data-em-empty hidden>
+      <span class="empty-icon">{{ icon('search') }}</span>
+      <h3>کشوری با این مشخصات پیدا نشد</h3>
+      <p>نام کوتاه‌تر یا نام پایتخت را امتحان کن. همه‌ی کشورها همچنان در جدول هستند.</p>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <h2>فهرست اضطراری در دسترس نیست</h2>
+      <p>داده‌ی این صفحه بارگذاری نشد. از <a href="{{ url_for('index') }}">صفحه‌ی اصلی</a> دوباره تلاش کن.</p>
+    </div>
+    {% endif %}
+
+    <div class="disclaimer-box">
+      <span class="disclaimer-icon" aria-hidden="true">{{ icon('alert') }}</span>
+      <div>
+        <strong>قبل از سفر، شماره‌ها را ذخیره کن</strong>
+        <p>شماره‌ی اضطراری را از سایت رسمی کشور یا سفارت بررسی کن و از قبل در گوشی ذخیره کن. در موقعیت واقعی، اگر به زبان محلی مسلط نیستی، از عبارت کوتاه «English, please» یا اپلیکیشن ترجمه‌ی آفلاین استفاده کن.</p>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}

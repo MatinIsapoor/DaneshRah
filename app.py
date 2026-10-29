@@ -20,8 +20,9 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any, TypedDict
+from xml.sax.saxutils import escape as xml_escape
 
-from flask import Flask, abort, g, jsonify, render_template, request
+from flask import Flask, Response, abort, g, jsonify, render_template, request, url_for
 from markupsafe import Markup, escape
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -34,11 +35,31 @@ log = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 APP_NAME = "DaneshRah"
-APP_TAGLINE_FA = "دانش‌راه — از فرودگاه تا استقرار کامل"
+APP_NAME_FA = "دانش‌راه"
+APP_TAGLINE_FA = "راهنمای مستقل زندگی دانشجویی در خارج از کشور"
 APP_DESCRIPTION_FA = (
     "دانش‌راه (DaneshRah): راهنمای فارسی و کاربردی زندگی دانشجویی در خارج از کشور — "
-    "خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول، کشور به کشور."
+    "خرید، مسکن، امور اداری، کار دانشجویی و چک‌لیست روزهای اول، کشور به کشور."
 )
+
+#: Public origin used in canonical URLs, Open Graph tags, the sitemap and the
+#: robots file. It deliberately does not come from the request Host header,
+#: which a client can spoof. ``PUBLIC_BASE_URL`` can override it on any host.
+_DEFAULT_SITE_URL = "https://daneshrah.onrender.com"
+
+
+def _site_url_from_env() -> str:
+    candidate = (
+        os.environ.get("PUBLIC_BASE_URL")
+        or os.environ.get("RENDER_EXTERNAL_URL")
+        or _DEFAULT_SITE_URL
+    ).strip().rstrip("/")
+    if not re.match(r"^https?://[A-Za-z0-9.-]+(?::\d+)?$", candidate):
+        return _DEFAULT_SITE_URL
+    return candidate
+
+
+SITE_URL = _site_url_from_env()
 
 DATA_PATH = Path(__file__).parent / "data" / "guides.json"
 
@@ -54,11 +75,31 @@ MAX_SEARCH_LIMIT = 50
 MAX_CONTENT_LENGTH = 1 * 1024 * 1024
 
 CATEGORY_META: dict[str, dict[str, str]] = {
-    "shopping": {"icon": "cart", "label": "خرید و زندگی روزمره"},
-    "housing": {"icon": "home", "label": "مسکن و اجاره‌خانه"},
-    "admin": {"icon": "doc", "label": "اقامت، بیمه و امور اداری"},
-    "work": {"icon": "brief", "label": "کار دانشجویی"},
-    "arrival": {"icon": "compass", "label": "قدم‌های اول"},
+    "shopping": {
+        "icon": "cart",
+        "label": "خرید و زندگی روزمره",
+        "desc": "سوپرمارکت، سیم‌کارت، بانک، حمل‌ونقل و وسایل اولیه",
+    },
+    "housing": {
+        "icon": "home",
+        "label": "مسکن و اجاره‌خانه",
+        "desc": "خوابگاه، اجاره، ودیعه، قرارداد و ثبت آدرس",
+    },
+    "admin": {
+        "icon": "doc",
+        "label": "اقامت، بیمه و امور اداری",
+        "desc": "اقامت، بیمه‌ی سلامت، مالیات و شماره‌های شناسایی",
+    },
+    "work": {
+        "icon": "brief",
+        "label": "کار دانشجویی",
+        "desc": "سقف ساعت مجاز، حداقل دستمزد، مالیات و کاریابی",
+    },
+    "arrival": {
+        "icon": "compass",
+        "label": "قدم‌های اول",
+        "desc": "از فرودگاه تا استقرار کامل در روزهای اول",
+    },
 }
 
 # Preferred display order for region pills. Unknown regions are appended after.
@@ -150,6 +191,15 @@ def clean_query(raw: Any) -> str:
 def fa_digits(value: Any) -> str:
     """Convert ASCII digits to Persian digits for display."""
     return str(value).translate(FA_DIGITS)
+
+
+def latin_digits(value: Any) -> str:
+    """Convert Persian/Arabic-Indic digits to ASCII.
+
+    Used for machine-readable values such as ``tel:`` links and form values.
+    """
+    table = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
+    return str(value).translate(table)
 
 
 def format_updated(value: str | None) -> str:
@@ -326,7 +376,25 @@ def get_stats(guides: Guides | None = None) -> dict[str, int]:
         "countries": n_countries,
         "categories": n_categories,
         "items": n_items + general_items,
+        "sources": sum(
+            len(c.get("sources", []) or []) for c in countries.values()
+        ),
     }
+
+
+def get_latest_updated(guides: Guides | None = None) -> str:
+    """Return the newest ``last_updated`` value in the data file.
+
+    This is a *file-level* freshness stamp, not proof that every country was
+    individually re-checked. The UI labels it accordingly.
+    """
+    guides = guides if guides is not None else get_guides()
+    dates = [
+        str(v.get("last_updated", "") or "")
+        for v in guides.values()
+        if isinstance(v, dict)
+    ]
+    return max(dates, default="")
 
 
 # ---------------------------------------------------------------------------
@@ -342,6 +410,7 @@ class SearchDoc(TypedDict):
     category_title: str
     item_title: str
     content: str
+    anchor: str
     norm_title: str
     norm_country: str
     norm_category: str
@@ -378,7 +447,7 @@ def build_search_index(guides: Guides | None = None) -> list[SearchDoc]:
         for cat_code, cat in country.get("categories", {}).items():
             cat_title = str(cat.get("title", ""))
             norm_category = normalize_fa(cat_title)
-            for item in cat.get("items", []):
+            for item_index, item in enumerate(cat.get("items", []), start=1):
                 title = str(item.get("title", ""))
                 content = strip_markdown(str(item.get("content", "")))
                 norm_title = normalize_fa(title)
@@ -392,6 +461,7 @@ def build_search_index(guides: Guides | None = None) -> list[SearchDoc]:
                         "category_title": cat_title,
                         "item_title": title,
                         "content": content,
+                        "anchor": f"item-{item_index}",
                         "norm_title": norm_title,
                         "norm_country": norm_country,
                         "norm_category": norm_category,
@@ -478,12 +548,15 @@ class SearchResult(TypedDict):
     snippet: str
     matched_in: str
     last_updated: str
+    anchor: str
 
 
-def search_guides(
-    query: str | None, guides: Guides | None = None, limit: int = DEFAULT_SEARCH_LIMIT
-) -> list[SearchResult]:
-    """Ranked Persian full-text search.
+def search_guides_with_total(
+    query: str | None,
+    guides: Guides | None = None,
+    limit: int = DEFAULT_SEARCH_LIMIT,
+) -> tuple[list[SearchResult], int]:
+    """Ranked Persian full-text search, returning ``(page, total_matches)``.
 
     - Normalizes ی/ک, half-spaces and digits before comparing.
     - Multi-word queries: every token ideally matches somewhere (AND);
@@ -493,10 +566,10 @@ def search_guides(
     """
     q_norm = normalize_fa(query or "")
     if len(q_norm) < 2:
-        return []
+        return [], 0
     tokens = tokenize_query(q_norm)
     if not tokens:
-        return []
+        return [], 0
     try:
         limit = int(limit)
     except (TypeError, ValueError):
@@ -559,13 +632,14 @@ def search_guides(
         scored.append((score, matched_count, doc, matched_in))
 
     if not scored:
-        return []
+        return [], 0
 
     # Prefer items matching ALL tokens when such results exist.
     full_matches = [s for s in scored if s[1] == len(tokens)]
     pool = full_matches if full_matches else scored
 
     pool.sort(key=lambda s: (-s[0], s[2]["country_name"], s[2]["item_title"]))
+    total = len(pool)
 
     results: list[SearchResult] = []
     for score, _count, doc, matched_in in pool[:limit]:
@@ -580,8 +654,17 @@ def search_guides(
                 "snippet": make_snippet(doc["content"], doc["norm_content"], tokens),
                 "matched_in": matched_in,
                 "last_updated": doc["last_updated"],
+                "anchor": doc["anchor"],
             }
         )
+    return results, total
+
+
+def search_guides(
+    query: str | None, guides: Guides | None = None, limit: int = DEFAULT_SEARCH_LIMIT
+) -> list[SearchResult]:
+    """Backwards-compatible wrapper around :func:`search_guides_with_total`."""
+    results, _total = search_guides_with_total(query, guides=guides, limit=limit)
     return results
 
 
@@ -592,14 +675,50 @@ def search_guides(
 app = Flask(__name__)
 app.config["APP_NAME"] = APP_NAME
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+# The app does not use Flask sessions, but setting safe cookie defaults costs
+# nothing and prevents a future session from becoming insecure by accident.
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("FLASK_DEBUG", "0") != "1",
+)
 # Keep Persian characters readable in the JSON API responses.
 app.json.ensure_ascii = False
+app.json.sort_keys = False
 
 # Render (and any other reverse proxy) terminates TLS and forwards the
 # original scheme in ``X-Forwarded-Proto``; without ProxyFix Flask would
 # believe every request is plain HTTP. The host header is deliberately *not*
 # trusted (no ``x_host``) so that a spoofed Host cannot change generated URLs.
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
+
+def canonical_url(path: str | None = None) -> str:
+    """Absolute canonical URL for the current (or given) same-site path.
+
+    ``SITE_URL`` is configuration, never the request Host header, so a spoofed
+    ``Host`` cannot inject an attacker-controlled canonical link.
+    """
+    target = path if path is not None else (request.path if request else "/")
+    if not target.startswith("/"):
+        target = "/" + target
+    return f"{SITE_URL}{target}"
+
+
+def _safe_site_last_updated() -> str:
+    try:
+        return get_latest_updated()
+    except Exception:  # noqa: BLE001 - the error page must still render
+        log.exception("Could not determine the data-file update date")
+        return ""
+
+
+def _safe_site_stats() -> dict[str, int]:
+    try:
+        return get_stats()
+    except Exception:  # noqa: BLE001 - the error page must still render
+        log.exception("Could not determine site statistics")
+        return {"countries": 0, "categories": 0, "items": 0, "sources": 0}
 
 def flag_code(flag: str | None) -> str:
     """Convert a flag emoji into an ISO-3166 alpha-2 code.
@@ -627,6 +746,7 @@ def flag_url(flag: str | None, size: int = 80) -> str:
 
 app.jinja_env.filters["linkify"] = linkify
 app.jinja_env.filters["fa_digits"] = fa_digits
+app.jinja_env.filters["latin_digits"] = latin_digits
 app.jinja_env.filters["format_updated"] = format_updated
 app.jinja_env.filters["flag_code"] = flag_code
 app.jinja_env.filters["flag_url"] = flag_url
@@ -635,11 +755,22 @@ app.jinja_env.filters["safe_url"] = safe_url
 
 @app.context_processor
 def inject_brand() -> dict[str, Any]:
+    nonce = getattr(g, "csp_nonce", "")
+    if not nonce:
+        nonce = secrets.token_urlsafe(16)
+        g.csp_nonce = nonce
+    stats = _safe_site_stats()
     return {
         "site_name": APP_NAME,
+        "site_name_fa": APP_NAME_FA,
         "site_tagline": APP_TAGLINE_FA,
         "site_description": APP_DESCRIPTION_FA,
-        "csp_nonce": getattr(g, "csp_nonce", "") or secrets.token_urlsafe(16),
+        "site_url": SITE_URL,
+        "canonical_url": canonical_url(request.path),
+        "site_stats": stats,
+        "site_last_updated": _safe_site_last_updated(),
+        "current_year_fa": fa_digits(datetime.now().year),
+        "csp_nonce": nonce,
     }
 
 
@@ -647,7 +778,8 @@ def _content_security_policy(nonce: str) -> str:
     """Build the CSP header.
 
     Scripts are restricted to same-origin files plus the single inline
-    bootstrap script, which carries the per-request nonce.
+    bootstrap script, which carries the per-request nonce. All styles now live
+    in the stylesheet, so ``unsafe-inline`` is not needed for styles.
     """
     return "; ".join(
         [
@@ -655,21 +787,28 @@ def _content_security_policy(nonce: str) -> str:
             "base-uri 'self'",
             "object-src 'none'",
             "frame-ancestors 'none'",
+            "frame-src 'none'",
             "form-action 'self'",
             "img-src 'self' data: https://flagcdn.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "style-src 'self' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com",
             f"script-src 'self' 'nonce-{nonce}'",
             "connect-src 'self'",
             "manifest-src 'self'",
+            "worker-src 'none'",
+            "media-src 'none'",
         ]
     )
 
 
 @app.before_request
-def assign_csp_nonce() -> None:
-    """Give every request its own CSP nonce."""
+def assign_request_context() -> None:
+    """Give every request its own CSP nonce and a lightweight request id."""
     g.csp_nonce = secrets.token_urlsafe(16)
+    incoming = (request.headers.get("X-Request-ID") or "").strip()
+    if not re.match(r"^[A-Za-z0-9._-]{8,64}$", incoming):
+        incoming = secrets.token_hex(8)
+    g.request_id = incoming
 
 
 @app.after_request
@@ -679,7 +818,14 @@ def add_security_headers(response):  # type: ignore[no-untyped-def]
     response.headers.setdefault("X-Frame-Options", "DENY")
     response.headers.setdefault(
         "Permissions-Policy",
-        "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
+        "camera=(), geolocation=(), microphone=(), payment=(), usb=(), "
+        "magnetometer=(), gyroscope=(), accelerometer=()",
+    )
+    response.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
+    response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+    response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
+    response.headers.setdefault(
+        "X-Request-ID", getattr(g, "request_id", secrets.token_hex(8))
     )
     nonce = getattr(g, "csp_nonce", None) or secrets.token_urlsafe(16)
     response.headers.setdefault(
@@ -689,8 +835,19 @@ def add_security_headers(response):  # type: ignore[no-untyped-def]
         response.headers.setdefault(
             "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
         )
-    if request.path in ("/health", "/ping"):
+    path = request.path
+    if path in ("/health", "/ping"):
         response.headers.setdefault("Cache-Control", "no-store")
+    elif path.startswith("/api/search"):
+        response.headers.setdefault("Cache-Control", "no-store")
+    elif path in ("/api/countries", "/sitemap.xml", "/robots.txt"):
+        response.headers.setdefault("Cache-Control", "public, max-age=300")
+    if path in ("/health", "/ping") or path.startswith("/api/"):
+        response.headers.setdefault("X-Robots-Tag", "noindex")
+    elif path == "/search" or path.startswith("/country/general"):
+        # Search result pages and the generic checklist text are duplicates
+        # that should not compete with the canonical country guides in search.
+        response.headers.setdefault("X-Robots-Tag", "noindex, follow")
     return response
 
 
@@ -702,7 +859,22 @@ def add_security_headers(response):  # type: ignore[no-untyped-def]
 @app.route("/health")
 @app.route("/ping")
 def health():  # type: ignore[no-untyped-def]
-    return jsonify(status="ok", app=APP_NAME), 200
+    """Liveness + data-load check used by Render and the keep-alive pinger."""
+    try:
+        guides = get_guides()
+        stats = get_stats(guides)
+    except Exception:  # noqa: BLE001 - a broken data file should be visible
+        log.exception("Health check failed: guides data could not be loaded")
+        return jsonify(status="degraded", app=APP_NAME), 503
+    return (
+        jsonify(
+            status="ok",
+            app=APP_NAME,
+            countries=stats["countries"],
+            guides=stats["items"],
+        ),
+        200,
+    )
 
 
 @app.route("/")
@@ -723,9 +895,7 @@ def index():  # type: ignore[no-untyped-def]
             "meta": get_country_meta(country),
             "n_items": n_items,
         }
-    latest_updated = max(
-        (c.get("last_updated") or "" for c in countries.values()), default=""
-    )
+    latest_updated = get_latest_updated(guides)
     return render_template(
         "index.html",
         countries=enriched,
@@ -753,14 +923,40 @@ def country_page(country_code: str):  # type: ignore[no-untyped-def]
             if code in ("general", country_code):
                 continue
             if get_country_meta(candidate).get("region") == region:
-                related[code] = candidate
+                related[code] = {**candidate, "meta": get_country_meta(candidate)}
                 if len(related) >= 3:
                     break
+    categories = country.get("categories", {}) or {}
+    ordered_codes = [
+        code for code in ("shopping", "housing", "admin", "work") if code in categories
+    ] + [code for code in categories if code not in ("shopping", "housing", "admin", "work")]
+    category_cards = []
+    for code in ordered_codes:
+        category = categories.get(code, {}) or {}
+        info = CATEGORY_META.get(code, {})
+        category_cards.append(
+            {
+                "code": code,
+                "title": category.get("title") or info.get("label") or code,
+                "label": info.get("label") or category.get("title") or code,
+                "desc": info.get("desc") or "",
+                "icon": info.get("icon") or "book",
+                "items": len(category.get("items", []) or []),
+                "sources": len(
+                    [
+                        source
+                        for source in (country.get("sources", []) or [])
+                        if isinstance(source, dict) and source.get("cat") == code
+                    ]
+                ),
+            }
+        )
     return render_template(
         "country.html",
         country=country,
         country_code=country_code,
         category_meta=CATEGORY_META,
+        category_cards=category_cards,
         meta=meta,
         n_items=n_items,
         related=related,
@@ -778,8 +974,19 @@ def category_page(country_code: str, category: str):  # type: ignore[no-untyped-
         abort(404)
     meta = get_country_meta(country)
     cat_meta = CATEGORY_META.get(
-        category, {"icon": "book", "label": cat_data.get("title", "")}
+        category, {"icon": "book", "label": cat_data.get("title", ""), "desc": ""}
     )
+    sources = country.get("sources", []) or []
+    category_sources = [
+        source
+        for source in sources
+        if isinstance(source, dict) and source.get("cat") == category
+    ]
+    reading_words = 0
+    for item in cat_data.get("items", []) or []:
+        reading_words += len(str(item.get("title", "")).split())
+        reading_words += len(str(item.get("content", "")).split())
+    read_minutes = max(1, round(reading_words / 180)) if reading_words else 1
     return render_template(
         "guide.html",
         country=country,
@@ -788,6 +995,8 @@ def category_page(country_code: str, category: str):  # type: ignore[no-untyped-
         category_code=category,
         cat_meta=cat_meta,
         meta=meta,
+        category_sources=category_sources,
+        read_minutes=read_minutes,
     )
 
 
@@ -795,7 +1004,9 @@ def category_page(country_code: str, category: str):  # type: ignore[no-untyped-
 def search_page():  # type: ignore[no-untyped-def]
     raw = request.args.get("q", "") or ""
     q = clean_query(raw)
-    results = search_guides(q) if q else []
+    results, total_matches = (
+        search_guides_with_total(q) if q else ([], 0)
+    )
     guides = get_guides()
     total = len([k for k in guides if k != "general"])
     return render_template(
@@ -803,7 +1014,9 @@ def search_page():  # type: ignore[no-untyped-def]
         q=q,
         results=results,
         total=total,
+        total_matches=total_matches,
         truncated=len(raw.strip()) > MAX_QUERY_LENGTH,
+        max_query_length=MAX_QUERY_LENGTH,
     )
 
 
@@ -816,11 +1029,15 @@ def api_search():  # type: ignore[no-untyped-def]
     except (TypeError, ValueError):
         limit = DEFAULT_SEARCH_LIMIT
     limit = max(1, min(limit, MAX_SEARCH_LIMIT))
+    results, total_matches = (
+        search_guides_with_total(q, limit=limit) if q else ([], 0)
+    )
     return jsonify(
         query=q,
         truncated=len(raw.strip()) > MAX_QUERY_LENGTH,
         limit=limit,
-        results=search_guides(q, limit=limit) if q else [],
+        total=total_matches,
+        results=results,
     )
 
 
@@ -884,15 +1101,127 @@ def emergency():  # type: ignore[no-untyped-def]
     return render_template("emergency.html", rows=rows)
 
 
+@app.route("/about")
+def about():  # type: ignore[no-untyped-def]
+    guides = get_guides()
+    return render_template(
+        "about.html",
+        stats=get_stats(guides),
+        latest_updated=get_latest_updated(guides),
+    )
+
+
+@app.route("/robots.txt")
+def robots_txt():  # type: ignore[no-untyped-def]
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /api/",
+        "Disallow: /health",
+        "Disallow: /ping",
+        "Disallow: /search",
+        f"Sitemap: {SITE_URL}/sitemap.xml",
+        "",
+    ]
+    return Response("\n".join(lines), mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():  # type: ignore[no-untyped-def]
+    guides = get_guides()
+    file_updated = get_latest_updated(guides)
+    entries: list[tuple[str, str]] = [
+        ("/", file_updated),
+        ("/checklist", file_updated),
+        ("/emergency", file_updated),
+        ("/about", file_updated),
+    ]
+    for code, country in guides.items():
+        if code == "general":
+            continue
+        updated = str(country.get("last_updated", "") or file_updated)
+        entries.append((f"/country/{code}", updated))
+        for category in country.get("categories", {}):
+            entries.append((f"/country/{code}/{category}", updated))
+    parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for path, lastmod in entries:
+        loc = xml_escape(f"{SITE_URL}{path}")
+        parts.append("<url>")
+        parts.append(f"<loc>{loc}</loc>")
+        if lastmod:
+            parts.append(f"<lastmod>{xml_escape(lastmod)}</lastmod>")
+        parts.append("</url>")
+    parts.append("</urlset>")
+    return Response("\n".join(parts), mimetype="application/xml")
+
+
+def _render_error(code: int, title: str, message: str):  # type: ignore[no-untyped-def]
+    response = app.make_response(
+        render_template(
+            "error.html",
+            error_code=code,
+            error_code_fa=fa_digits(code),
+            error_title=title,
+            error_message=message,
+        )
+    )
+    response.status_code = code
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Robots-Tag"] = "noindex"
+    return response
+
+
+@app.errorhandler(400)
+def bad_request(error):  # type: ignore[no-untyped-def]
+    return _render_error(
+        400,
+        "درخواست معتبر نیست",
+        "نشانی درخواست کامل یا معتبر نبود. به صفحه‌ی اصلی برگرد و دوباره امتحان کن.",
+    )
+
+
 @app.errorhandler(404)
 def not_found(error):  # type: ignore[no-untyped-def]
-    return render_template("404.html"), 404
+    return _render_error(
+        404,
+        "این صفحه پیدا نشد",
+        "یا نشانی را اشتباه زده‌ای، یا صفحه جابه‌جا شده است. از همین‌جا می‌توانی راه را پیدا کنی.",
+    )
+
+
+@app.errorhandler(405)
+def method_not_allowed(error):  # type: ignore[no-untyped-def]
+    return _render_error(
+        405,
+        "این روش پشتیبانی نمی‌شود",
+        "این نشانی فقط برای خواندن صفحه است. از دکمه‌ها و فرم‌های خود سایت استفاده کن.",
+    )
+
+
+@app.errorhandler(413)
+def request_too_large(error):  # type: ignore[no-untyped-def]
+    return _render_error(
+        413,
+        "درخواست بیش از حد بزرگ است",
+        "حجم درخواست از محدودیت مجاز بیشتر بود. محتوای کمتری بفرست و دوباره امتحان کن.",
+    )
 
 
 @app.errorhandler(500)
 def internal_error(error):  # type: ignore[no-untyped-def]
-    log.error("Unhandled error while serving a request", exc_info=error)
-    return render_template("500.html"), 500
+    log.error(
+        "Unhandled error while serving request %s",
+        getattr(g, "request_id", "-"),
+        exc_info=True,
+    )
+    return _render_error(
+        500,
+        "یک خطای غیرمنتظره رخ داد",
+        "خطا ثبت شد. یک‌بار صفحه را تازه کن؛ اگر درست نشد، کمی بعد دوباره سر بزن.",
+    )
 
 
 # --- Keep-alive for Render free tier ---------------------------------------

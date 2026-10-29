@@ -52,13 +52,21 @@ class ValidatorTests(unittest.TestCase):
         errors = [i for i in issues if i.severity == "error"]
         self.assertEqual(errors, [], "\n".join(str(e) for e in errors))
 
-    def test_shipped_data_warns_about_the_shared_date(self) -> None:
+    def test_shipped_data_does_not_claim_a_single_shared_date(self) -> None:
         issues = validate_guides(GUIDES)
         warnings = [i for i in issues if i.severity == "warning"]
-        self.assertTrue(
-            any("last_updated" in w.message for w in warnings),
-            "the shared last_updated value must be reported",
+        self.assertFalse(
+            any("share last_updated" in w.message for w in warnings),
+            "reviewed countries must be allowed to carry a distinct date",
         )
+        dates = {
+            country["last_updated"]
+            for code, country in GUIDES.items()
+            if code != "general"
+        }
+        self.assertGreater(len(dates), 1)
+        self.assertEqual(GUIDES["france"]["last_updated"], "2026-10-23")
+        self.assertEqual(GUIDES["australia"]["last_updated"], "2026-10-23")
 
     def test_minimal_country_is_valid(self) -> None:
         issues = validate_guides(minimal_country())
@@ -191,10 +199,21 @@ class ShippedDataTests(unittest.TestCase):
 
 
 class FranceContentTests(unittest.TestCase):
-    """Regression tests for the July 2026 corrections (APL, student work, SMIC)."""
+    """Regression tests for the 2026 corrections (APL, CROUS, student work, SMIC)."""
 
     def _france(self) -> dict:
         return GUIDES["france"]
+
+    def test_crous_meal_item_uses_the_1_euro_rule_and_official_page(self) -> None:
+        item = self._france()["categories"]["shopping"]["items"][3]
+        content = item["content"]
+        self.assertIn("۴ مه ۲۰۲۶", content)
+        self.assertIn("Izly", content)
+        self.assertIn(
+            "etudiant.gouv.fr/fr/comment-beneficier-du-repas-crous-1-eu-3123",
+            content,
+        )
+        self.assertNotIn("نرخ‌ها و شرایط هر سال عوض می‌شود", content)
 
     def test_apl_item_reflects_the_1_july_2026_rule(self) -> None:
         item = self._france()["categories"]["housing"]["items"][3]
@@ -221,6 +240,59 @@ class FranceContentTests(unittest.TestCase):
         for source in self._france()["sources"]:
             with self.subTest(title=source.get("title")):
                 self.assertNotIn("www.service-public.fr", source["url"])
+
+    def test_crous_source_uses_the_direct_meal_page(self) -> None:
+        urls = {source["url"] for source in self._france()["sources"]}
+        self.assertIn(
+            "https://www.etudiant.gouv.fr/fr/comment-beneficier-du-repas-crous-1-eu-3123",
+            urls,
+        )
+
+
+class AustraliaContentTests(unittest.TestCase):
+    def _australia(self) -> dict:
+        return GUIDES["australia"]
+
+    def test_minimum_wage_is_current(self) -> None:
+        content = self._australia()["categories"]["work"]["items"][1]["content"]
+        self.assertIn("۲۶٫۴۴", content)
+        self.assertIn("۱ ژوئیه ۲۰۲۶", content)
+        self.assertIn("fairwork.gov.au", content)
+
+    def test_student_work_cap_links_home_affairs_not_minimum_wage(self) -> None:
+        content = self._australia()["categories"]["work"]["items"][0]["content"]
+        self.assertIn("۴۸", content)
+        self.assertIn("immi.homeaffairs.gov.au", content)
+        self.assertNotIn("minimum-wages", content)
+
+    def test_housing_links_the_tenant_rights_page(self) -> None:
+        items = self._australia()["categories"]["housing"]["items"]
+        combined = "\n".join(item["content"] for item in items)
+        self.assertIn("studyaustralia.gov.au", combined)
+        self.assertNotIn("minimum-wages", combined)
+        self.assertIn("Condition Report", combined)
+
+
+class CitationIntegrityTests(unittest.TestCase):
+    """Guards against known copy-paste citation mistakes found in the audit."""
+
+    def test_unrelated_citations_are_not_reintroduced(self) -> None:
+        bad = [
+            ("australia", "housing", "minimum-wages"),
+            ("turkey", "housing", "btk.gov.tr"),
+            ("turkey", "work", "btk.gov.tr"),
+            ("usa", "housing", "studyinthestates.dhs.gov"),
+            ("canada", "shopping", "study-canada/work.html"),
+            ("france", "housing", "crous-paris.fr"),
+            ("egypt", "housing", "tra.gov.eg"),
+            ("india", "housing", "indianfrro.gov.in"),
+            ("new_zealand", "shopping", "immigration.govt.nz"),
+        ]
+        for code, category, fragment in bad:
+            items = GUIDES[code]["categories"][category]["items"]
+            for item in items:
+                with self.subTest(code=code, category=category, title=item["title"]):
+                    self.assertNotIn(fragment, item["content"])
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -1,180 +1,229 @@
-# 🎓 DaneshRah | دانش‌راه
+# DaneshRah | دانش‌راه
 
-**DaneshRah** helps Iranian students with the small-but-critical questions nobody tells you before moving abroad — country-by-country guides for shopping, housing, admin, student jobs, plus an interactive arrival checklist.
+DaneshRah is an independent, Persian-language guide for the practical parts of student life abroad: SIM cards, banking, deposits, housing, residence paperwork, health insurance, student work, and the first days after arrival.
 
-🌐 **Live Demo:** [daneshrah.onrender.com](https://daneshrah.onrender.com)
+The site contains **42 country guides plus one general arrival guide**, **746 guide items**, and **148 listed sources**. It is a Flask app with a JSON content file and a small vanilla-JavaScript front end.
 
 > من متینم و دانش‌راه را ساختم تا جواب سؤال‌های ریزِ شروع زندگی در کشور جدید — از ودیعه و سیم‌کارت تا بیمه و اقامت — یک‌جا و همراه با لینک منبع رسمی در دسترس باشد. اطلاعات کشورها در فایل JSON نگهداری می‌شود. اگر جایی اشتباه یا قدیمی بود، از طریق GitHub بگو تا اصلاح شود.
+> **Deployment status (2026-10-30):** the configured public URL, `https://daneshrah.onrender.com`, returned **HTTP 503 — “Service Suspended”** during this audit. The code is tested locally, but the live deployment was not available and production startup was not verified. See [Deployment](#deployment).
 
-## ✨ Features
+## What is included
 
-* 🌍 **42 country guides** — Germany, Canada, USA, Turkey, UK, Italy, Netherlands, Australia, Malaysia, France, Austria, China, Russia, UAE, Spain, Sweden, Armenia, Hungary, Poland, Cyprus, Georgia, South Korea, Japan, Finland, Ireland, Norway, Denmark, Belgium, Switzerland, Portugal, Czechia, Azerbaijan, Qatar, Kuwait, Oman, Uzbekistan, India, Singapore, New Zealand, Saudi Arabia, Jordan, Egypt
-* 🔎 **Smart Persian search** — normalization (ی/ک عربی، نیم‌فاصله، اعداد فارسی), multi-word queries, ranked results (title > country name > category > content), clean snippets (`/search` + live API `/api/search?limit=30`)
-* 🕓 **`last_updated` per country** — every guide shows «به‌روز شده: …» so you know how fresh it is
-* 🧭 **First-days arrival checklist** — interactive, saved in your browser (`/checklist`, with progressbar + ARIA)
-* 🚨 **Emergency & essentials table** — capitals, currencies, languages, emergency numbers, region, last check (`/emergency`)
-* 📚 4 categorized guides per country (shopping / housing / admin & residence / student jobs) with links to official sources
-* 🖋️ **Editorial, hand-crafted UI** — warm paper/ink palette, one terracotta accent, hairline rules, Markazi Text headlines over Vazirmatn body, no gradients or stock hero art
-* 🌙 **Dark mode without a flash** — theme is resolved by an inline `<head>` script before first paint, and it follows the OS preference until you pick a side
-* ⭐ **Favorites** — bookmark countries (localStorage, key `daneshrah-favs`), region filters, animated stats
-* 📱 Fully responsive RTL Persian interface
-* ♿ **Accessibility** — skip link, landmarks, native `<button>` accordion with `aria-expanded`/`aria-controls`, native checkboxes in the checklist, live-region result counts, keyboard shortcuts (`/` to search, `Esc` to close)
-* 🛡️ **Security headers** — per-request CSP nonce, `Strict-Transport-Security` (HTTPS), `Permissions-Policy`, `X-Frame-Options`, `nosniff`; every URL coming from the data file is scheme-checked
-* 🧪 **Tested** — `unittest` suite (routes, search, XSS, headers, HTML semantics, data validation) plus Node tests for the front-end helpers: `python -m unittest discover -s tests -t .`
-* ✅ **Data validation** — `python guide_validation.py` checks the JSON file (fields, dates, URLs, duplicate titles, malformed Markdown) and fails on errors
-* 💬 **Contact** — Telegram [@caspianix](https://t.me/caspianix), X/Twitter [@persianix](https://x.com/persianix)
+- Country discovery by region, with search and a “favorites” filter.
+- Country pages with essentials, category counts, official-source lists, related countries, and honest data-freshness labels.
+- Guide pages with a table of contents, expandable items, deep links (`#item-N`), copy buttons, reading progress, and print styles.
+- Persian search with normalization for Arabic/Persian variants, half-spaces, and digits; results link directly to the matching guide item.
+- An 11-step interactive arrival checklist stored in `localStorage`, with progress and reset.
+- An emergency/essentials directory for all 42 countries with client-side filtering.
+- Light and dark themes, reduced-motion support, keyboard navigation, skip link, visible focus states, and mobile layouts tested down to 320 px.
+- An About page covering the project, data policy, limitations, and a single creator credit.
 
-## 🛠️ Tech Stack
+## Stack
 
-* 🐍 Python 3.11+ + 🌐 Flask 3 + 🎨 HTML/CSS/vanilla JS + 📄 JSON
-* No database — all content lives in `data/guides.json` (loaded **once** into memory at startup + prebuilt search index, so requests never touch disk).
+| Layer | Choice |
+| --- | --- |
+| Server | Python, Flask 3.1.3 |
+| Content | `data/guides.json` (no database) |
+| Front end | Server-rendered Jinja templates, vanilla JavaScript, CSS design system |
+| Typography | Vazirmatn for body text, Markazi Text for display headings (Google Fonts) |
+| Flags | FlagCDN images with a text/emoji fallback |
+| Production server | Gunicorn 26.2.0 (Unix-only), configured for Render |
+| Tests | Standard-library `unittest`, Node’s built-in test runner, `guide_validation.py` |
 
-## 🧪 Tests & data validation
+## Run locally
 
-The test suite uses only the standard library (no pytest needed) and Node's
-built-in test runner for the front-end helpers:
+Recommended: Python 3.11 or newer (Render is configured for Python 3.11.9). The audit machine used Python 3.14.7.
 
-```bash
-python -m unittest discover -s tests -t . -v   # 72 tests
-node --test tests/js_utils.test.js             # front-end helpers (optional)
-
-python guide_validation.py                     # validate data/guides.json
-python guide_validation.py path/to/other.json  # validate another file
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python app.py
 ```
 
-`guide_validation.py` exits with code `1` when the data file has structural
-errors, so it can be used as a pre-commit / CI check.
+Then open `http://127.0.0.1:5000`. On macOS/Linux, activate with `source .venv/bin/activate`.
 
-## 📁 Project Structure
+`python app.py` starts Flask’s development server only. It is not the production command.
+
+## Tests and validation
+
+Run these from the project root:
+
+```powershell
+python -m unittest discover -s tests -t .
+node --test tests/js_utils.test.js
+python guide_validation.py
+```
+
+Final local results on 2026-10-30:
+
+| Command | Result |
+| --- | --- |
+| `python -m unittest discover -s tests -t .` | **95 tests, OK** with the system Flask 3.0.3 |
+| Same command in a clean venv with **Flask 3.1.3** | **95 tests, OK** |
+| `node --test tests/js_utils.test.js` | **7 passed, 0 failed** |
+| `python guide_validation.py` | **0 errors, 0 warnings** |
+
+The Python suite covers routes, status codes, security headers/CSP, canonical and robots metadata, search behavior, API limits, data invariants, and selected HTML/accessibility regressions. The Node suite covers the shared Persian-normalization and clipboard helpers.
+
+Browser checks were also run against the local server with headless Chrome 155.0.8059.85:
+
+- Desktop and mobile layouts at 320, 360, 390, 768, 1024, 1280, and 1440 px.
+- Mobile navigation and search panel.
+- Country filtering, search anchors, guide accordion/deep links/copy, checklist persistence/reset, emergency filtering, theme persistence, and CSP console errors.
+- An axe-core 4.10.2 scan reported **0 violations** across ten page/viewport checks, including mobile, desktop, and dark-theme pages. A few “incomplete” results remained because axe could not determine contrast/overlap around pseudo-elements; those were not confirmed failures.
+
+These are automated and headless-browser checks, not a substitute for a manual WCAG audit, screen-reader testing, or real-device testing.
+
+## Data model and freshness
+
+`data/guides.json` is the single source of truth. Each country entry contains:
+
+- `name`, `flag`, `blurb`, `meta` (capital, currency, language, emergency number, region), and `last_updated`.
+- `categories` for `shopping`, `housing`, `admin`, and `work`; each category has a title and a list of items.
+- An optional `sources` list of `{title, url, cat}` entries.
+
+The `general` entry supplies the `arrival` checklist; it is not a country and has no sources of its own.
+
+`last_updated` is a **file-level edit stamp**, not proof that every fact on that country page was rechecked that day. The UI labels it «آخرین ویرایش داده» and the About/guide pages explain the limitation.
+
+Current status:
+
+- **France** and **Australia** are stamped `2026-10-23` after targeted review.
+- The other **41 entries** (40 countries plus `general`) share `2026-10-19`; they were **not** individually line-by-line fact-checked in this audit.
+- A cleanup removed unsupported or misattributed inline citations; no replacement URLs were invented. The remaining source list is the place to start checking a claim.
+
+Targeted checks completed during the audit:
+
+| Topic | Checked fact | Official source |
+| --- | --- | --- |
+| Australia minimum wage | A$26.44 per hour from 1 July 2026 | [Fair Work Ombudsman](https://www.fairwork.gov.au/pay-and-wages/minimum-wages) |
+| Australia student work limit | 48 hours per fortnight during the term | [Home Affairs — Student visa 500](https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500) |
+| France CROUS meal | €1 meal from 4 May 2026 for eligible students with an active Izly account | [etudiant.gouv.fr](https://www.etudiant.gouv.fr/fr/comment-beneficier-du-repas-crous-1-eu-3123) |
+| France APL | Eligibility rules changed from 1 July 2026; check before signing a lease | [Service-Public — APL](https://www.service-public.gouv.fr/particuliers/vosdroits/F1563) |
+| France SMIC | €12.31 gross per hour from 1 June 2026 | [Service-Public — SMIC](https://www.service-public.gouv.fr/particuliers/vosdroits/F2300) |
+
+Rates, eligibility rules, and visa conditions change. The inline official links in each guide are the primary source trail; this README is not legal, financial, or immigration advice.
+
+After editing the data file, run:
+
+```powershell
+python guide_validation.py
+```
+
+The validator checks required fields, unsafe URLs, duplicate item titles, malformed Markdown links, and impossible dates. It exits with code 1 when structural errors are present, so it can be used in CI.
+
+## Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Homepage and country discovery |
+| `/country/<code>` | Country overview |
+| `/country/<code>/<category>` | Category guide with item anchors |
+| `/search?q=...` | Ranked Persian search |
+| `/checklist` | Interactive arrival checklist |
+| `/emergency` | Emergency and essentials table |
+| `/about` | Project background, data policy, limitations, creator credit |
+| `/api/countries` | Country metadata JSON |
+| `/api/search?q=...&limit=...` | Search JSON; query capped at 200 characters, limit at 50 |
+| `/health`, `/ping` | Liveness/data check for Render and the keep-alive pinger |
+| `/robots.txt`, `/sitemap.xml` | Crawler policy and sitemap |
+
+`/search` and `/country/general*` return `X-Robots-Tag: noindex, follow` and matching meta robots tags. `/search` is deliberately excluded from the sitemap. The generic arrival text is available for the checklist, but should not compete with country guides in search results.
+
+## Search
+
+`normalize_fa()` unifies Persian/Arabic characters, half-spaces, zero-width characters, tashkeel, tatweel, and Persian/Arabic digits before scoring. Ranking favors title matches, then country name, category, and content, with exact-phrase and all-token bonuses. Multi-word queries prefer items matching all tokens and fall back to partial matches.
+
+The search index is built once in memory from the validated JSON file. Search results deep-link to `/country/<code>/<category>#item-N`; the target item is opened and highlighted by the front end.
+
+## Design and accessibility
+
+The visual system uses a warm paper background, deep ink/teal, brick and gold accents, fine rules, flat surfaces, and restrained motion. Vazirmatn and Markazi Text provide Persian body and display typography. Components share tokens for spacing, color, focus, borders, and states.
+
+The redesign includes:
+
+- Reusable page, card, button, pill, form, callout, table, and navigation patterns.
+- Responsive country grid, mobile menu, mobile search panel, and 320 px-safe filter controls.
+- Light/dark themes with a no-flash inline bootstrap; the chosen theme persists.
+- `prefers-reduced-motion` handling and print styles for guide pages.
+- Skip link, one `main` landmark, labeled navigation and forms, visible labels for checklist inputs, `aria-current` for active navigation, `aria-live` status messages, and keyboard-operable accordions.
+- Callouts use non-landmark containers where a nested `aside` would be invalid, and templates contain no inline `style` attributes. The only runtime inline style is the reading-progress width written by JavaScript; it does not require `style-src 'unsafe-inline'`.
+
+The automated axe scan is evidence of baseline hygiene, not a claim of full WCAG 2.2 AA conformance. A manual audit and assistive-technology testing are still recommended.
+
+## Security and SEO
+
+- Per-request CSP nonce for the single inline theme bootstrap; scripts are same-origin plus the nonce.
+- `style-src 'self' https://fonts.googleapis.com`; no `unsafe-inline` for styles.
+- Security headers include `nosniff`, frame denial, `Referrer-Policy`, `Permissions-Policy`, CORP/COOP, and HSTS on HTTPS only.
+- Canonical URLs, Open Graph/Twitter tags, JSON-LD, `/robots.txt`, and `/sitemap.xml`.
+- Canonical origins come from `PUBLIC_BASE_URL`, then `RENDER_EXTERNAL_URL`, then the configured default. The request `Host` header is never trusted for canonical URLs.
+- Search input is truncated to 200 characters; API limits are clamped; request bodies are capped at 1 MiB; errors return a styled generic page with the correct status code.
+- Request IDs are accepted only when they match a safe pattern, otherwise generated server-side.
+- The app has no accounts, sessions, or user-submitted persistence. Theme, checklist, and favorites live in browser `localStorage`.
+
+## Deployment
+
+`render.yaml` defines the Render web service, the build command, the health check (`/health`), and the start command:
 
 ```text
-daneshrah/
-├── app.py                  # DaneshRah Flask app: cached data, ranked search, routes, API
-├── guide_validation.py     # standalone validator for data/guides.json (also a CLI)
-├── data/guides.json        # ALL content + per-country meta + last_updated (edit only this to add a country)
-├── templates/
-│   ├── base.html           # shared layout, nav, footer, contact links, inline theme bootstrap (CSP nonce)
-│   ├── index.html          # masthead hero + search + facts strip + country grid + last_updated
-│   ├── country.html        # category cards + essentials + last_updated + related
-│   ├── guide.html          # TOC + accordion (native button) + progress + print
-│   ├── search.html         # ranked results + matched-in badges + friendly empty state
-│   ├── checklist.html      # interactive arrival checklist (native checkboxes + localStorage)
-│   ├── emergency.html      # emergency/essentials table + filter + last check
-│   ├── 404.html
-│   └── 500.html
-├── static/
-│   ├── style.css           # editorial design system (tokens, light/dark, a11y, print)
-│   ├── utils.js            # shared helpers: Persian normalization + clipboard (unit tested)
-│   └── app.js              # theme, filters, reveal, checklist, favorites, TOC, accordion
-├── tests/                  # unittest suite (app, data, HTML semantics) + Node test
-├── requirements.txt        # Flask==3.1.3, gunicorn==22.0.0
-├── render.yaml             # Render deploy (service: daneshrah, healthCheck: /health)
-└── README.md
+gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4
 ```
 
-## ➕ How to add a new country (no code needed)
+Useful environment variables:
 
-`data/guides.json` is the single source of truth. Copy any country block and fill in `meta` + `last_updated`:
+| Variable | Purpose |
+| --- | --- |
+| `PUBLIC_BASE_URL` | Preferred public origin for canonical/OG/sitemap URLs; set this when using a custom domain |
+| `RENDER_EXTERNAL_URL` | Render-provided origin; used automatically when `PUBLIC_BASE_URL` is unset |
+| `PORT` | Local development port; Render supplies it in production |
+| `KEEP_ALIVE_URL` | Optional URL for the in-process keep-alive thread |
+| `KEEP_ALIVE_INTERVAL` | Keep-alive interval in seconds (default 600, minimum 60) |
+| `FLASK_DEBUG` | `0` for production; `1` only for local development |
 
-```json
-{
-  "germany": {
-    "name": "آلمان",
-    "flag": "🇩🇪",
-    "blurb": "چرا این راهنما…",
-    "meta": {
-      "capital": "برلین",
-      "currency": "یورو (€)",
-      "language": "آلمانی",
-      "emergency": "۱۱۲",
-      "region": "europe",
-      "region_label": "اروپا"
-    },
-    "last_updated": "2026-10-19",
-    "categories": {
-      "shopping": {
-        "title": "خرید و زندگی روزمره",
-        "items": [
-          {
-            "title": "سوپرمارکت‌ها",
-            "content": "توضیح با لینک [Aldi](https://www.aldi.de) …"
-          }
-        ]
-      },
-      "housing": { "title": "مسکن", "items": [] },
-      "admin": { "title": "اقامت و امور اداری", "items": [] },
-      "work": { "title": "کار دانشجویی", "items": [] }
-    },
-    "sources": [
-      {
-        "title": "DAAD — کار دانشجویی",
-        "url": "https://www.daad.de/en/studying-in-germany/work-career/",
-        "cat": "work"
-      }
-    ]
-  }
-}
-```
+Important verification limits:
 
-Rules:
+- **Gunicorn was installed in the clean venv but could not be started on Windows.** It fails with `ModuleNotFoundError: No module named 'fcntl'`. The Render start command therefore remains unexercised.
+- The public Render URL returned **503 Service Suspended** on 2026-10-30. Resume/redeploy the service, then verify `/health`, security headers, canonical URLs, and the sitemap in the actual environment.
+- The optional GitHub Actions keep-alive workflow requires the `RENDER_URL` repository secret; it was not verified against the suspended service.
+- Google Fonts and FlagCDN are external dependencies. Self-host fonts and flags if you need a fully offline or privacy-minimized deployment.
 
-* `meta.region` should reuse one of `europe`, `north_america`, `asia`, `oceania` when possible (anything else shows under «سایر» automatically).
-* `last_updated` is Gregorian `YYYY-MM-DD` and renders as e.g. «۱۹ اکتبر ۲۰۲۶». **Every entry currently carries the same date (`2026-10-19`)**, so the per-page date shows when the file was last edited, not when each country was individually re-checked — treat it as a file-level stamp.
-* Item `content` supports `[label](https://…)` links — they open in a new tab safely.
-* `sources` is an optional per-country list of `{title, url, cat}` — it renders as «منابع رسمی» on the country page; `cat` is one of `shopping`/`housing`/`admin`/`work`.
-* Categories currently supported: `shopping`, `housing`, `admin`, `work` (labels/icons via `CATEGORY_META` in `app.py`; `general.categories.arrival` powers `/checklist`).
-* Run `python guide_validation.py` after editing: it flags missing fields, unsafe URLs, duplicate item titles, malformed Markdown links and impossible dates.
+Before calling a deployment production-ready, verify at minimum:
 
-## 🔎 How search works
+1. `pip install -r requirements.txt` on the target Python version.
+2. Gunicorn starts and `/health` returns 200 with the expected counts.
+3. HTTPS/HSTS, CSP, canonical URLs, and `robots.txt`/`sitemap.xml` in the deployed environment.
+4. The real domain is set via `PUBLIC_BASE_URL`.
+5. The targeted facts above and any recently changed rules are rechecked against official sources.
 
-`normalize_fa()` unifies text before comparing:
+## Known limitations
 
-* `ي/ك/ى/ة` → `ی/ک/ی/ه`, `آ/أ/إ` → `ا`, `ؤ` → `و`
-* half-space (ZWNJ) and zero-width chars → space, tashkeel/tatweel removed
-* Persian/Arabic digits → ASCII, lowercase, whitespace collapsed
+- The 42-country dataset is broad, but only France and Australia received targeted fact review in this audit; most entries still need country-by-country verification.
+- Search is lexical, not semantic; it is designed for short Persian queries and may miss paraphrases.
+- No database, authentication, user accounts, or server-side personal data storage.
+- Browser evidence is from headless Chrome only; Safari/Firefox and real mobile devices were not tested.
+- Automated accessibility checks found no axe violations, but manual WCAG and screen-reader testing were not completed.
+- Production deployment, Gunicorn startup, and the live service were not verified; the public URL was suspended during the audit.
 
-Ranking per item: **title (+10) > country name (+6) > category (+4) > content (+2)**, plus exact-phrase bonus (title +15) and all-tokens bonus. Multi-word queries prefer items matching **all** tokens (AND), falling back to partial matches (OR) when needed. Snippets are 150-char windows around the first hit with word-boundary ellipsis.
+## Project background and credit
 
-Client-side country/emergency filters use the same normalization, so «سیم‌کارت», «سیم کارت» and «سیمکارت» all match.
-
-## ⚡ Performance
-
-* `data/guides.json` is read **once** at import (`get_guides()`), kept in RAM, and only re-read when its mtime changes (handy in dev). The file is validated when it is loaded; problems are logged.
-* A normalized **search index** is prebuilt once (`get_search_index()`) — per-query work is just scoring, no disk I/O.
-* Security headers on every response: `nosniff`, `DENY` framing, `Referrer-Policy`, `Permissions-Policy`, a per-request `Content-Security-Policy` (nonce for the one inline script) and `Strict-Transport-Security` on HTTPS. No `debug=True` in production (`FLASK_DEBUG=1` only for local dev).
-* Search queries are capped at 200 characters and the API `limit` is clamped to 50.
-
-## ♿ Accessibility & UX
-
-* Skip-to-content link, `<main id="main">`, labeled landmarks and breadcrumbs.
-* Guide accordion: a real `<button>` inside the heading with `aria-expanded`/`aria-controls`, and the body is a `role="region"` labelled by that heading — no nested interactive elements.
-* Checklist: native `<input type="checkbox">` + `<label>` (so the links inside a step stay reachable) and a real `role="progressbar"`.
-* Filter/result counts use `role="status"` + `aria-live="polite"`; TOC marks the current section with `aria-current`.
-* Headings never skip a level, every image has an `alt` attribute, external links carry `rel="noopener"`.
-* Keyboard: `/` focuses search, `Esc` closes the menu, `↑` button scrolls to top.
-* Empty states explain what to try next (shorter word, drop half-space) instead of a dead end.
-
-## 🚢 Deploy (Render)
-
-`render.yaml` defines service **`daneshrah`** (`gunicorn app:app`, health check `/health`). `app.py` also self-pings `$RENDER_EXTERNAL_URL/health` when set, and `.github/workflows/keep-alive.yml` pings every 10 min as a backup — set repo secret `RENDER_URL=https://daneshrah.onrender.com`.
-
-## 🎯 Goal
-
-One accessible place for the small-but-critical questions: where to buy a SIM, how to open a bank account, how deposits work, how to register your address — written plainly, without hype, and with a link to the official source so you can double-check.
-
-## 👨‍💻 Author
-
-**Matin Isapoor** — [GitHub](https://github.com/MatinIsapoor) · Telegram [@caspianix](https://t.me/caspianix) · X/Twitter [@persianix](https://x.com/persianix)
+The `/about` page documents the project’s origin, data policy, and limitations, and contains the single genuine creator credit. The repository is [MatinIsapoor/DaneshRah](https://github.com/MatinIsapoor/DaneshRah).
 
 ---
 
-⭐ If DaneshRah helped you, forward it to the next person — that's enough for us.
+## خلاصه فارسی
 
----
+دانش‌راه یک راهنمای مستقل فارسی برای زندگی دانشجویی در خارج از کشور است: ۴۲ کشور به‌همراه راهنمای عمومی ورود، ۷۴۶ نکته و ۱۴۸ منبع. محتوا در `data/guides.json` نگهداری می‌شود و بدون پایگاه داده اجرا می‌شود.
 
-## 🇮🇷 راهنمای فارسی
+اجرای محلی:
 
-**دانش‌راه (DaneshRah)** یک وب‌اپ Flask برای راهنمای زندگی دانشجویی ایرانی‌ها در کشورهای مختلف است: خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول.
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python app.py
+```
 
 * افزودن کشور/مطلب جدید: فقط `data/guides.json` را ویرایش کن — نیازی به تغییر کد نیست. هر کشور `meta` (پایتخت، واحد پول، زبان، اضطراری، منطقه)، `last_updated` (مثل `2026-10-19`) و فهرست اختیاری `sources` (`{title, url, cat}`) دارد که در صفحه‌ی کشور به‌عنوان «منابع رسمی» نمایش داده می‌شود.
 * جست‌وجو نیم‌فاصله و ی/ک را خودش درست می‌کند؛ ترتیب نتایج: تیتر، بعد نام کشور، بعد متن.
@@ -183,4 +232,10 @@ One accessible place for the small-but-critical questions: where to buy a SIM, h
 * اعتبارسنجی داده: `python guide_validation.py` — اگر فیلدی کم، لینک ناامن، تاریخ غلط یا لینک مارک‌داون خراب باشد، خطا می‌دهد.
 * ارتباط: تلگرام [@caspianix](https://t.me/caspianix) — توییتر [@persianix](https://x.com/persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
 
-پیشنهادها و مشارکت‌ها خوش‌آمدند! 🙌
+```powershell
+python -m unittest discover -s tests -t .
+node --test tests/js_utils.test.js
+python guide_validation.py
+```
+
+نتیجه‌ی نهایی: ۹۵ تست پایتون، ۷ تست Node و اعتبارسنجی داده با ۰ خطا و ۰ هشدار. تاریخ «آخرین ویرایش داده» مهر فایل است و تضمین بازبینی خط‌به‌خط همه‌ی کشورها نیست. تنها فرانسه و استرالیا در این بازبینی بررسی هدفمند شدند. اجرای production با Gunicorn روی ویندوز آزمون نشد و سرویس عمومی Render در زمان بازبینی با خطای ۵۰۳ (تعلیق سرویس) در دسترس نبود.

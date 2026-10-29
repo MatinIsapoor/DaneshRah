@@ -1,290 +1,323 @@
 {% extends "base.html" %}
-{% block title %}DaneshRah | دانش‌راه — از فرودگاه تا استقرار کامل{% endblock %}
+{% from "_icons.html" import icon %}
+{% block title %}دانش‌راه | راهنمای زندگی دانشجویی در خارج از کشور{% endblock %}
+{% block meta_description %}راهنمای فارسی و مستقل زندگی دانشجویی در {{ site_stats.countries|fa_digits }} کشور: خرید، مسکن، اقامت، بیمه و کار دانشجویی، همراه با چک‌لیست روزهای اول و لینک منابع رسمی.{% endblock %}
 
-{% macro icon(name) %}
-  {% if name == 'search' %}
-  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-  {% elif name == 'check' %}
-  <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>
-  {% elif name == 'sos' %}
-  <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-  {% elif name == 'home' %}
-  <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
-  {% elif name == 'card' %}
-  <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-  {% elif name == 'users' %}
-  <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg>
-  {% else %}
-  <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-  {% endif %}
-{% endmacro %}
+{% block structured_data %}
+<script type="application/ld+json" nonce="{{ csp_nonce }}">{{ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "fa-IR",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "از کجا شروع کنم؟",
+      "acceptedAnswer": {"@type": "Answer", "text": "با چک‌لیست روزهای اول شروع کن، بعد صفحه‌ی کشور مقصد را باز کن و بخش خرید و زندگی روزمره را بخوان. برای مسکن عجله نکن و قرارداد را کامل بخوان."}
+    },
+    {
+      "@type": "Question",
+      "name": "اطلاعات هر کشور چقدر به‌روز است؟",
+      "acceptedAnswer": {"@type": "Answer", "text": "هر کشور تاریخ ویرایش داده دارد و منابع رسمی جداگانه فهرست شده‌اند. این تاریخ نشان‌دهنده‌ی ویرایش فایل داده است و تضمین نمی‌کند همه‌ی جزئیات همان کشور در همان روز بازبینی شده باشند."}
+    },
+    {
+      "@type": "Question",
+      "name": "آیا دانش‌راه جایگزین منبع رسمی است؟",
+      "acceptedAnswer": {"@type": "Answer", "text": "نه. دانش‌راه راهنمای آموزشی است. برای قوانین ویزا، مالیات، بیمه و قرارداد باید صفحه‌ی رسمی همان کشور را بررسی کنی."}
+    }
+  ]
+}|tojson }}</script>
+{% endblock %}
 
 {% block content %}
-<header class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <div class="container hero-grid">
     <div class="hero-copy">
-      <div class="masthead-rule">
-        <b>دفتر راهنمای زندگی دانشجویی</b>
-        <span class="mh-line" aria-hidden="true"></span>
-        <span>آخرین بازبینی: {{ latest_updated|format_updated }}</span>
-      </div>
-      <h1>هفته‌ی اول مهاجرت،<br><span class="grad">سؤال‌های ریز و بی‌جواب</span></h1>
-      <svg class="squiggle" viewBox="0 0 300 16" aria-hidden="true"><path class="draw" d="M3 10 C 62 2 118 14 176 6 S 272 12 297 6"/></svg>
-      <p class="lead">من متینم، دانشجوی پاریس. این سایت را ساختم تا جواب همان سؤال‌های روزهای اول یک‌جا باشد: سیم‌کارت، حساب بانکی، ثبت آدرس، ودیعه‌ی خانه و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع کنارش آمده تا خودت هم چک کنی.</p>
-      <form class="search-bar" data-hero-search action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماهای DaneshRah">
-        <svg class="sb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="search" name="q" placeholder="چه چیزی ذهنت را مشغول کرده؟ مثلاً «ودیعه»" aria-label="جست‌وجو در راهنماها" data-global-search autocomplete="off" enterkeyhint="search">
-        <button type="submit">بگرد</button>
+      <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> راهنمای مستقل برای دانشجویان ایرانی</p>
+      <h1 id="hero-title">روزهای اولِ خارج از کشور،<br><em>بدون سرگردانی.</em></h1>
+      <p class="hero-lead">دانش‌راه یک راهنمای فارسی و کشور‌به‌کشور است برای سؤال‌هایی که در هفته‌های اول پیش می‌آید: از ودیعه و سیم‌کارت تا ثبت آدرس، بیمه و کار دانشجویی. هر موضوع جدا شده و منابع رسمی‌اش کنار آن آمده است.</p>
+
+      <form class="search-bar search-bar-hero" data-hero-search action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماهای دانش‌راه">
+        <label class="visually-hidden" for="hero-search-input">چه چیزی می‌خواهی پیدا کنی؟</label>
+        <span class="search-bar-icon">{{ icon('search') }}</span>
+        <input id="hero-search-input" type="search" name="q" placeholder="مثلاً ودیعه، سیم‌کارت یا بیمه…" autocomplete="off" enterkeyhint="search" data-global-search>
+        <button type="submit" class="btn btn-primary">جست‌وجو</button>
       </form>
-      <div class="masthead-links">
-        <a href="#countries">{{ stats.countries|fa_digits }} کشور</a>
-        <a href="{{ url_for('checklist') }}">چک‌لیست ورود</a>
-        <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
-        <a href="{{ url_for('search_page') }}">جست‌وجوی کامل</a>
+      <div class="quick-links" role="group" aria-label="جست‌وجوهای پیشنهادی">
+        <span class="quick-links-label">شروع سریع:</span>
+        <a href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
+        <a href="{{ url_for('search_page', q='سیم‌کارت') }}">سیم‌کارت</a>
+        <a href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
+        <a href="{{ url_for('search_page', q='کار دانشجویی') }}">کار دانشجویی</a>
       </div>
-      <div class="author-line">
-        <span class="avatar" aria-hidden="true">م</span>
-        <span>نوشته‌ی متین، دانشجوی پاریس · راهنما برای {{ stats.countries|fa_digits }} کشور</span>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="#countries">کشور مقصدت را پیدا کن {{ icon('arrow-left') }}</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('checklist') }}">چک‌لیست ورود</a>
       </div>
     </div>
 
-    <div class="hero-art">
-      <div class="art-card">
-        <svg viewBox="0 0 520 400" role="img" aria-hidden="true">
-          <defs>
-            <linearGradient id="rtGrad" x1="1" y1="1" x2="0" y2="0">
-              <stop offset="0" stop-color="var(--teal)"/>
-              <stop offset="1" stop-color="var(--accent)"/>
-            </linearGradient>
-            <linearGradient id="capGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="var(--accent)"/>
-              <stop offset="1" stop-color="var(--gold)"/>
-            </linearGradient>
-            <pattern id="dotGrid" width="26" height="26" patternUnits="userSpaceOnUse">
-              <circle cx="3" cy="3" r="1.5" fill="var(--line-strong)"/>
-            </pattern>
-          </defs>
-
-          <rect width="520" height="400" fill="url(#dotGrid)" opacity=".45"/>
-
-          <path d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="10" stroke-linecap="round" opacity=".12"/>
-          <path d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="2.5" stroke-linecap="round" opacity=".4"/>
-          <path class="route-dash" d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="url(#rtGrad)" stroke-width="3.2" stroke-linecap="round"/>
-
-          <g class="twinkle"><circle cx="150" cy="70" r="3.4" fill="var(--gold)"/></g>
-          <g class="twinkle d2"><circle cx="238" cy="330" r="2.4" fill="var(--teal)"/></g>
-          <g class="twinkle d3"><circle cx="400" cy="150" r="2.8" fill="var(--accent)"/></g>
-          <g class="twinkle d2"><circle cx="330" cy="70" r="2.2" fill="var(--gold)"/></g>
-
-          <g>
-            <circle class="pulse-ring" cx="436" cy="330" r="18" fill="none" stroke="var(--teal)" stroke-width="2"/>
-            <circle cx="436" cy="330" r="10.5" fill="var(--teal)"/>
-            <circle cx="436" cy="330" r="3.8" fill="var(--card)"/>
-          </g>
-
-          <g>
-            <circle class="pulse-ring d2" cx="84" cy="88" r="20" fill="none" stroke="var(--accent)" stroke-width="2"/>
-            <circle cx="84" cy="88" r="12" fill="url(#capGrad)"/>
-            <path d="M77.5 86l6.5-2.8 6.5 2.8-6.5 2.8z" fill="var(--card)"/>
-            <path d="M80 88.2v3.6c0 1.3 1.8 2.2 4 2.2s4-.9 4-2.2v-3.6" stroke="var(--card)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          </g>
-
-          <g>
-            <path d="M-13 0 L11 -7.5 L5.5 0 L11 7.5 Z" fill="var(--ink)" opacity=".92"/>
-            <circle cx="0" cy="0" r="2.2" fill="var(--card)"/>
-            <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
-              <mpath href="#routePath" xlink:href="#routePath"/>
-            </animateMotion>
-          </g>
-
-          <g class="float-a">
-            <rect x="58" y="232" width="176" height="112" rx="14" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.2"/>
-            <rect x="76" y="252" width="66" height="9" rx="4.5" fill="var(--accent)" opacity=".85"/>
-            <circle cx="82" cy="284" r="7" fill="var(--ok)" opacity=".9"/>
-            <path d="M79 284l2.2 2.4 4-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="98" y="280" width="112" height="8" rx="4" fill="var(--line-strong)" opacity=".75"/>
-            <circle cx="82" cy="312" r="7" fill="var(--gold)" opacity=".9"/>
-            <path d="M79 312l2.2 2.4 4-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="98" y="308" width="86" height="8" rx="4" fill="var(--line-strong)" opacity=".6"/>
-            <rect x="76" y="328" width="140" height="6" rx="3" fill="var(--paper-2)"/>
-            <rect x="76" y="328" width="96" height="6" rx="3" fill="var(--teal)" opacity=".8"/>
-          </g>
-          <path id="routePath" d="M436 330 C 340 322 300 268 246 220 S 150 120 84 88" fill="none" stroke="none"/>
-        </svg>
-        <span class="art-chip chip-1 float-a"><span class="dotc teal"></span>منابع رسمی هر کشور</span>
-        <span class="art-chip chip-2 float-b"><span class="dotc"></span>{{ stats.countries|fa_digits }} کشور</span>
-        <span class="art-chip chip-3 float-c"><span class="dotc gold"></span>بدون تبلیغ</span>
+    <div class="hero-panel" role="note" aria-label="مسیر پیشنهادی استفاده از دانش‌راه">
+      <div class="hero-panel-head">
+        <span class="panel-label">مسیر پیشنهادی</span>
+        <span class="panel-mark" aria-hidden="true">{{ icon('compass') }}</span>
+      </div>
+      <ol class="route-list">
+        <li>
+          <span class="route-num">۰۱</span>
+          <div>
+            <a href="#countries">کشور مقصدت را انتخاب کن</a>
+            <span>{{ stats.countries|fa_digits }} راهنمای کشور، مرتب‌شده بر اساس منطقه</span>
+          </div>
+        </li>
+        <li>
+          <span class="route-num">۰۲</span>
+          <div>
+            <a href="#start-here">چهار بخش اصلی را بخوان</a>
+            <span>خرید و زندگی، مسکن، امور اداری، کار دانشجویی</span>
+          </div>
+        </li>
+        <li>
+          <span class="route-num">۰۳</span>
+          <div>
+            <a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول را کامل کن</a>
+            <span>۱۱ قدم، با ذخیره‌ی پیشرفت در همین مرورگر</span>
+          </div>
+        </li>
+      </ol>
+      <div class="hero-panel-foot">
+        <span>{{ icon('shield') }} راهنمای آموزشی، نه جایگزین منبع رسمی</span>
+        {% if latest_updated %}<span>آخرین ویرایش داده: {{ latest_updated|format_updated }}</span>{% endif %}
       </div>
     </div>
   </div>
-</header>
-
-<div class="ticker-fade">
-  <div class="ticker">
-    <div class="ticker-track">
-      {% for i in [0, 1] %}
-      {% for code, country in countries.items() %}
-      <span class="ticker-chip" dir="rtl">
-        <span class="flag-inline">
-          <span class="flag-fb">{{ country.flag }}</span>
-          <img src="{{ country.flag|flag_url(40) }}" alt="" loading="lazy">
-        </span>
-        {{ country.name }}
-      </span>
-      {% endfor %}
-      {% endfor %}
-    </div>
-  </div>
-</div>
+</section>
 
 <div class="container">
-  <div class="facts" role="list">
-    <div class="fact reveal" role="listitem">
-      <div class="fact-top"><span class="tile tile-sm g-teal">{{ icon('search') }}</span><b data-count="{{ stats.countries }}">{{ stats.countries|fa_digits }}</b></div>
-      <span>کشور با راهنمای جداگانه</span>
+  <section class="stats-strip" aria-label="دانش‌راه در یک نگاه">
+    <div class="stat">
+      <strong>{{ stats.countries|fa_digits }}</strong>
+      <span>کشور با راهنمای مستقل</span>
     </div>
-    <div class="fact reveal" role="listitem">
-      <div class="fact-top"><span class="tile tile-sm g-amber">{{ icon('card') }}</span><b data-count="{{ stats['items'] }}">{{ stats['items']|fa_digits }}</b></div>
-      <span>نکته‌ی ریز و کاربردی</span>
+    <div class="stat">
+      <strong>{{ stats['items']|fa_digits }}</strong>
+      <span>نکته‌ی کاربردی دسته‌بندی‌شده</span>
     </div>
-    <div class="fact reveal" role="listitem">
-      <div class="fact-top"><span class="tile tile-sm g-ink">{{ icon('check') }}</span><b>۰</b></div>
-      <span>تبلیغ و لینک پولی</span>
+    <div class="stat">
+      <strong>{{ stats['sources']|fa_digits }}</strong>
+      <span>منبع رسمی در فهرست منابع</span>
     </div>
-  </div>
-
-  {% if general %}
-  <section class="banner reveal" aria-label="قدم‌های اول">
-    <span class="eyebrow">قبل از هر چیز — ترتیب معمول کارها</span>
-    <h2>{{ general.name }}: {{ general['categories']['arrival'].title }}</h2>
-    <p>اگر فقط وقت یک صفحه را داری، همین را بخوان. اول اینترنت و مدارک، بعد ثبت آدرس و خانه و دانشگاه، آخرش بانک و بیمه. می‌توانی تیک بزنی و پیشرفتت در مرورگر ذخیره می‌شود.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <a class="btn btn-gold" href="{{ url_for('checklist') }}">باز کردن چک‌لیست من</a>
-      <a class="btn btn-ghost" style="color:#efe8db;border-color:#5a5145" href="{{ url_for('category_page', country_code='general', category='arrival') }}">خواندن نسخه‌ی متنی</a>
-    </div>
-    <div class="steps-mini">
-      <span class="step-chip">قبل از پرواز</span>
-      <span class="step-chip">سیم‌کارت</span>
-      <span class="step-chip">ثبت‌نام دانشگاه</span>
-      <span class="step-chip">ثبت آدرس</span>
-      <span class="step-chip">بیمه</span>
-      <span class="step-chip">بانک</span>
-    </div>
-  </section>
-  {% endif %}
-
-  <section class="section" id="countries">
-    <div class="section-head">
-      <h2>کشور خودت را انتخاب کن <span class="count-badge">{{ countries|length|fa_digits }} کشور</span></h2>
-      <p>برای هر کشور چهار موضوع جدا شده است: <b>خرید و زندگی</b>، <b>مسکن</b>، <b>کارهای اداری</b> و <b>کار دانشجویی</b>. روی کشورت بزن و از اول بخوان.</p>
-    </div>
-
-    <div class="toolbar">
-      <div class="pills" role="group" aria-label="فیلتر منطقه">
-        <button class="pill active" data-region-pill="all" aria-pressed="true">همه</button>
-        {% for rcode, rlabel in regions.items() %}
-        <button class="pill" data-region-pill="{{ rcode }}" aria-pressed="false">{{ rlabel }}</button>
-        {% endfor %}
-        <button class="pill" data-region-pill="fav" aria-pressed="false">★ علاقه‌مندی‌ها <span data-fav-count></span></button>
-      </div>
-      <div class="filter-search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="search" placeholder="فیلتر سریع کشور… ( / )" data-country-search aria-label="فیلتر کشور" autocomplete="off">
-      </div>
-    </div>
-
-    <p class="muted" role="status" aria-live="polite" data-grid-status style="font-size:.82rem;margin:0 0 10px"></p>
-    <div class="grid-countries">
-      {% for code, country in countries.items() %}
-      <div class="country-cell reveal" data-country-card data-name="{{ country.name }}" data-region="{{ country.meta.region }}">
-        <a class="country-card" href="{{ url_for('country_page', country_code=code) }}" aria-label="راهنمای {{ country.name }} در DaneshRah">
-          <span class="cc-flag" aria-hidden="true">
-            <span class="flag-fb">{{ country.flag }}</span>
-            <img src="{{ country.flag|flag_url(80) }}" alt="" loading="lazy">
-          </span>
-          <div>
-            <h3>{{ country.name }}</h3>
-            <p class="cc-sub">{{ country.meta.capital|default('') }}{% if country.meta.capital %} · {% endif %}{{ country.n_items|fa_digits }} راهنما</p>
-            <div class="cc-tags">
-              <span class="tag">{{ country.meta.region_label|default('') }}</span>
-              {% if country.meta.emergency %}<span class="tag gold" title="شماره‌ی اضطراری">اضطراری: {{ country.meta.emergency }}</span>{% endif %}
-            </div>
-          </div>
-          <span class="cc-arrow" aria-hidden="true">←</span>
-        </a>
-        <button type="button" class="fav-btn" data-fav-btn="{{ code }}" aria-label="ذخیره {{ country.name }} در علاقه‌مندی‌ها" aria-pressed="false" title="ذخیره در علاقه‌مندی‌ها">☆</button>
-      </div>
-      {% endfor %}
-    </div>
-    <p class="muted center" data-no-result role="status" style="display:none">کشوری با این مشخصات پیدا نشد. عبارت دیگری را امتحان کن — نیم‌فاصله و ی/ک مهم نیست — یا از <a href="{{ url_for('search_page') }}">جست‌وجوی کامل DaneshRah</a> استفاده کن.</p>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <h2>چرا این راهنما به کارت می‌آید؟</h2>
-      <p>هر نکته به منابع رسمی همان کشور وصل است (سفارت، وزارت مهاجرت، سازمان مالیات و…) تا خودت راستی‌آزمایی کنی؛ به‌علاوه‌ی تاریخ آخرین بازبینی در هر صفحه.</p>
-    </div>
-    <ol class="feature-list">
-      <li class="feature reveal">
-        <span class="f-ico g-teal">{{ icon('search') }}</span>
-        <div class="f-body">
-          <h3>جست‌وجو در همه‌ی مطالب</h3>
-          <p>بنویس «ودیعه» یا «Pfand» یا «IMEI» — در همه‌ی کشورها می‌گردد، هم در تیتر هم در متن. <a href="{{ url_for('search_page') }}">از این‌جا</a> امتحان کن.</p>
-        </div>
-      </li>
-      <li class="feature reveal">
-        <span class="f-ico g-amber">{{ icon('check') }}</span>
-        <div class="f-body">
-          <h3>چک‌لیست روزهای اول</h3>
-          <p>۱۱ قدم به ترتیبی که معمولاً کارها جلو می‌رود. تیک بزن؛ <a href="{{ url_for('checklist') }}">پیشرفتت در مرورگر می‌ماند</a> حتی اگر صفحه را ببندی.</p>
-        </div>
-      </li>
-      <li class="feature reveal">
-        <span class="f-ico g-rose">{{ icon('sos') }}</span>
-        <div class="f-body">
-          <h3>شماره‌هایی که باید در گوشی باشد</h3>
-          <p>اورژانس و اطلاعات پایه‌ی هر کشور <a href="{{ url_for('emergency') }}">یک‌جا جمع شده</a>. روز اول ذخیره‌شان کن.</p>
-        </div>
-      </li>
-      <li class="feature reveal">
-        <span class="f-ico g-indigo">{{ icon('home') }}</span>
-        <div class="f-body">
-          <h3>مسکن: ریزه‌کاری‌های ودیعه و قرارداد</h3>
-          <p>ودیعه، هزینه‌های پنهان، آگهی تقلبی و ثبت آدرس — با قواعد رسمی هر کشور. قبل از واریز پول، قرارداد و مالک را بررسی کن.</p>
-        </div>
-      </li>
-      <li class="feature reveal">
-        <span class="f-ico g-teal">{{ icon('card') }}</span>
-        <div class="f-body">
-          <h3>بانک و سیم‌کارت، بدون معطلی</h3>
-          <p>برای هر کشور نوشته شده چه مدارکی برای حساب بانکی و سیم‌کارت لازم است و کدام‌ها را بدون اقامت هم می‌شود گرفت.</p>
-        </div>
-      </li>
-      <li class="feature reveal">
-        <span class="f-ico g-ink">{{ icon('users') }}</span>
-        <div class="f-body">
-          <h3>کمک کن کامل‌تر شود</h3>
-          <p>اگر کشورت این‌جا نیست یا نکته‌ای را غلط دیدی، در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a> بگو. محتوا یک فایل ساده است و افزودن مطلب نیاز به کدنویسی ندارد.</p>
-        </div>
-      </li>
-    </ol>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <h2>سؤال‌های پرتکرار</h2>
-      <p>جواب‌ها بر اساس روند رایج و منابع رسمی هر کشور نوشته شده‌اند.</p>
-    </div>
-    <div class="faq">
-      <details class="faq-item reveal"><summary>از کجا شروع کنم؟ <span class="plus" aria-hidden="true">+</span></summary><div class="faq-body">با <a href="{{ url_for('checklist') }}">چک‌لیست</a> شروع کن و فقط قدم اول را انجام بده. بعد صفحه‌ی کشورت را باز کن، بخش خرید. برای مسکن عجله نکن؛ قرارداد را کامل بخوان و پول را قبل از دیدن اتاق و مالک واریز نکن.</div></details>
-      <details class="faq-item reveal"><summary>رسیدم فرودگاه، اول چه کاری؟ <span class="plus" aria-hidden="true">+</span></summary><div class="faq-body">اینترنت. بدون اینترنت حتی آدرس خوابگاه را پیدا نمی‌کنی. در بیشتر فرودگاه‌ها غرفه‌ی سیم‌کارت هست؛ اگر نبود، بخش خریدِ کشورت در همین سایت را ببین که کدام اپراتور و کدام پیش‌پرداخت معمول‌تر است.</div></details>
-      <details class="faq-item reveal"><summary>ثبت آدرس چرا این‌قدر مهم است؟ <span class="plus" aria-hidden="true">+</span></summary><div class="faq-body">چون بدون آن عملاً هیچ‌کاری جلو نمی‌رود: نه بانک، نه اقامت، نه سیم‌کارت قراردادی. اسمش در هر کشور فرق دارد (در آلمان Anmeldung، در هلند BSN…) و مهلت دارد — از چند روز تا چند هفته. جزئیات در بخش مسکن هر کشور آمده است.</div></details>
-      <details class="faq-item reveal"><summary>این اطلاعات قدیمی نمی‌شود؟ <span class="plus" aria-hidden="true">+</span></summary><div class="faq-body">بله، ممکن است بشود — قانون و قیمت دائم عوض می‌شود. برای همین در هر صفحه لینک منبع رسمی و تاریخ آخرین بازبینی گذاشته شده تا خودت چک کنی. اگر جایی عوض شده بود، در گیت‌هاب بگو تا اصلاح کنم.</div></details>
-      <details class="faq-item reveal"><summary>کشور من این‌جا نیست <span class="plus" aria-hidden="true">+</span></summary><div class="faq-body">کم‌کم اضافه می‌شود. فعلاً <a href="{{ url_for('checklist') }}">چک‌لیست عمومی</a> و <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a> به کارت می‌آید. اگر آن‌جا زندگی می‌کنی و منبع رسمی خوبی می‌شناسی، در گیت‌هاب بنویس.</div></details>
-    </div>
-    <div class="center mt">
-      <a class="btn btn-outline" href="{{ url_for('emergency') }}">دیدن شماره‌های اضطراری همه‌ی کشورها</a>
+    <div class="stat">
+      <strong>۴</strong>
+      <span>محور ثابت در هر کشور</span>
     </div>
   </section>
 </div>
+
+<section class="section section-countries" id="countries" aria-labelledby="countries-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="section-kicker">فهرست مقصدها</p>
+      <div class="section-head-row">
+        <h2 id="countries-title">کشور مقصدت را پیدا کن</h2>
+        <span class="count-badge">{{ countries|length|fa_digits }} کشور</span>
+      </div>
+      <p class="section-intro">برای هر کشور چهار موضوع جدا داریم: خرید و زندگی روزمره، مسکن، امور اداری و کار دانشجویی. جست‌وجوی زیر فقط فهرست کشورها را فیلتر می‌کند؛ برای جست‌وجو در متن راهنماها از <a href="{{ url_for('search_page') }}">جست‌وجوی کامل</a> استفاده کن.</p>
+    </header>
+
+    <div class="directory-toolbar">
+      <div class="filter-search">
+        <span class="filter-search-icon">{{ icon('search') }}</span>
+        <label class="visually-hidden" for="country-filter">فیلتر سریع کشور</label>
+        <input id="country-filter" type="search" placeholder="نام کشور، پایتخت یا منطقه… ( / )" data-country-search autocomplete="off">
+      </div>
+      <div class="pills" role="group" aria-label="فیلتر بر اساس منطقه">
+        <button class="pill active" type="button" data-region-pill="all" aria-pressed="true">همه</button>
+        {% for rcode, rlabel in regions.items() %}
+        <button class="pill" type="button" data-region-pill="{{ rcode }}" aria-pressed="false">{{ rlabel }}</button>
+        {% endfor %}
+        <button class="pill pill-fav" type="button" data-region-pill="fav" aria-pressed="false">
+          {{ icon('star') }} علاقه‌مندی‌ها <span data-fav-count></span>
+        </button>
+      </div>
+    </div>
+
+    <p class="muted filter-status" role="status" aria-live="polite" data-grid-status></p>
+
+    <div class="country-grid">
+      {% for code, country in countries.items() %}
+      <div class="country-cell" data-country-card data-name="{{ country.name }} {{ country.meta.capital }} {{ country.meta.region_label }}" data-region="{{ country.meta.region }}" data-fav="0">
+        <a class="country-card" href="{{ url_for('country_page', country_code=code) }}">
+          <span class="cc-flag" aria-hidden="true">
+            <span class="flag-fb">{{ country.flag }}</span>
+            <img src="{{ country.flag|flag_url(80) }}" alt="" width="40" height="28" loading="lazy">
+          </span>
+          <span class="country-card-copy">
+            <span class="cc-name">{{ country.name }}</span>
+            <span class="cc-sub">{{ country.meta.capital or '—' }} · {{ country.n_items|fa_digits }} مطلب</span>
+          </span>
+          <span class="cc-arrow" aria-hidden="true">{{ icon('arrow-left') }}</span>
+        </a>
+        <button class="fav-btn" type="button" data-fav-btn="{{ code }}" aria-label="ذخیره‌ی {{ country.name }} در علاقه‌مندی‌ها" aria-pressed="false" title="ذخیره در علاقه‌مندی‌ها">
+          {{ icon('star') }}
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="empty-state empty-state-compact" data-no-result hidden>
+      <span class="empty-icon">{{ icon('search') }}</span>
+      <h3>کشوری با این مشخصات پیدا نشد</h3>
+      <p>یک نام کوتاه‌تر، پایتخت یا نام منطقه را امتحان کن. نیم‌فاصله و تفاوت ی/ک هم مهم نیست. اگر باز هم پیدا نشد، <a href="{{ url_for('search_page') }}">در متن راهنماها جست‌وجو کن</a>.</p>
+    </div>
+    <noscript>
+      <p class="inline-note">برای فیلتر تعاملی کشورها به JavaScript نیاز است؛ بدون آن، همه‌ی کشورها در فهرست بالا در دسترس‌اند.</p>
+    </noscript>
+  </div>
+</section>
+
+<section class="section section-start" id="start-here" aria-labelledby="start-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="section-kicker">از کجا شروع کنم؟</p>
+      <h2 id="start-title">با چیزی شروع کن که همین حالا گیرت انداخته</h2>
+      <p class="section-intro">لازم نیست همه‌ی راهنما را بخوانی. موضوعی را انتخاب کن که در روزهای اول بیشتر به آن نیاز داری؛ نتایج جست‌وجو از همه‌ی کشورها جمع می‌شوند.</p>
+    </header>
+
+    <ol class="topic-list">
+      <li>
+        <a class="topic-row" href="{{ url_for('search_page', q='ودیعه') }}">
+          <span class="topic-num">۰۱</span>
+          <span class="topic-body">
+            <span class="topic-title">خانه، ودیعه و قرارداد</span>
+            <span class="topic-desc">ودیعه، هزینه‌های جانبی، ثبت آدرس و نکته‌های جلوگیری از کلاهبرداری</span>
+          </span>
+          <span class="topic-icon" aria-hidden="true">{{ icon('home') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="topic-row" href="{{ url_for('search_page', q='سیم‌کارت') }}">
+          <span class="topic-num">۰۲</span>
+          <span class="topic-body">
+            <span class="topic-title">بانک، سیم‌کارت و اینترنت</span>
+            <span class="topic-desc">مدارک لازم، گزینه‌های پیش‌پرداخت و اولین کارهای بعد از ورود</span>
+          </span>
+          <span class="topic-icon" aria-hidden="true">{{ icon('wallet') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="topic-row" href="{{ url_for('search_page', q='اقامت') }}">
+          <span class="topic-num">۰۳</span>
+          <span class="topic-body">
+            <span class="topic-title">اقامت، بیمه و امور اداری</span>
+            <span class="topic-desc">ثبت اقامت، بیمه‌ی سلامت، شماره‌های شناسایی و سفارت</span>
+          </span>
+          <span class="topic-icon" aria-hidden="true">{{ icon('file') }}</span>
+        </a>
+      </li>
+      <li>
+        <a class="topic-row" href="{{ url_for('search_page', q='کار دانشجویی') }}">
+          <span class="topic-num">۰۴</span>
+          <span class="topic-body">
+            <span class="topic-title">کار دانشجویی و درآمد</span>
+            <span class="topic-desc">سقف ساعت، حداقل دستمزد، مالیات و سایت‌های کاریابی</span>
+          </span>
+          <span class="topic-icon" aria-hidden="true">{{ icon('briefcase') }}</span>
+        </a>
+      </li>
+    </ol>
+  </div>
+</section>
+
+{% if general %}
+<section class="section section-band" aria-labelledby="checklist-title">
+  <div class="container band-inner">
+    <div class="band-copy">
+      <p class="section-kicker">اگر فقط چند دقیقه وقت داری</p>
+      <h2 id="checklist-title">قدم‌های اول را به ترتیب انجام بده</h2>
+      <p>از مدارک قبل از پرواز تا سیم‌کارت، ثبت آدرس، بیمه و حساب بانکی. کارها را تیک بزن؛ پیشرفت در همین مرورگر می‌ماند و نیازی به حساب کاربری نیست.</p>
+      <div class="band-actions">
+        <a class="btn btn-light" href="{{ url_for('checklist') }}">باز کردن چک‌لیست {{ icon('arrow-left') }}</a>
+        <a class="btn btn-on-dark" href="{{ url_for('category_page', country_code='general', category='arrival') }}">خواندن نسخه‌ی متنی</a>
+      </div>
+    </div>
+    <ol class="band-steps">
+      <li><span>قبل از پرواز</span><small>مدارک و بیمه</small></li>
+      <li><span>سیم‌کارت</span><small>اینترنت و تماس</small></li>
+      <li><span>ثبت آدرس</span><small>مهلت قانونی</small></li>
+      <li><span>بانک</span><small>حساب و پرداخت</small></li>
+      <li><span>بیمه</span><small>ثبت‌نام دانشگاه</small></li>
+    </ol>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" aria-labelledby="principles-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="section-kicker">چطور نوشته شده</p>
+      <h2 id="principles-title">راهنمایی که می‌گوید از کجا آمده</h2>
+    </header>
+    <div class="principles-grid">
+      <div class="principle">
+        <span class="principle-index">۰۱</span>
+        <h3>منبع رسمی، نه حدس</h3>
+        <p>هر کشور فهرست منابع رسمی خودش را دارد و در متن بسیاری از مطلب‌ها لینک منبع مرتبط آمده است. اگر منبع دقیقی در دسترس نبود، ادعای قطعی نمی‌سازیم و لینک نامرتبط هم نمی‌گذاریم.</p>
+      </div>
+      <div class="principle">
+        <span class="principle-index">۰۲</span>
+        <h3>تاریخ، با معنای روشن</h3>
+        <p>تاریخ ویرایش داده در هر صفحه دیده می‌شود. این تاریخ یک مهر فایل است و به معنی بازبینی خط‌به‌خط همه‌ی جزئیات آن کشور نیست؛ این محدودیت را پنهان نمی‌کنیم.</p>
+      </div>
+      <div class="principle">
+        <span class="principle-index">۰۳</span>
+        <h3>راهنما، نه تضمین</h3>
+        <p>دانش‌راه جایگزین سفارت، دانشگاه، مشاور حقوقی یا منبع رسمی نیست. برای تصمیم مالی یا مهاجرتی، همیشه صفحه‌ی رسمی را خودت بررسی کن.</p>
+      </div>
+    </div>
+    <div class="principles-footer">
+      <a class="text-link" href="{{ url_for('about') }}">درباره‌ی اصول ویرایشی، محدودیت‌ها و روش اصلاح خطاها {{ icon('arrow-left') }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-faq" aria-labelledby="faq-title">
+  <div class="container container-reading">
+    <header class="section-head">
+      <p class="section-kicker">پرسش‌های پرتکرار</p>
+      <h2 id="faq-title">قبل از شروع</h2>
+    </header>
+    <div class="faq">
+      <details class="faq-item">
+        <summary><span>از کجا شروع کنم؟</span><span class="faq-plus" aria-hidden="true">+</span></summary>
+        <div class="faq-body">
+          <p>با <a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول</a> شروع کن و فقط قدم اول را انجام بده. بعد صفحه‌ی کشور مقصد را باز کن و بخش «خرید و زندگی روزمره» را بخوان. برای مسکن عجله نکن؛ قرارداد را کامل بخوان و هیچ پولی را قبل از دیدن اتاق و بررسی مالک واریز نکن.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary><span>رسیدم فرودگاه، اول چه کاری انجام بدهم؟</span><span class="faq-plus" aria-hidden="true">+</span></summary>
+        <div class="faq-body">
+          <p>اول اینترنت. بدون اینترنت حتی نشانی خوابگاه یا تماس با صاحب‌خانه سخت می‌شود. در بیشتر فرودگاه‌ها غرفه‌ی سیم‌کارت هست؛ اگر نبود، در بخش خریدِ کشور مقصد ببین کدام اپراتور پیش‌پرداخت معمول‌تر است و چه مدرکی می‌خواهد.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary><span>ثبت آدرس چرا اهمیت دارد؟</span><span class="faq-plus" aria-hidden="true">+</span></summary>
+        <div class="faq-body">
+          <p>چون بدون آن خیلی از کارها متوقف می‌شود: افتتاح حساب بانکی، بیمه، سیم‌کارت قراردادی یا تمدید اقامت. نام و مهلتش در هر کشور فرق دارد و از چند روز تا چند هفته است. جزئیات در بخش مسکن و امور اداری همان کشور آمده است.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary><span>اطلاعات هر کشور چقدر قابل اعتماد است؟</span><span class="faq-plus" aria-hidden="true">+</span></summary>
+        <div class="faq-body">
+          <p>هر کشور فهرست منابع رسمی و تاریخ ویرایش داده دارد، اما همه‌ی اعداد و قواعد به‌صورت خودکار به‌روز نمی‌شوند و ممکن است تغییر کرده باشند. این محدودیت را در <a href="{{ url_for('about') }}#sources">صفحه‌ی درباره</a> توضیح داده‌ایم. قبل از تصمیم مهم، لینک منبع را خودت باز کن.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary><span>کشور من در فهرست نیست، چه کنم؟</span><span class="faq-plus" aria-hidden="true">+</span></summary>
+        <div class="faq-body">
+          <p>فعلاً {{ stats.countries|fa_digits }} کشور پوشش داده شده‌اند. برای کشورهای دیگر می‌توانی از <a href="{{ url_for('checklist') }}">چک‌لیست عمومی</a> و <a href="{{ url_for('emergency') }}">فهرست شماره‌های اضطراری</a> استفاده کنی. اگر منبع رسمی معتبری برای کشور خودت می‌شناسی، در <a href="https://github.com/MatinIsapoor/DaneshRah/issues" target="_blank" rel="noopener noreferrer">مخزن پروژه</a> پیشنهاد بده.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
 {% endblock %}

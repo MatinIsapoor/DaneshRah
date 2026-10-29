@@ -1,66 +1,116 @@
 {% extends "base.html" %}
-{% block title %}جست‌وجو در DaneshRah{% if q %} — «{{ q }}»{% endif %}{% endblock %}
+{% from "_icons.html" import icon %}
+{% block title %}{% if q %}جست‌وجوی «{{ q }}»{% else %}جست‌وجو در راهنماها{% endif %} | دانش‌راه{% endblock %}
+{% block meta_description %}جست‌وجو در {{ total|fa_digits }} راهنمای کشور دانش‌راه: ودیعه، مسکن، سیم‌کارت، بانک، اقامت، بیمه و کار دانشجویی.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
 
 {% block content %}
-<div class="container-narrow">
-  <nav class="breadcrumb" aria-label="مسیر"><a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">جست‌وجو</span></nav>
-
-  <div class="page-hero">
-    <span class="eyebrow">DaneshRah · جست‌وجو در همه‌ی راهنماها</span>
-    <h1>جست‌وجو در راهنماها</h1>
-    <p>یک کلمه بنویس — «ودیعه»، «سیم‌کارت»، حتی «Pfand». در همه‌ی {{ total|fa_digits }} کشور می‌گردد، هم تیتر هم متن. نیم‌فاصله و ی/ک عربی مهم نیست.</p>
-    {% if q %}<p class="update-note">جست‌وجو برای «{{ q }}» — تیترها اول، بعد نام کشور، بعد متن.</p>{% endif %}
+<header class="page-hero search-hero">
+  <div class="container container-reading">
+    <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> جست‌وجوی کامل</p>
+    <h1>در راهنماها جست‌وجو کن</h1>
+    <p class="page-lead">در عنوان، نام کشور، نام بخش و متن همه‌ی نکته‌ها جست‌وجو می‌شود. نیم‌فاصله، تفاوت ی/ک و اعداد فارسی/لاتین مشکلی ایجاد نمی‌کند.</p>
+    <form class="search-bar search-bar-page" action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماها">
+      <label class="visually-hidden" for="search-page-input">عبارت جست‌وجو</label>
+      <span class="search-bar-icon">{{ icon('search') }}</span>
+      <input id="search-page-input" type="search" name="q" value="{{ q }}" placeholder="مثلاً ودیعه، سیم‌کارت، بیمه…" autocomplete="off" enterkeyhint="search" data-global-search autofocus>
+      <button type="submit" class="btn btn-primary">جست‌وجو</button>
+    </form>
+    <div class="quick-links">
+      <span class="quick-links-label">پیشنهاد:</span>
+      <a href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
+      <a href="{{ url_for('search_page', q='بیمه') }}">بیمه</a>
+      <a href="{{ url_for('search_page', q='حساب بانکی') }}">حساب بانکی</a>
+      <a href="{{ url_for('search_page', q='کار دانشجویی') }}">کار دانشجویی</a>
+      <a href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
+    </div>
   </div>
+</header>
 
-  <form class="search-bar" style="max-width:none;margin-bottom:8px" action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در DaneshRah">
-    <input type="search" name="q" value="{{ q }}" placeholder="مثلاً فقط بنویس «بیمه»…" aria-label="جست‌وجو" data-global-search autocomplete="off" enterkeyhint="search">
-    <button type="submit">بگرد</button>
-  </form>
+<div class="container container-reading search-page">
+  {% if truncated %}
+  <p class="notice notice-warning">{{ icon('alert') }} عبارت جست‌وجو بسیار بلند بود و به {{ max_query_length|fa_digits }} نویسه کوتاه شد.</p>
+  {% endif %}
 
-  <div class="section">
-    {% if q %}
-      <div class="section-head">
-        <h2>نتایج «{{ q }}» <span class="count-badge">{{ results|length|fa_digits }} نتیجه</span></h2>
+  {% if q %}
+  <section aria-labelledby="results-title">
+    <div class="results-head">
+      <div>
+        <p class="section-kicker">نتیجه‌ی جست‌وجو</p>
+        <h2 id="results-title">{% if total_matches %}{{ total_matches|fa_digits }} نتیجه برای «{{ q }}»{% else %}نتیجه‌ای برای «{{ q }}» پیدا نشد{% endif %}</h2>
       </div>
-      {% if truncated %}
-      <p class="update-note">عبارت جست‌وجو طولانی بود و به {{ q|length|fa_digits }} نویسه کوتاه شد.</p>
+      {% if total_matches %}
+      <p class="results-count" role="status">نمایش {{ results|length|fa_digits }} از {{ total_matches|fa_digits }} نتیجه</p>
       {% endif %}
-      {% if results %}
-      <div class="search-results">
-        {% for r in results %}
-        <a class="result-card reveal" href="{{ url_for('category_page', country_code=r.country_code, category=r.category_code) }}" aria-label="{{ r.item_title }} — {{ r.country_name }}">
-          <h3><span class="flag-inline"><span class="flag-fb">{{ r.flag }}</span><img src="{{ r.flag|flag_url(40) }}" alt="" loading="lazy"></span> {{ r.item_title }}</h3>
-          <div class="r-meta">{{ r.country_name }} · {{ r.category_title }}
-            {% if r.matched_in == 'title' %}<span class="match-badge" title="عبارت در تیتر پیدا شد">در تیتر ✓</span>{% elif r.matched_in == 'text' %}<span class="match-badge dim">در متن</span>{% endif %}
-            {% if r.last_updated %}<span class="muted"> · {{ r.last_updated|format_updated }}</span>{% endif %}
+    </div>
+
+    {% if results %}
+    <ol class="search-results">
+      {% for result in results %}
+      <li>
+        <article class="result-card">
+          <div class="result-topline">
+            <span class="result-country">
+              {% set result_flag_url = result.flag|flag_url(80) %}
+              <span class="cc-flag cc-flag-sm" aria-hidden="true"><span class="flag-fb">{{ result.flag }}</span>{% if result_flag_url %}<img src="{{ result_flag_url }}" alt="" width="32" height="22" loading="lazy">{% endif %}</span>
+              {{ result.country_name }}
+            </span>
+            <span class="result-sep" aria-hidden="true">/</span>
+            <span class="result-category">{{ result.category_title }}</span>
+            <span class="result-badge">
+              {% if result.matched_in == 'title' %}در عنوان{% elif result.matched_in == 'text' %}در متن{% else %}در مشخصات{% endif %}
+            </span>
           </div>
-          <p>{{ r.snippet }}</p>
-        </a>
-        {% endfor %}
-      </div>
-      {% else %}
-      <div class="empty" role="status">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>
-        <h3>نتیجه‌ای پیدا نشد</h3>
-        <p>یک کلمه‌ی کوتاه‌تر امتحان کن — مثلاً به‌جای «بیمه درمانی آلمان» فقط «بیمه». نیم‌فاصله را هم بردار و دوباره بزن. اگر باز هم نبود، در گیت‌هاب بگو تا اضافه شود.</p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
-          <a class="btn btn-outline" href="{{ url_for('index') }}">دیدن همه‌ی کشورها</a>
-          <a class="btn btn-ghost" href="{{ url_for('search_page', q='بیمه') }}">امتحان «بیمه»</a>
-        </div>
-      </div>
-      {% endif %}
-    {% else %}
-      <div class="section-head"><h2>پیشنهاد جست‌وجو</h2></div>
-      <div class="steps-mini" style="margin-bottom:18px">
-        <a class="step-chip" href="{{ url_for('search_page', q='ودیعه') }}">ودیعه</a>
-        <a class="step-chip" href="{{ url_for('search_page', q='سیم‌کارت') }}">سیم‌کارت</a>
-        <a class="step-chip" href="{{ url_for('search_page', q='ثبت آدرس') }}">ثبت آدرس</a>
-        <a class="step-chip" href="{{ url_for('search_page', q='Pfand') }}">Pfand</a>
-        <a class="step-chip" href="{{ url_for('search_page', q='خوابگاه') }}">خوابگاه</a>
-        <a class="step-chip" href="{{ url_for('search_page', q='تخفیف دانشجویی') }}">تخفیف دانشجویی</a>
-      </div>
-      <p class="muted">عبارتی را بالا بنویس و Enter بزن. نکته: جست‌وجو هم‌زمان در تیتر و متن انجام می‌شود.</p>
+          <h3><a href="{{ url_for('category_page', country_code=result.country_code, category=result.category_code, _anchor=result.anchor) }}">{{ result.item_title }}</a></h3>
+          <p class="result-snippet">{{ result.snippet }}</p>
+          <div class="result-footer">
+            <a class="text-link" href="{{ url_for('category_page', country_code=result.country_code, category=result.category_code, _anchor=result.anchor) }}">
+              رفتن به این نکته {{ icon('arrow-left') }}
+            </a>
+            <span class="result-date">ویرایش داده: {{ result.last_updated|format_updated }}</span>
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+    {% if total_matches > results|length %}
+    <p class="inline-note">{{ icon('info') }} برای دیدن نتیجه‌ی بیشتر، عبارت را دقیق‌تر کن یا از فیلتر نام کشور در <a href="{{ url_for('index') }}#countries">فهرست کشورها</a> استفاده کن.</p>
     {% endif %}
-  </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">{{ icon('search') }}</span>
+      <h2>عبارت دیگری را امتحان کن</h2>
+      <p>نام کشور، نام بخش یا یک کلمه‌ی کوتاه‌تر را جست‌وجو کن. اگر مطمئنی این موضوع باید در راهنما باشد، از <a href="{{ url_for('about') }}#corrections">مسیر گزارش خطا</a> خبر بده.</p>
+      <div class="quick-links quick-links-center">
+        <a href="{{ url_for('search_page', q='مسکن') }}">مسکن</a>
+        <a href="{{ url_for('search_page', q='بانک') }}">بانک</a>
+        <a href="{{ url_for('search_page', q='اقامت') }}">اقامت</a>
+        <a href="{{ url_for('search_page', q='مالیات') }}">مالیات</a>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+  {% else %}
+  <section class="search-empty" aria-labelledby="search-help-title">
+    <div class="search-help-grid">
+      <div>
+        <p class="section-kicker">چطور جست‌وجو کار می‌کند</p>
+        <h2 id="search-help-title">یک کلمه کافی است</h2>
+        <p>می‌توانی فقط «ودیعه» را بنویسی یا نام کشور را اضافه کنی: «ودیعه آلمان». جست‌وجو در عنوان و متن انجام می‌شود و نتیجه‌ی هر کشور جدا نمایش داده می‌شود.</p>
+        <ul class="check-list-simple">
+          <li>{{ icon('check') }} نیم‌فاصله و فاصله یکسان دیده می‌شوند</li>
+          <li>{{ icon('check') }} «ی» و «ک» عربی و فارسی یکی حساب می‌شوند</li>
+          <li>{{ icon('check') }} اعداد فارسی و لاتین یکسان جست‌وجو می‌شوند</li>
+        </ul>
+      </div>
+      <aside class="search-aside">
+        <span class="search-aside-icon" aria-hidden="true">{{ icon('map') }}</span>
+        <h3>هنوز کشورت را انتخاب نکرده‌ای؟</h3>
+        <p>{{ total|fa_digits }} راهنمای کشور داریم، از آلمان و کانادا تا ژاپن و گرجستان.</p>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('index') }}#countries">دیدن فهرست کشورها {{ icon('arrow-left') }}</a>
+      </aside>
+    </div>
+  </section>
+  {% endif %}
 </div>
 {% endblock %}

@@ -1,48 +1,92 @@
 {% extends "base.html" %}
-{% block title %}چک‌لیست تعاملی ورود — DaneshRah{% endblock %}
+{% from "_icons.html" import icon %}
+{% block title %}چک‌لیست روزهای اول ورود | دانش‌راه{% endblock %}
+{% block meta_description %}چک‌لیست تعاملی روزهای اول در کشور مقصد: مدارک قبل از پرواز، فرودگاه، سیم‌کارت، ثبت آدرس، بیمه، حساب بانکی و اقامت. پیشرفت در همین مرورگر ذخیره می‌شود.{% endblock %}
 
 {% block content %}
-<div class="container-narrow">
-  <nav class="breadcrumb" aria-label="مسیر"><a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span><span aria-current="page">چک‌لیست ورود</span></nav>
-
-  <div class="page-hero">
-    <span class="eyebrow">به ترتیب معمولِ کارها</span>
+<header class="page-hero checklist-hero">
+  <div class="container">
+    <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> از فرودگاه تا استقرار</p>
     <h1>چک‌لیست روزهای اول</h1>
-    <p>{{ arrival['items']|length|fa_digits }} قدم به ترتیبی که معمولاً کارها جلو می‌رود. انجام دادی تیک بزن — پیشرفتت در همین مرورگر می‌ماند. عجله نکن، قدم‌به‌قدم.</p>
-  </div>
-
-  <div class="check-progress">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <b id="check-heading">پیشرفت من در DaneshRah</b>
-      <span class="muted" data-check-text style="font-size:.85rem" role="status" aria-live="polite"></span>
-    </div>
-    <div class="bar" role="progressbar" aria-labelledby="check-heading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-check-progress><i data-check-bar></i></div>
-    <div style="margin-top:12px;display:flex;gap:8px">
-      <button class="mini-btn" data-check-reset>شروع دوباره</button>
-      <a class="mini-btn" style="text-decoration:none" href="{{ url_for('category_page', country_code='general', category='arrival') }}">خواندن نسخه‌ی متنی</a>
+    <p class="page-lead">کارها را به ترتیب انجام بده و هر کدام را که تمام شد تیک بزن. لازم نیست همه را یک‌جا انجام بدهی؛ پیشرفت‌ات در همین مرورگر می‌ماند و هیچ اطلاعاتی به سرور فرستاده نمی‌شود.</p>
+    <div class="meta-row">
+      <span class="meta-badge">{{ icon('check-circle') }} {{ arrival['items']|length|fa_digits }} قدم</span>
+      <span class="meta-badge">{{ icon('clock') }} حدود ۱۰ دقیقه</span>
+      <span class="meta-badge">{{ icon('shield') }} ذخیره‌ی محلی، بدون حساب کاربری</span>
     </div>
   </div>
+</header>
 
-  <div role="group" aria-labelledby="check-heading">
-    {% for item in arrival['items'] %}
-    <div class="check-item reveal" data-check-item="step-{{ loop.index }}">
-      <input class="check-input" type="checkbox" id="check-step-{{ loop.index }}" data-check-input>
+<div class="container checklist-layout">
+  <section class="checklist-progress-wrap" aria-labelledby="progress-title">
+    <div class="checklist-progress-card">
+      <div class="progress-head">
+        <div>
+          <h2 id="progress-title">پیشرفت تو</h2>
+          <p class="progress-count" data-check-text aria-live="polite">۰ از {{ arrival['items']|length|fa_digits }} قدم</p>
+        </div>
+        <button class="btn btn-quiet btn-sm" type="button" data-check-reset>{{ icon('x') }} پاک کردن پیشرفت</button>
+      </div>
+      <div class="progress-track" role="progressbar" aria-labelledby="progress-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-check-progress>
+        <span class="progress-fill" data-check-bar></span>
+      </div>
+      <p class="progress-hint">پیشرفت به‌صورت خودکار در همین مرورگر ذخیره می‌شود. اگر از حالت ناشناس استفاده کنی یا داده‌های مرورگر را پاک کنی، از بین می‌رود.</p>
+      <p class="visually-hidden" role="status" aria-live="polite" data-check-status></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="steps-title">
+    <div class="section-head section-head-inline">
       <div>
-        <h2><label for="check-step-{{ loop.index }}">{{ loop.index|fa_digits }}. {{ item.title }}</label></h2>
-        <p>{{ item.content | linkify }}</p>
+        <p class="section-kicker">به ترتیب، بدون عجله</p>
+        <h2 id="steps-title">قدم‌های ورود</h2>
+      </div>
+      <a class="text-link" href="{{ url_for('country_page', country_code='general') }}">نسخه‌ی متنی کامل {{ icon('arrow-left') }}</a>
+    </div>
+
+    {% if arrival['items'] %}
+    <ol class="checklist" data-checklist>
+      {% for item in arrival['items'] %}
+      <li class="check-item" data-check-item="{{ loop.index }}">
+        <input class="check-input" type="checkbox" id="check-{{ loop.index }}" data-check-input aria-describedby="check-body-{{ loop.index }}">
+        <label class="check-label" for="check-{{ loop.index }}">
+          <span class="check-box" aria-hidden="true">{{ icon('check') }}</span>
+          <span class="check-title">{{ item.title }}</span>
+        </label>
+        <div class="check-body" id="check-body-{{ loop.index }}">
+          {{ item.content|linkify }}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    <noscript><p class="inline-note">{{ icon('info') }} تیک زدن و ذخیره‌ی پیشرفت به JavaScript نیاز دارد. متن همه‌ی قدم‌ها بدون JavaScript هم قابل خواندن است.</p></noscript>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">{{ icon('compass') }}</span>
+      <h2>هنوز قدمی ثبت نشده</h2>
+      <p>داده‌ی چک‌لیست در حال تکمیل است. فعلاً از <a href="{{ url_for('index') }}#countries">راهنمای کشورها</a> شروع کن.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <div class="checklist-complete" data-celebrate hidden>
+    <span class="celebrate-icon" aria-hidden="true">{{ icon('check-circle') }}</span>
+    <div>
+      <h2>چک‌لیست کامل شد</h2>
+      <p>قدم‌های اصلی را پشت سر گذاشتی. حالا وقتش است صفحه‌ی کشور مقصدت را باز کنی و جزئیات مسکن و کار را بخوانی.</p>
+      <div class="band-actions">
+        <a class="btn btn-primary" href="{{ url_for('index') }}#countries">انتخاب کشور {{ icon('arrow-left') }}</a>
+        <a class="btn btn-secondary" href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
       </div>
     </div>
-    {% endfor %}
   </div>
 
-  <div class="celebrate" data-celebrate>
-    <h2 style="margin:6px 0">تمام شد</h2>
-    <p style="margin:0;opacity:.9">حالا اگر تجربه‌ی دست‌اولی داری، برای نفر بعدی بفرست.</p>
-    <div style="margin-top:14px"><a class="btn btn-gold" href="{{ url_for('index') }}">رفتن به کشورها</a></div>
-  </div>
-
-  <div class="tip">
-    <div><b>نکته:</b> روز اول فقط سیم‌کارت و اینترنت. بقیه را قدم‌به‌قدم انجام بده؛ خواستن همه‌چیز در یک روز معمولاً فقط خسته‌کننده است.</div>
+  <div class="checklist-foot">
+    <p class="inline-note">{{ icon('info') }} این چک‌لیست عمومی است. بعضی کشورها قدم‌های اضافه‌ای مثل ثبت اقامت در پلیس یا گرفتن شماره‌ی مالیاتی دارند. آن‌ها را در بخش «امور اداری» کشور مقصد ببین.</p>
+    <div class="band-actions">
+      <a class="btn btn-secondary" href="{{ url_for('country_page', country_code='general') }}">نسخه‌ی متنی {{ icon('book') }}</a>
+      <a class="btn btn-secondary" href="{{ url_for('about') }}#corrections">گزارش قدم جاافتاده {{ icon('alert') }}</a>
+    </div>
   </div>
 </div>
 {% endblock %}

@@ -1,77 +1,161 @@
 {% extends "base.html" %}
-{% block title %}{{ category.title }} در {{ country.name }} | DaneshRah{% endblock %}
+{% from "_icons.html" import icon %}
+{% set is_general = country_code == 'general' %}
+{% block robots %}{% if is_general %}noindex, follow{% else %}index, follow{% endif %}{% endblock %}
+{% block title %}{{ category.title }} در {{ country.name }} | دانش‌راه{% endblock %}
+{% block meta_description %}{{ category.title }} برای دانشجویان در {{ country.name }}{% if cat_meta.desc %}: {{ cat_meta.desc }}{% endif %}. {{ category['items']|length|fa_digits }} نکته با لینک منبع و تاریخ ویرایش داده.{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json" nonce="{{ csp_nonce }}">{{ {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": category.title ~ " در " ~ country.name,
+  "description": cat_meta.desc or category.title,
+  "dateModified": country.last_updated,
+  "inLanguage": "fa-IR",
+  "mainEntityOfPage": site_url ~ url_for('category_page', country_code=country_code, category=category_code),
+  "isPartOf": {"@type": "WebSite", "name": "دانش‌راه", "url": site_url ~ "/"},
+  "publisher": {"@type": "Organization", "name": "دانش‌راه", "url": site_url ~ "/"},
+  "author": {"@type": "Organization", "name": "دانش‌راه", "url": site_url ~ "/"}
+}|tojson }}</script>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-  <nav class="breadcrumb" aria-label="مسیر">
-    <a href="{{ url_for('index') }}">خانه</a><span aria-hidden="true">‹</span>
-    <a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a><span aria-hidden="true">‹</span>
-    <span aria-current="page">{{ category.title }}</span>
+<nav class="breadcrumb container" aria-label="مسیر صفحه">
+  <ol>
+    <li><a href="{{ url_for('index') }}">خانه</a></li>
+    {% if is_general %}
+    <li><a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول</a></li>
+    {% else %}
+    <li><a href="{{ url_for('index') }}#countries">کشورها</a></li>
+    <li><a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a></li>
+    {% endif %}
+    <li aria-current="page">{{ category.title }}</li>
+  </ol>
+</nav>
+
+<header class="page-hero guide-hero">
+  <div class="container">
+    <p class="kicker">
+      <span class="kicker-rule" aria-hidden="true"></span>
+      {% if is_general %}راهنمای عمومی{% else %}<a href="{{ url_for('country_page', country_code=country_code) }}">{{ country.name }}</a>{% endif %}
+      <span class="kicker-sep" aria-hidden="true">/</span>
+      {{ category.title }}
+    </p>
+    <div class="guide-hero-grid">
+      <div>
+        <h1>{{ category.title }}{% if not is_general %} در {{ country.name }}{% endif %}</h1>
+        <p class="page-lead">
+          {% if cat_meta.desc %}{{ cat_meta.desc }}{% else %}نکته‌های کاربردی و قابل بررسی درباره‌ی {{ category.title }}.{% endif %}
+        </p>
+        <div class="meta-row">
+          <span class="meta-badge">{{ icon('book') }} {{ category['items']|length|fa_digits }} نکته</span>
+          <span class="meta-badge">{{ icon('clock') }} حدود {{ read_minutes|fa_digits }} دقیقه مطالعه</span>
+          {% if country.last_updated %}
+          <span class="meta-badge">{{ icon('calendar') }} آخرین ویرایش داده: {{ country.last_updated|format_updated }}</span>
+          {% endif %}
+          {% if category_sources %}<span class="meta-badge">{{ icon('shield') }} {{ category_sources|length|fa_digits }} منبع این بخش</span>{% endif %}
+        </div>
+      </div>
+      <div class="guide-hero-actions">
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('country_page', country_code=country_code) }}">{{ icon('arrow-right') }} بازگشت به {{ country.name }}</a>
+        <button class="btn btn-secondary btn-sm js-only" type="button" data-print>{{ icon('print') }} چاپ / PDF</button>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('search_page', q=category.title) }}">{{ icon('search') }} جست‌وجو در این موضوع</a>
+      </div>
+    </div>
+    <p class="hero-fineprint">{{ icon('info') }} لینک‌های بیرونی در تب جدید باز می‌شوند. برای تصمیم مهم، منبع رسمی را خودت بررسی کن.</p>
+  </div>
+</header>
+
+<div class="container guide-layout">
+  <nav class="toc" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">فهرست این صفحه</h2>
+    <ol class="toc-list">
+      {% for item in category['items'] %}
+      <li><a href="#item-{{ loop.index }}" data-toc-link><span class="toc-num">{{ loop.index|fa_digits }}</span><span>{{ item.title }}</span></a></li>
+      {% endfor %}
+    </ol>
+    <div class="toc-foot">
+      <a href="{{ url_for('country_page', country_code=country_code) }}">{{ icon('map') }} نمای کلی {{ country.name }}</a>
+      {% if not is_general %}
+      <a href="{{ url_for('checklist') }}">{{ icon('check-circle') }} چک‌لیست روزهای اول</a>
+      {% endif %}
+    </div>
   </nav>
 
-  <div class="page-hero">
-    <span class="eyebrow">{{ country.flag }} {{ country.name }}</span>
-    <h1>{{ category.title }}</h1>
-    <p>
-      {% if category_code == 'shopping' %}کارهای روزمره‌ی هفته‌های اول: کجا خرید کنی، کدام بانک سریع‌تر حساب باز می‌کند، برای سیم‌کارت چه مدارکی لازم است و با کارت دانشجویی کجاها تخفیف می‌گیری.{% elif category_code == 'housing' %}از پیدا کردن خانه تا امضای قرارداد و ثبت قانونی آدرس: ودیعه، هزینه‌های جانبی، کلاهبرداری‌های رایج و مهلت‌های قانونی — با دقت بخوان.{% elif category_code == 'admin' %}اقامت، بیمه‌ی سلامت، شماره‌های شناسایی و مالیاتی و سفارت: کارهای اداری که اگر عقب بیفتند جریمه و دردسر دارند — به ترتیب بخوان و تیک بزن.{% elif category_code == 'work' %}قوانین کار دانشجویی (سقف ساعت، مجوزها)، حداقل دستمزد، سایت‌های کاریابی و نکته‌های کاربردی.{% elif category_code == 'arrival' %}قدم‌به‌قدم از فرودگاه تا استقرار کامل. برای نسخه‌ی تعاملی با ذخیره‌ی پیشرفت، چک‌لیست را باز کن.{% else %}راهنمای قدم‌به‌قدم {{ category.title }} در {{ country.name }}.{% endif %}
-    </p>
-    <div class="meta-row">
-      <span class="meta-badge">{{ category['items']|length|fa_digits }} مطلب</span>
-      <span class="meta-badge">حدود {{ ((category['items']|length * 1.5)|round(0, 'ceil')|int)|fa_digits }} دقیقه مطالعه</span>
-      <span class="meta-badge">همراه با لینک منابع اصلی</span>
-      {% if country.last_updated %}<span class="meta-badge update-badge">آخرین بازبینی: {{ country.last_updated|format_updated }}</span>{% endif %}
+  <div class="guide-content">
+    {% if category['items'] %}
+    {% for item in category['items'] %}
+    {% set source_link = item.link|safe_url %}
+    <article class="guide-item" id="item-{{ loop.index }}" data-guide-item>
+      <h3 class="guide-item-head" id="item-head-{{ loop.index }}">
+        <button type="button" class="g-head-btn" data-guide-head aria-expanded="true" aria-controls="item-body-{{ loop.index }}">
+          <span class="g-num" aria-hidden="true">{{ loop.index|fa_digits }}</span>
+          <span class="g-title">{{ item.title }}</span>
+          <span class="g-toggle" aria-hidden="true">{{ icon('chevron-down') }}</span>
+        </button>
+      </h3>
+      <div class="g-body" id="item-body-{{ loop.index }}" role="region" aria-labelledby="item-head-{{ loop.index }}">
+        <div class="g-text">{{ item.content|linkify }}</div>
+        {% if source_link and source_link != '#' %}
+        <p class="item-source">
+          <span class="item-source-label">منبع پیشنهادی</span>
+          <a href="{{ source_link }}" target="_blank" rel="noopener noreferrer">باز کردن صفحه‌ی منبع {{ icon('external') }}</a>
+        </p>
+        {% endif %}
+        <div class="g-actions">
+          <span class="copy-anchor" aria-hidden="true">#item-{{ loop.index }}</span>
+          <button class="mini-btn js-only" type="button" data-copy-link="#item-{{ loop.index }}" aria-label="کپی پیوند مستقیم به «{{ item.title }}»">
+            {{ icon('link') }} <span data-copy-label>کپی پیوند</span>
+          </button>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">{{ icon('book') }}</span>
+      <h2>هنوز نکته‌ای در این بخش ثبت نشده</h2>
+      <p>می‌توانی از فهرست <a href="{{ url_for('index') }}#countries">کشورها</a> بخش دیگری را انتخاب کنی یا در کل راهنماها <a href="{{ url_for('search_page') }}">جست‌وجو کنی</a>.</p>
     </div>
-  </div>
+    {% endif %}
 
-  <div class="toolbar">
-    <button class="btn btn-outline" data-print style="padding:8px 18px;font-size:.85rem" aria-label="چاپ این راهنما">چاپ / ذخیره‌ی PDF</button>
-    <span class="muted" style="font-size:.82rem" id="guide-hint">روی تیتر هر مطلب بزن باز و بسته می‌شود · <span class="kbd">/</span> برای جست‌وجو · <span class="kbd">Esc</span> بستن</span>
-  </div>
+    <p class="visually-hidden" data-copy-status role="status" aria-live="polite"></p>
 
-  <div class="guide-layout">
-    <nav class="toc" aria-label="فهرست مطالب">
-      <h2 id="toc-heading">فهرست این صفحه</h2>
-      <ul class="toc-list">
-        {% for item in category['items'] %}
-        <li><a href="#item-{{ loop.index }}" data-toc-link>{{ loop.index|fa_digits }}. {{ item.title }}</a></li>
+    <section class="guide-sources" aria-labelledby="guide-sources-title">
+      <div class="section-head">
+        <p class="section-kicker">برای بررسی بیشتر</p>
+        <h2 id="guide-sources-title">منابع این بخش</h2>
+      </div>
+      {% if category_sources %}
+      <ul class="source-grid source-grid-compact">
+        {% for source in category_sources %}
+        <li class="source-card">
+          <a href="{{ source.url|safe_url }}" target="_blank" rel="noopener noreferrer" {% if source.url|safe_url == '#' %}aria-disabled="true"{% endif %}>
+            <span class="source-title">{{ source.title }}</span>
+            <span class="source-arrow" aria-hidden="true">{{ icon('external') }}</span>
+          </a>
+        </li>
         {% endfor %}
       </ul>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
-        <a href="{{ url_for('country_page', country_code=country_code) }}">→ همه‌ی دسته‌های {{ country.name }}</a>
-      </div>
-    </nav>
+      <p class="inline-note">{{ icon('info') }} این فهرست بر اساس دسته‌بندی داده تهیه شده است. یک منبع ممکن است فقط بخشی از مطالب را پوشش بدهد؛ برای جزئیات هر نکته، متن کامل صفحه‌ی رسمی را بخوان.</p>
+      {% else %}
+      <p class="inline-note">{{ icon('info') }} برای این بخش منبع دسته‌بندی‌شده‌ای ثبت نشده است. فهرست کلی منابع را در <a href="{{ url_for('country_page', country_code=country_code) }}#sources">صفحه‌ی {{ country.name }}</a> ببین.</p>
+      {% endif %}
+    </section>
 
-    <div>
-      {% for item in category['items'] %}
-      {% set source_link = item.link|safe_url %}
-      <article class="guide-item reveal" id="item-{{ loop.index }}" data-guide-item>
-        <h3 class="guide-item-head" id="item-head-{{ loop.index }}">
-          <button type="button" class="g-head-btn" data-guide-head aria-expanded="true" aria-controls="item-body-{{ loop.index }}">
-            <span class="g-num" aria-hidden="true">{{ loop.index|fa_digits }}</span>
-            <span class="g-title">{{ item.title }}</span>
-            <span class="g-toggle" aria-hidden="true">▾</span>
-          </button>
-        </h3>
-        <div class="g-body" id="item-body-{{ loop.index }}" role="region" aria-labelledby="item-head-{{ loop.index }}">
-          <p>{{ item.content | linkify }}</p>
-          {% if source_link %}
-          <a class="source-link" href="{{ source_link }}" target="_blank" rel="noopener">صفحه‌ی اصلی منبع ↗</a>
-          {% endif %}
-          <div class="g-actions">
-            <button class="mini-btn" data-copy-link="#item-{{ loop.index }}" aria-live="polite">کپی لینک</button>
-          </div>
-        </div>
-      </article>
-      {% endfor %}
-
-      <div class="tip">
-        <div><b>چیزی اشتباه است یا عوض شده؟</b> در <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب</a> بنویس تا اصلاح کنم.<br><span class="muted">قبل از امضا یا واریز پول، لینک منبع رسمی را که در متن آمده خودت هم چک کن؛ قانون و قیمت هر سال عوض می‌شود.</span></div>
+    <aside class="disclaimer-box">
+      <span class="disclaimer-icon" aria-hidden="true">{{ icon('alert') }}</span>
+      <div>
+        <strong>محدودیت این صفحه</strong>
+        <p>تاریخ بالای صفحه، تاریخ ویرایش فایل داده است، نه تضمین بازبینی خط‌به‌خط این نکته‌ها در همان روز. قوانین، هزینه‌ها و سقف ساعت کار تغییر می‌کنند؛ پیش از تصمیم، منبع رسمی یا دفتر بین‌الملل دانشگاه را بررسی کن.</p>
       </div>
-      <p class="update-note">این صفحه از منابع رسمی و راهنماهای عمومی جمع شده است؛ اگر نکته‌ای جا افتاده یا قدیمی شده، در گیت‌هاب بگو.</p>
+    </aside>
 
-      <div class="center mt">
-        <a class="btn btn-outline" href="{{ url_for('country_page', country_code=country_code) }}">→ بازگشت به {{ country.name }}</a>
-      </div>
+    <div class="guide-footer-nav">
+      <a class="btn btn-secondary" href="{{ url_for('country_page', country_code=country_code) }}">{{ icon('arrow-right') }} بازگشت به نمای کلی {{ country.name }}</a>
+      <a class="text-link" href="{{ url_for('about') }}#corrections">خطایی دیدی؟ گزارش بده {{ icon('arrow-left') }}</a>
     </div>
   </div>
 </div>

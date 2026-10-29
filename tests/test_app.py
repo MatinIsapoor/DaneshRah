@@ -32,6 +32,9 @@ class TestRoutes(AppTestCase):
             "/search",
             "/checklist",
             "/emergency",
+            "/about",
+            "/robots.txt",
+            "/sitemap.xml",
             "/health",
             "/ping",
             "/api/countries",
@@ -142,6 +145,126 @@ class TestSecurityHeaders(AppTestCase):
     def test_health_is_not_cached(self) -> None:
         self.assertEqual(self.get("/health").headers.get("Cache-Control"), "no-store")
 
+    def test_security_headers_on_error_pages(self) -> None:
+        response = self.get("/definitely-not-here")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.headers["X-Robots-Tag"], "noindex")
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
+        self.assertIn("Content-Security-Policy", response.headers)
+
+    def test_no_inline_styles_are_rendered(self) -> None:
+        paths = (
+            "/",
+            "/about",
+            "/country/france",
+            "/country/france/work",
+            "/search",
+            "/checklist",
+            "/emergency",
+        )
+        for path in paths:
+            body = self.get(path).get_data(as_text=True)
+            with self.subTest(path=path):
+                self.assertNotIn(" style=", body)
+                self.assertNotIn("style='", body)
+                self.assertNotIn("style=\"", body)
+
+    def test_csp_does_not_allow_inline_styles(self) -> None:
+        csp = self.get("/").headers["Content-Security-Policy"]
+        style_src = [part for part in csp.split(";") if part.strip().startswith("style-src")][0]
+        self.assertNotIn("unsafe-inline", style_src)
+        self.assertIn("'self'", style_src)
+
+
+class TestDiscovery(AppTestCase):
+    def test_about_page_is_indexable_and_has_one_creator_credit(self) -> None:
+        response = self.get("/about")
+        body = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("X-Robots-Tag", response.headers)
+        self.assertIn('id="creator"', body)
+        self.assertEqual(body.count("متین"), 1)
+        self.assertNotIn("متین", self.get("/").get_data(as_text=True))
+
+    def test_canonical_uses_the_configured_site_url_not_the_host_header(self) -> None:
+        response = self.get("/", headers={"Host": "evil.example"})
+        body = response.get_data(as_text=True)
+        self.assertIn(
+            f'<link rel="canonical" href="{app_module.SITE_URL}/">',
+            body,
+        )
+        self.assertNotIn("evil.example", body)
+
+        about = self.get("/about", headers={"Host": "evil.example"}).get_data(as_text=True)
+        self.assertIn(
+            f'<link rel="canonical" href="{app_module.SITE_URL}/about">',
+            about,
+        )
+
+    def test_robots_points_to_the_sitemap_and_blocks_private_routes(self) -> None:
+        response = self.get("/robots.txt")
+        body = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(f"Sitemap: {app_module.SITE_URL}/sitemap.xml", body)
+        for private in ("/api/", "/health", "/search"):
+            self.assertIn(f"Disallow: {private}", body)
+        self.assertEqual(response.headers["Cache-Control"], "public, max-age=300")
+
+    def test_sitemap_lists_public_pages_and_no_generic_duplicate(self) -> None:
+        response = self.get("/sitemap.xml")
+        body = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("application/xml", response.headers["Content-Type"])
+        self.assertIn(f"<loc>{app_module.SITE_URL}/about</loc>", body)
+        self.assertIn(f"<loc>{app_module.SITE_URL}/country/france</loc>", body)
+        self.assertIn(f"<loc>{app_module.SITE_URL}/country/france/housing</loc>", body)
+        self.assertNotIn(f"<loc>{app_module.SITE_URL}/country/general</loc>", body)
+        self.assertNotIn(f"<loc>{app_module.SITE_URL}/search</loc>", body)
+        self.assertIn("<lastmod>2026-10-23</lastmod>", body)
+
+    def test_search_and_generic_page_are_noindex(self) -> None:
+        for path in ("/search", "/country/general", "/country/general/arrival"):
+            with self.subTest(path=path):
+                response = self.get(path)
+                self.assertEqual(response.headers.get("X-Robots-Tag"), "noindex, follow")
+                body = response.get_data(as_text=True)
+                self.assertIn('name="robots" content="noindex, follow"', body)
+                self.assertNotIn('name="robots" content="index, follow"', body)
+
+    def test_health_reports_degraded_and_503_when_data_breaks(self) -> None:
+        with mock.patch.object(
+            app_module, "get_guides", side_effect=RuntimeError("broken data")
+        ):
+            response = self.get("/health")
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.get_json()["status"], "degraded")
+        self.assertEqual(response.headers["X-Robots-Tag"], "noindex")
+
+    def test_public_cache_policy(self) -> None:
+        self.assertEqual(
+            self.get("/sitemap.xml").headers["Cache-Control"], "public, max-age=300"
+        )
+        self.assertEqual(
+            self.get("/api/search?q=ودیعه").headers["Cache-Control"], "no-store"
+        )
+
+    def test_stats_are_rendered_as_numbers_not_dict_methods(self) -> None:
+        guides = app_module.get_guides()
+        stats = app_module.get_stats(guides)
+        expected_items = app_module.fa_digits(stats["items"])
+        expected_sources = app_module.fa_digits(stats["sources"])
+        for path in ("/", "/about"):
+            with self.subTest(path=path):
+                body = self.get(path).get_data(as_text=True)
+                self.assertNotIn("built-in method", body)
+                self.assertNotIn("dict object", body)
+                self.assertIn(expected_items, body)
+                self.assertIn(expected_sources, body)
+
+        country_body = self.get("/country/france").get_data(as_text=True)
+        self.assertNotIn("built-in method", country_body)
+        self.assertNotIn("dict object", country_body)
+
 
 class TestSearch(AppTestCase):
     def test_normalize_fa_variants(self) -> None:
@@ -181,6 +304,34 @@ class TestSearch(AppTestCase):
     def test_search_limit_is_bounded(self) -> None:
         self.assertLessEqual(len(app_module.search_guides("ا", limit=0)), 1)
         self.assertLessEqual(len(app_module.search_guides("سیم", limit=10_000)), app_module.MAX_SEARCH_LIMIT)
+
+
+    def test_search_results_deep_link_to_the_matching_item(self) -> None:
+        body = self.get("/search?q=ودیعه").get_data(as_text=True)
+        self.assertRegex(
+            body,
+            r'href="/country/[a-z_]+/(?:shopping|housing|admin|work)#item-\d+"',
+        )
+
+    def test_search_limit_note_uses_the_configured_limit(self) -> None:
+        body = self.get("/search?q=" + "a" * 500).get_data(as_text=True)
+        self.assertIn(f"{app_module.MAX_QUERY_LENGTH}", body)
+        self.assertNotIn(f"به {200}", body)
+
+    def test_general_search_results_do_not_emit_empty_flag_images(self) -> None:
+        body = self.get("/search?q=فرودگاه").get_data(as_text=True)
+        self.assertIn("قدم‌های اول", body)
+        self.assertNotIn('src=""', body)
+
+
+class TestMarkupAccessibility(AppTestCase):
+    def test_checklist_has_one_visible_label_per_checkbox(self) -> None:
+        body = self.get("/checklist").get_data(as_text=True)
+        inputs = body.count("data-check-input")
+        labels = body.count('class="check-label"')
+        self.assertGreater(inputs, 0)
+        self.assertEqual(labels, inputs)
+        self.assertNotIn("check-box-label", body)
 
 
 class TestInputHandling(AppTestCase):

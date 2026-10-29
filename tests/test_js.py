@@ -50,8 +50,17 @@ class AppJsStaticTests(unittest.TestCase):
         self.assertNotIn(".then(done, done)", self.source)
         self.assertIn("کپی نشد", self.source)
 
-    def test_intersection_observer_is_guarded(self) -> None:
-        self.assertIn("'IntersectionObserver' in window", self.source)
+    def test_scroll_work_is_throttled(self) -> None:
+        self.assertIn("scrollQueued", self.source)
+        self.assertIn("requestAnimationFrame(updateScrollUI)", self.source)
+
+    def test_no_html_injection(self) -> None:
+        for pattern in ("innerHTML", "insertAdjacentHTML", "document.write"):
+            with self.subTest(pattern=pattern):
+                self.assertNotIn(pattern, self.source)
+
+    def test_mobile_menu_updates_aria_state(self) -> None:
+        self.assertIn("setAttribute('aria-expanded'", self.source)
 
     def test_no_inline_event_handlers_in_js(self) -> None:
         self.assertNotIn("onerror", self.source)

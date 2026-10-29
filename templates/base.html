@@ -3,21 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{{ site_description|default('DaneshRah (دانش‌راه): راهنمای فارسی زندگی دانشجویی در خارج از کشور — خرید، مسکن، بانک، سیم‌کارت و چک‌لیست روزهای اول، کشور به کشور.') }}">
-  <meta name="theme-color" content="#f6f2ea" data-theme-color>
-  <meta property="og:site_name" content="DaneshRah">
-  <meta property="og:type" content="website">
+  {% set page_description %}{% block meta_description %}{{ site_description }}{% endblock %}{% endset %}
+  {% set page_robots %}{% block robots %}index, follow{% endblock %}{% endset %}
+  <title>{% block title %}{{ site_name }} | {{ site_name_fa }} — {{ site_tagline }}{% endblock %}</title>
+  <meta name="description" content="{{ page_description|striptags|trim }}">
+  <meta name="robots" content="{{ page_robots|striptags|trim }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta name="theme-color" content="#f4efe5" data-theme-color>
+  <meta name="color-scheme" content="light dark">
+
+  <meta property="og:site_name" content="{{ site_name }} | {{ site_name_fa }}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
   <meta property="og:locale" content="fa_IR">
-  <meta property="og:title" content="DaneshRah | دانش‌راه">
-  <meta property="og:description" content="از فرودگاه تا استقرار کامل — راهنمای کشوربه‌کشور برای دانشجویان ایرانی.">
-  <title>{% block title %}DaneshRah | دانش‌راه — راهنمای دانشجویان ایرانی خارج از کشور{% endblock %}</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23a63d22'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='36' font-weight='700' fill='%23f6f2ea' text-anchor='middle'%3E%D8%AF%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="{{ self.title()|striptags|trim }}">
+  <meta property="og:description" content="{{ page_description|striptags|trim }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="{{ site_url }}{{ url_for('static', filename='og-cover.png') }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="دانش‌راه — راهنمای زندگی دانشجویی در خارج از کشور">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.title()|striptags|trim }}">
+  <meta name="twitter:description" content="{{ page_description|striptags|trim }}">
+  <meta name="twitter:image" content="{{ site_url }}{{ url_for('static', filename='og-cover.png') }}">
+
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
   <script nonce="{{ csp_nonce }}">
     (function () {
+      document.documentElement.classList.add('js');
       try {
-        var t = localStorage.getItem('daneshrah-theme');
-        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', t);
+        var stored = localStorage.getItem('daneshrah-theme');
+        var theme = stored === 'dark' || stored === 'light'
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
       }
@@ -25,71 +45,134 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@500;600;700&amp;family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script type="application/ld+json" nonce="{{ csp_nonce }}">{{ {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "دانش‌راه (DaneshRah)",
+    "alternateName": "DaneshRah",
+    "url": site_url ~ "/",
+    "description": site_description,
+    "inLanguage": "fa-IR",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": site_url ~ "/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }|tojson }}</script>
+  {% block structured_data %}{% endblock %}
   {% block head %}{% endblock %}
 </head>
 <body>
   <a class="skip-link" href="#main">پرش به محتوای اصلی</a>
   <div class="read-progress" data-read-progress aria-hidden="true"></div>
 
-  <nav class="nav" aria-label="ناوبری اصلی">
-    <div class="nav-inner">
-      <a class="brand" href="{{ url_for('index') }}" aria-label="DaneshRah — صفحه اصلی">
-        <span class="brand-mark" aria-hidden="true">د</span>
-        <span>دانش‌راه <span class="brand-fa">DaneshRah</span><small>راهنمای زندگی دانشجویی</small></span>
+  {% import "_icons.html" as ui %}
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="دانش‌راه — صفحه‌ی اصلی">
+        {{ ui.logo('brand-mark') }}
+        <span class="brand-copy">
+          <span class="brand-name">دانش‌راه</span>
+          <span class="brand-sub">DaneshRah</span>
+        </span>
       </a>
-      <div class="nav-links" data-nav-links id="main-nav">
-        <a href="{{ url_for('index') }}" class="{% if request.path == '/' %}active{% endif %}">خانه</a>
-        <a href="{{ url_for('checklist') }}" class="{% if request.path == '/checklist' %}active{% endif %}">چک‌لیست ورود</a>
-        <a href="{{ url_for('emergency') }}" class="{% if request.path == '/emergency' %}active{% endif %}">شماره‌های اضطراری</a>
-        <a href="{{ url_for('search_page') }}" class="{% if request.path.startswith('/search') %}active{% endif %}">جست‌وجو</a>
-      </div>
-      <div style="display:flex;gap:8px;margin-inline-start:auto">
-        <button class="icon-btn" data-theme-btn aria-label="تغییر تم">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+
+      <nav class="primary-nav" id="main-nav" data-nav-links aria-label="ناوبری اصلی">
+        <a href="{{ url_for('index') }}#countries"{% if request.endpoint == 'index' %} class="active" aria-current="page"{% elif request.endpoint in ('country_page', 'category_page') %} class="active"{% endif %}>کشورها</a>
+        <a href="{{ url_for('checklist') }}"{% if request.endpoint == 'checklist' %} class="active" aria-current="page"{% endif %}>چک‌لیست ورود</a>
+        <a href="{{ url_for('emergency') }}"{% if request.endpoint == 'emergency' %} class="active" aria-current="page"{% endif %}>شماره‌های اضطراری</a>
+        <a href="{{ url_for('search_page') }}"{% if request.endpoint == 'search_page' %} class="active" aria-current="page"{% endif %}>جست‌وجو</a>
+        <a href="{{ url_for('about') }}"{% if request.endpoint == 'about' %} class="active" aria-current="page"{% endif %}>درباره</a>
+      </nav>
+
+      <div class="header-actions">
+        <details class="site-search" data-search-details>
+          <summary class="icon-btn" aria-label="باز کردن جست‌وجو" title="جست‌وجو (کلید /)">
+            {{ ui.icon('search') }}
+          </summary>
+          <div class="site-search-panel">
+            <form action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در دانش‌راه">
+              <label class="visually-hidden" for="site-search-input">عبارت جست‌وجو</label>
+              <input id="site-search-input" type="search" name="q" placeholder="مثلاً ودیعه، سیم‌کارت، بیمه…" autocomplete="off" enterkeyhint="search" data-global-search>
+              <button type="submit" class="btn btn-primary btn-sm">جست‌وجو</button>
+            </form>
+            <p class="site-search-hint">در {{ site_stats.countries|fa_digits }} کشور، هم در تیتر و هم در متن جست‌وجو می‌شود.</p>
+          </div>
+        </details>
+
+        <button class="icon-btn theme-btn" type="button" data-theme-btn aria-label="تغییر تم روشن یا تیره" title="تغییر تم">
+          <span class="theme-icon theme-icon-sun">{{ ui.icon('sun') }}</span>
+          <span class="theme-icon theme-icon-moon">{{ ui.icon('moon') }}</span>
         </button>
-        <button class="icon-btn menu-btn" data-menu-btn aria-label="باز کردن منو" aria-expanded="false" aria-controls="main-nav">☰</button>
+
+        <button class="icon-btn menu-btn" type="button" data-menu-btn aria-label="باز کردن منو" aria-expanded="false" aria-controls="main-nav">
+          <span class="menu-icon-open">{{ ui.icon('menu') }}</span>
+          <span class="menu-icon-close">{{ ui.icon('x') }}</span>
+        </button>
       </div>
     </div>
-  </nav>
+  </header>
 
   <main id="main" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="site">
-    <div class="footer-grid">
-      <div>
-        <h2>دانش‌راه · DaneshRah</h2>
-        <p style="margin:0;max-width:26rem">راهنمای فارسی زندگی دانشجویی در خارج از کشور: خرید، مسکن، کارهای اداری و کار دانشجویی. هر مطلب از منابع رسمی همان کشور جمع شده و لینک منبع و تاریخ آخرین بازبینی کنارش آمده است.</p>
-        <span class="signature">— متین، دانشجوی پاریس</span>
-      </div>
-      <div>
-        <h2>دسترسی سریع</h2>
-        <a href="{{ url_for('index') }}">همه‌ی کشورها</a>
-        <a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول</a>
-        <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
-        <a href="{{ url_for('search_page') }}">جست‌وجو در راهنماها</a>
-      </div>
-      <div>
-        <h2>ارتباط و مشارکت</h2>
-        <div class="social-links">
-          <a href="https://t.me/caspianix" target="_blank" rel="noopener">تلگرام — <bdi dir="ltr">@caspianix</bdi></a>
-          <a href="https://x.com/persianix" target="_blank" rel="noopener">توییتر — <bdi dir="ltr">@persianix</bdi></a>
-          <a href="https://github.com/MatinIsapoor" target="_blank" rel="noopener">گیت‌هاب پروژه</a>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand brand-footer" href="{{ url_for('index') }}">
+            {{ ui.logo('brand-mark') }}
+            <span class="brand-copy">
+              <span class="brand-name">دانش‌راه</span>
+              <span class="brand-sub">DaneshRah</span>
+            </span>
+          </a>
+          <p>راهنمای فارسی زندگی دانشجویی در خارج از کشور: خرید، مسکن، امور اداری و کار دانشجویی، همراه با لینک منبع و تاریخ ویرایش داده.</p>
+          <a class="footer-about-link" href="{{ url_for('about') }}">درباره‌ی دانش‌راه و اصول ویرایشی {{ ui.icon('arrow-left') }}</a>
         </div>
-        <a href="{{ url_for('api_countries') }}" style="margin-top:6px">API کشورها (JSON)</a>
-        <a href="{{ url_for('health') }}">وضعیت سرویس</a>
-        <span class="muted" style="display:block;margin-top:8px">محتوا در <span class="kbd">data/guides.json</span> است؛ افزودن کشور نیاز به کدنویسی ندارد.</span>
+
+        <div class="footer-col">
+          <h2>راهنمای دانش‌راه</h2>
+          <a href="{{ url_for('index') }}#countries">همه‌ی کشورها</a>
+          <a href="{{ url_for('checklist') }}">چک‌لیست روزهای اول</a>
+          <a href="{{ url_for('emergency') }}">شماره‌های اضطراری</a>
+          <a href="{{ url_for('search_page') }}">جست‌وجو در راهنماها</a>
+        </div>
+
+        <div class="footer-col">
+          <h2>داده و شفافیت</h2>
+          <a href="{{ url_for('about') }}#sources">منابع و تاریخ ویرایش</a>
+          <a href="{{ url_for('about') }}#corrections">گزارش خطا و اصلاح</a>
+          <a href="{{ url_for('api_countries') }}">API کشورها (JSON)</a>
+          <a href="{{ url_for('health') }}">وضعیت سرویس</a>
+        </div>
+
+        <div class="footer-col">
+          <h2>پروژه</h2>
+          <a href="https://github.com/MatinIsapoor/DaneshRah" target="_blank" rel="noopener noreferrer">مخزن پروژه در GitHub</a>
+          <a href="https://github.com/MatinIsapoor/DaneshRah/issues" target="_blank" rel="noopener noreferrer">گزارش مشکل یا پیشنهاد</a>
+          <span class="footer-note">برنامه‌ی وبی مستقل، بدون حساب کاربری و بدون تبلیغ.</span>
+        </div>
       </div>
-    </div>
-    <div class="footer-bottom">
-      <span>اطلاعات این سایت جایگزین منبع رسمی نیست؛ پیش از تصمیم مالی یا قانونی، لینک منبع را خودت هم چک کن.</span>
-      <span>محتوا در یک فایل JSON نگهداری می‌شود و تاریخ آخرین بازبینی دارد.</span>
+
+      <div class="footer-bottom">
+        <p class="footer-disclaimer">
+          <strong>توجه:</strong> این سایت راهنمای آموزشی است و جایگزین منبع رسمی، مشاور حقوقی یا مهاجرتی نیست. پیش از تصمیم مالی یا قانونی، لینک منبع را خودت بررسی کن.
+        </p>
+        <div class="footer-meta">
+          <span>© {{ current_year_fa }} دانش‌راه</span>
+          {% if site_last_updated %}<span>آخرین ویرایش داده: {{ site_last_updated|format_updated }}</span>{% endif %}
+        </div>
+      </div>
     </div>
   </footer>
 
-  <button class="to-top" data-to-top aria-label="بازگشت به بالا">↑</button>
+  <button class="to-top" type="button" data-to-top aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
+    {{ ui.icon('arrow-up') }}
+  </button>
   <script src="{{ url_for('static', filename='utils.js') }}" defer></script>
   <script src="{{ url_for('static', filename='app.js') }}" defer></script>
   {% block scripts %}{% endblock %}
