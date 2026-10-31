@@ -15,8 +15,6 @@ import os
 import re
 import secrets
 import threading
-import time
-import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any, TypedDict
@@ -859,7 +857,7 @@ def add_security_headers(response):  # type: ignore[no-untyped-def]
 @app.route("/health")
 @app.route("/ping")
 def health():  # type: ignore[no-untyped-def]
-    """Liveness + data-load check used by Render and the keep-alive pinger."""
+    """Liveness + data-load check used by Render."""
     try:
         guides = get_guides()
         stats = get_stats(guides)
@@ -1222,34 +1220,6 @@ def internal_error(error):  # type: ignore[no-untyped-def]
         "یک خطای غیرمنتظره رخ داد",
         "خطا ثبت شد. یک‌بار صفحه را تازه کن؛ اگر درست نشد، کمی بعد دوباره سر بزن.",
     )
-
-
-# --- Keep-alive for Render free tier ---------------------------------------
-def _keep_alive_loop() -> None:
-    base_url = os.environ.get("KEEP_ALIVE_URL") or os.environ.get(
-        "RENDER_EXTERNAL_URL"
-    )
-    if not base_url:
-        return
-    base_url = base_url.rstrip("/")
-    try:
-        interval = int(os.environ.get("KEEP_ALIVE_INTERVAL", "600"))
-    except ValueError:
-        interval = 600
-    # Never hammer the endpoint: 60 seconds is the shortest sensible period.
-    interval = max(60, min(interval, 3600))
-    time.sleep(30)
-    while True:
-        try:
-            with urllib.request.urlopen(f"{base_url}/health", timeout=10) as r:
-                log.info("[keep-alive] ping %s/health -> %s", base_url, r.status)
-        except Exception as e:  # noqa: BLE001
-            log.warning("[keep-alive] ping failed: %s", e)
-        time.sleep(interval)
-
-
-if os.environ.get("KEEP_ALIVE_URL") or os.environ.get("RENDER_EXTERNAL_URL"):
-    threading.Thread(target=_keep_alive_loop, daemon=True).start()
 
 
 # Warm the cache at import so the first real request is fast.
