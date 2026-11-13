@@ -33,13 +33,14 @@
   <div class="container hero-grid">
     <div class="hero-copy">
       <p class="kicker"><span class="kicker-rule" aria-hidden="true"></span> راهنمای مستقل برای دانشجویان ایرانی</p>
-      <h1 id="hero-title">روزهای اولِ خارج از کشور،<br><em>بدون سرگردانی.</em></h1>
+      <h1 id="hero-title">روزهای اولِ خارج از کشور،<br><em>بدون سرگردانی.<svg class="title-underline" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path pathLength="1" d="M3 8c38-5 80-6 194-3"/></svg></em></h1>
       <p class="hero-lead">دانش‌راه یک راهنمای فارسی و کشور‌به‌کشور است برای سؤال‌هایی که در هفته‌های اول پیش می‌آید: از ودیعه و سیم‌کارت تا ثبت آدرس، بیمه و کار دانشجویی. هر موضوع جدا شده و منابع رسمی‌اش کنار آن آمده است.</p>
 
       <form class="search-bar search-bar-hero" data-hero-search action="{{ url_for('search_page') }}" method="get" role="search" aria-label="جست‌وجو در راهنماهای دانش‌راه">
         <label class="visually-hidden" for="hero-search-input">چه چیزی می‌خواهی پیدا کنی؟</label>
         <span class="search-bar-icon">{{ icon('search') }}</span>
         <input id="hero-search-input" type="search" name="q" placeholder="مثلاً ودیعه، سیم‌کارت یا بیمه…" autocomplete="off" enterkeyhint="search" data-global-search>
+        <kbd class="search-kbd" title="کلید میانبر جست‌وجو" aria-hidden="true">/</kbd>
         <button type="submit" class="btn btn-primary">جست‌وجو</button>
       </form>
       <div class="quick-links" role="group" aria-label="جست‌وجوهای پیشنهادی">
@@ -57,6 +58,25 @@
     </div>
 
     <div class="hero-panel" role="note" aria-label="مسیر پیشنهادی استفاده از دانش‌راه">
+      <svg class="hero-atlas" viewBox="0 0 320 320" aria-hidden="true" focusable="false">
+        <g class="atlas-rings" fill="none" stroke="currentColor">
+          <circle cx="160" cy="160" r="132"/>
+          <circle cx="160" cy="160" r="96"/>
+        </g>
+        <circle class="atlas-orbit" cx="160" cy="160" r="114" fill="none" stroke="currentColor"/>
+        <g class="atlas-cross" fill="none" stroke="currentColor">
+          <path d="M160 16v20M160 284v20M16 160h20M284 160h20"/>
+        </g>
+        <path class="atlas-route" d="M38 214C92 196 104 118 160 118s68 78 122 38" fill="none" stroke="currentColor"/>
+        <g class="atlas-needle" fill="currentColor">
+          <path d="m160 118 9 42-9 42-9-42 9-42Z"/>
+        </g>
+        <g class="atlas-nodes" fill="currentColor">
+          <circle class="atlas-node atlas-node-1" cx="38" cy="214" r="4"/>
+          <circle class="atlas-node atlas-node-2" cx="160" cy="118" r="4"/>
+          <circle class="atlas-node atlas-node-3" cx="282" cy="156" r="4"/>
+        </g>
+      </svg>
       <div class="hero-panel-head">
         <span class="panel-label">مسیر پیشنهادی</span>
         <span class="panel-mark" aria-hidden="true">{{ icon('compass') }}</span>
@@ -90,30 +110,41 @@
       </div>
     </div>
   </div>
+  <div class="container">
+    <a class="scroll-cue" href="#countries">
+      <span class="scroll-cue-line" aria-hidden="true"></span>
+      <span>شروع از فهرست کشورها</span>
+      {{ icon('chevron-down') }}
+    </a>
+  </div>
 </section>
 
 <div class="container">
-  <section class="stats-strip" aria-label="دانش‌راه در یک نگاه">
+  <section class="stats-strip" aria-label="دانش‌راه در یک نگاه" data-reveal>
     <div class="stat">
+      <span class="stat-icon" aria-hidden="true">{{ icon('globe') }}</span>
       <strong>{{ stats.countries|fa_digits }}</strong>
       <span>کشور با راهنمای مستقل</span>
     </div>
     <div class="stat">
+      <span class="stat-icon" aria-hidden="true">{{ icon('book') }}</span>
       <strong>{{ stats['items']|fa_digits }}</strong>
       <span>نکته‌ی کاربردی دسته‌بندی‌شده</span>
     </div>
     <div class="stat">
+      <span class="stat-icon" aria-hidden="true">{{ icon('shield') }}</span>
       <strong>{{ stats['sources']|fa_digits }}</strong>
       <span>منبع رسمی در فهرست منابع</span>
     </div>
     <div class="stat">
+      <span class="stat-icon" aria-hidden="true">{{ icon('layers') }}</span>
       <strong>۴</strong>
       <span>محور ثابت در هر کشور</span>
     </div>
   </section>
 </div>
 
-<section class="section section-countries" id="countries" aria-labelledby="countries-title">
+<section class="section section-countries" id="countries" aria-labelledby="countries-title" data-reveal>
   <div class="container">
     <header class="section-head">
       <p class="section-kicker">فهرست مقصدها</p>
@@ -129,6 +160,7 @@
         <span class="filter-search-icon">{{ icon('search') }}</span>
         <label class="visually-hidden" for="country-filter">فیلتر سریع کشور</label>
         <input id="country-filter" type="search" placeholder="نام کشور، پایتخت یا منطقه… ( / )" data-country-search autocomplete="off">
+        <button class="filter-clear" type="button" data-filter-clear aria-label="پاک کردن فیلتر کشور" title="پاک کردن" hidden>{{ icon('x') }}</button>
       </div>
       <div class="pills" role="group" aria-label="فیلتر بر اساس منطقه">
         <button class="pill active" type="button" data-region-pill="all" aria-pressed="true">همه</button>
@@ -175,7 +207,7 @@
   </div>
 </section>
 
-<section class="section section-start" id="start-here" aria-labelledby="start-title">
+<section class="section section-start" id="start-here" aria-labelledby="start-title" data-reveal>
   <div class="container">
     <header class="section-head">
       <p class="section-kicker">از کجا شروع کنم؟</p>
@@ -229,7 +261,7 @@
 </section>
 
 {% if general %}
-<section class="section section-band" aria-labelledby="checklist-title">
+<section class="section section-band" aria-labelledby="checklist-title" data-reveal>
   <div class="container band-inner">
     <div class="band-copy">
       <p class="section-kicker">اگر فقط چند دقیقه وقت داری</p>
@@ -251,7 +283,7 @@
 </section>
 {% endif %}
 
-<section class="section" aria-labelledby="principles-title">
+<section class="section" aria-labelledby="principles-title" data-reveal>
   <div class="container">
     <header class="section-head">
       <p class="section-kicker">چطور نوشته شده</p>
@@ -280,7 +312,7 @@
   </div>
 </section>
 
-<section class="section section-faq" aria-labelledby="faq-title">
+<section class="section section-faq" aria-labelledby="faq-title" data-reveal>
   <div class="container container-reading">
     <header class="section-head">
       <p class="section-kicker">پرسش‌های پرتکرار</p>
@@ -317,6 +349,57 @@
           <p>فعلاً {{ stats.countries|fa_digits }} کشور پوشش داده شده‌اند. برای کشورهای دیگر می‌توانی از <a href="{{ url_for('checklist') }}">چک‌لیست عمومی</a> و <a href="{{ url_for('emergency') }}">فهرست شماره‌های اضطراری</a> استفاده کنی. اگر منبع رسمی معتبری برای کشور خودت می‌شناسی، در <a href="https://github.com/MatinIsapoor/DaneshRah/issues" target="_blank" rel="noopener noreferrer">مخزن پروژه</a> پیشنهاد بده.</p>
         </div>
       </details>
+    </div>
+  </div>
+</section>
+
+<section class="section section-contact" id="contact" aria-labelledby="contact-title" data-reveal>
+  <div class="container">
+    <div class="contact-card">
+      <div class="contact-copy">
+        <p class="section-kicker">در تماس باشیم</p>
+        <h2 id="contact-title">سؤال، اصلاح یا پیشنهادی داری؟</h2>
+        <p class="section-intro">اگر جایی از راهنما قدیمی یا نادرست بود، یا برای کشور و موضوعی منبع معتبر می‌شناسی، مستقیم پیام بده. پیشنهادها پیش از انتشار بررسی می‌شوند.</p>
+        <div class="social-links" aria-label="راه‌های ارتباطی">
+          <a class="social-link social-link-telegram" href="https://t.me/Persianix" target="_blank" rel="me noopener noreferrer">
+            <span class="social-icon" aria-hidden="true">{{ icon('telegram') }}</span>
+            <span class="social-copy">
+              <span class="social-name">تلگرام</span>
+              <span class="social-handle" dir="ltr">@Persianix</span>
+            </span>
+            <span class="social-arrow" aria-hidden="true">{{ icon('arrow-left') }}</span>
+          </a>
+          <a class="social-link social-link-twitter" href="https://x.com/Persianix" target="_blank" rel="me noopener noreferrer">
+            <span class="social-icon" aria-hidden="true">{{ icon('x') }}</span>
+            <span class="social-copy">
+              <span class="social-name">توییتر</span>
+              <span class="social-handle" dir="ltr">@Persianix</span>
+            </span>
+            <span class="social-arrow" aria-hidden="true">{{ icon('arrow-left') }}</span>
+          </a>
+        </div>
+        <p class="contact-note">{{ icon('shield') }} برای گزارش خطای محتوایی، لینک منبع رسمی را هم بفرست تا بررسی سریع‌تر شود.</p>
+      </div>
+      <div class="contact-art" aria-hidden="true">
+        <svg class="contact-art-svg" viewBox="0 0 420 280" fill="none" focusable="false">
+          <circle class="contact-ring" cx="210" cy="140" r="112" stroke="currentColor"/>
+          <circle class="contact-ring contact-ring-2" cx="210" cy="140" r="82" stroke="currentColor"/>
+          <path class="contact-route" d="M38 226c76-24 90-118 172-118s80 90 172 34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle class="contact-node contact-node-1" cx="38" cy="226" r="5" fill="currentColor"/>
+          <circle class="contact-node contact-node-2" cx="210" cy="108" r="5" fill="currentColor"/>
+          <circle class="contact-node contact-node-3" cx="382" cy="142" r="5" fill="currentColor"/>
+          <g transform="translate(292 52) rotate(-14)">
+            <g class="contact-plane" fill="currentColor">
+              <path d="M0 22 54 0 36 46 21 31 13 50 9 27Z"/>
+              <path d="M21 31 54 0" stroke="var(--surface-raised)" stroke-width="1.4" stroke-linecap="round"/>
+            </g>
+          </g>
+          <g class="contact-sparks" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path class="contact-spark" d="M332 128v12M326 134h12"/>
+            <path class="contact-spark contact-spark-2" d="M74 92v9M69.5 96.5h9"/>
+          </g>
+        </svg>
+      </div>
     </div>
   </div>
 </section>

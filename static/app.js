@@ -94,6 +94,29 @@
   });
 
   /* ------------------------------------------------------------------
+     Reveal-on-scroll for homepage sections (progressive enhancement)
+     ------------------------------------------------------------------ */
+  var revealItems = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  if (revealItems.length) {
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealItems.forEach(function (item) {
+        item.classList.add('is-visible');
+      });
+    } else {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+      revealItems.forEach(function (item) {
+        revealObserver.observe(item);
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
      Flag images: keep the emoji fallback if a remote SVG/PNG fails
      ------------------------------------------------------------------ */
   document.addEventListener('error', function (event) {
@@ -199,7 +222,9 @@
     event.preventDefault();
     var candidates = Array.prototype.slice.call(document.querySelectorAll('[data-global-search]'));
     var visible = candidates.filter(function (input) {
-      return input.offsetParent !== null && !input.disabled;
+      var details = input.closest('details');
+      if (details && !details.open) return false;
+      return !input.disabled && !!input.offsetParent;
     })[0];
     if (visible) {
       visible.focus();
@@ -281,6 +306,34 @@
 
   if (countrySearch) countrySearch.addEventListener('input', filterCountries);
 
+  /* Clear buttons for the directory and emergency filters. */
+  Array.prototype.slice.call(document.querySelectorAll('[data-filter-clear]')).forEach(function (button) {
+    var wrapper = button.closest('.filter-search');
+    var input = wrapper ? wrapper.querySelector('input') : null;
+    if (!input) return;
+
+    function syncClearButton() {
+      button.hidden = !input.value;
+    }
+
+    function clearFilter() {
+      if (!input.value) return;
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    }
+
+    input.addEventListener('input', syncClearButton);
+    input.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && input.value) {
+        event.preventDefault();
+        clearFilter();
+      }
+    });
+    button.addEventListener('click', clearFilter);
+    syncClearButton();
+  });
+
   regionPills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       regionPills.forEach(function (other) {
@@ -319,6 +372,7 @@
      ------------------------------------------------------------------ */
   var progress = document.querySelector('[data-read-progress]');
   var toTop = document.querySelector('[data-to-top]');
+  var siteHeader = document.querySelector('[data-site-header]');
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('[data-toc-link]'));
   var guideItems = Array.prototype.slice.call(document.querySelectorAll('[data-guide-item]'));
   var scrollQueued = false;
@@ -327,6 +381,8 @@
     var doc = document.documentElement;
     var scrollTop = window.scrollY || doc.scrollTop || 0;
     var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+
+    if (siteHeader) siteHeader.classList.toggle('is-scrolled', scrollTop > 6);
 
     if (progress) {
       var ratio = Math.min(1, Math.max(0, scrollTop / max));
@@ -401,6 +457,10 @@
       copyText(url).then(function (ok) {
         if (label) label.textContent = ok ? 'کپی شد' : 'کپی نشد';
         if (status) status.textContent = ok ? 'پیوند این نکته کپی شد.' : 'مرورگر اجازه‌ی کپی نداد؛ نشانی را دستی از نوار آدرس بردار.';
+        if (ok) {
+          copyButton.classList.add('is-copied');
+          window.setTimeout(function () { copyButton.classList.remove('is-copied'); }, 900);
+        }
         window.setTimeout(function () {
           if (label) label.textContent = 'کپی پیوند';
         }, ok ? 1800 : 3200);

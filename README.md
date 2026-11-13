@@ -16,6 +16,8 @@ The site contains **42 country guides plus one general arrival guide**, **746 gu
 - An 11-step interactive arrival checklist stored in `localStorage`, with progress and reset.
 - An emergency/essentials directory for all 42 countries with client-side filtering.
 - Light and dark themes, reduced-motion support, keyboard navigation, skip link, visible focus states, and mobile layouts tested down to 320 px.
+- Animated SVG accents (logo, hero atlas, contact route, checklist ticks) with `prefers-reduced-motion` fallbacks.
+- Contact links for Telegram and Twitter (`@Persianix`) in the footer, homepage, and About page.
 - An About page covering the project, data policy, limitations, and a single creator credit.
 
 ## Stack
@@ -230,7 +232,7 @@ python app.py
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
 * تست‌ها: `python -m unittest discover -s tests -t .` — بررسی مسیرها، جست‌وجو، امنیت، HTML و داده.
 * اعتبارسنجی داده: `python guide_validation.py` — اگر فیلدی کم، لینک ناامن، تاریخ غلط یا لینک مارک‌داون خراب باشد، خطا می‌دهد.
-* ارتباط: تلگرام [@caspianix](https://t.me/caspianix) — توییتر [@persianix](https://x.com/persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
+* ارتباط: تلگرام [@Persianix](https://t.me/Persianix) — توییتر [@Persianix](https://x.com/Persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
 
 ```powershell
 python -m unittest discover -s tests -t .

@@ -60,6 +60,14 @@
   <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
   {%- elif name == 'github' -%}
   <path d="M15 22v-3.9c.04-1-.35-2-1.1-2.6 3.6-.4 7.4-1.8 7.4-8A6.3 6.3 0 0 0 19.6 2.8 5.9 5.9 0 0 0 19.4 0S18.2-.4 15.5 1.4a15 15 0 0 0-7 0C5.8-.4 4.6 0 4.6 0a5.9 5.9 0 0 0-.2 2.8A6.3 6.3 0 0 0 2.7 7.5c0 6.2 3.8 7.6 7.4 8-.7.6-1.1 1.5-1.1 2.5V22"/><path d="M9 19c-3 .9-3-1.5-4.5-2"/>
+  {%- elif name == 'telegram' -%}
+  <path d="M21.5 3.5 3.4 10.8l4.9 1.6 1.9 6.3 3.1-4.1 4.7 3.5 3.5-14.6Z"/><path d="m8.3 12.4 9.5-6.2-6.5 7.5"/>
+  {%- elif name == 'x' -%}
+  <path fill="currentColor" stroke="none" d="M4 4h4.3l4.9 6.7L18.9 4H21l-7.1 8.3L21.3 20H17l-5.2-7.1L5.8 20H4l7.5-8.8L4 4Z"/>
+  {%- elif name == 'send' -%}
+  <path d="m21 3-9.5 18-2-7.5L2 11.5 21 3Z"/><path d="M9.5 13.5 21 3"/>
+  {%- elif name == 'spark' -%}
+  <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"/>
   {%- elif name == 'info' -%}
   <circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>
   {%- endif -%}
@@ -69,8 +77,8 @@
 {% macro logo(cls='brand-mark') -%}
 <svg class="{{ cls }}" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
   <rect width="40" height="40" rx="11" fill="var(--mark-bg)"/>
-  <path d="M10 30c0-9.2 5.6-14.4 14.5-14.4h5" fill="none" stroke="var(--mark-stroke)" stroke-width="3.2" stroke-linecap="round"/>
-  <path d="M13.5 34c0-9.2 5.6-14.4 14.5-14.4h2" fill="none" stroke="var(--mark-gold)" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>
-  <circle cx="29.5" cy="15.6" r="3.1" fill="var(--mark-dot)"/>
+  <path class="logo-arc logo-arc-main" pathLength="1" d="M10 30c0-9.2 5.6-14.4 14.5-14.4h5" fill="none" stroke="var(--mark-stroke)" stroke-width="3.2" stroke-linecap="round"/>
+  <path class="logo-arc logo-arc-gold" pathLength="1" d="M13.5 34c0-9.2 5.6-14.4 14.5-14.4h2" fill="none" stroke="var(--mark-gold)" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>
+  <circle class="logo-dot" cx="29.5" cy="15.6" r="3.1" fill="var(--mark-dot)"/>
 </svg>
 {%- endmacro %}

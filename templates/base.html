@@ -23,12 +23,16 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="دانش‌راه — راهنمای زندگی دانشجویی در خارج از کشور">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Persianix">
+  <meta name="twitter:creator" content="@Persianix">
   <meta name="twitter:title" content="{{ self.title()|striptags|trim }}">
   <meta name="twitter:description" content="{{ page_description|striptags|trim }}">
   <meta name="twitter:image" content="{{ site_url }}{{ url_for('static', filename='og-cover.png') }}">
 
   <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="me" href="https://t.me/Persianix">
+  <link rel="me" href="https://x.com/Persianix">
   <script nonce="{{ csp_nonce }}">
     (function () {
       document.documentElement.classList.add('js');
@@ -55,6 +59,12 @@
     "url": site_url ~ "/",
     "description": site_description,
     "inLanguage": "fa-IR",
+    "publisher": {
+      "@type": "Organization",
+      "name": "دانش‌راه",
+      "url": site_url ~ "/",
+      "sameAs": ["https://t.me/Persianix", "https://x.com/Persianix"]
+    },
     "potentialAction": {
       "@type": "SearchAction",
       "target": site_url ~ "/search?q={search_term_string}",
@@ -69,7 +79,7 @@
   <div class="read-progress" data-read-progress aria-hidden="true"></div>
 
   {% import "_icons.html" as ui %}
-  <header class="site-header">
+  <header class="site-header" data-site-header>
     <div class="header-inner">
       <a class="brand" href="{{ url_for('index') }}" aria-label="دانش‌راه — صفحه‌ی اصلی">
         {{ ui.logo('brand-mark') }}
@@ -132,6 +142,14 @@
           </a>
           <p>راهنمای فارسی زندگی دانشجویی در خارج از کشور: خرید، مسکن، امور اداری و کار دانشجویی، همراه با لینک منبع و تاریخ ویرایش داده.</p>
           <a class="footer-about-link" href="{{ url_for('about') }}">درباره‌ی دانش‌راه و اصول ویرایشی {{ ui.icon('arrow-left') }}</a>
+          <div class="footer-social" aria-label="ارتباط در شبکه‌های اجتماعی">
+            <a class="footer-social-link" href="https://t.me/Persianix" target="_blank" rel="me noopener noreferrer" aria-label="تلگرام: @Persianix">
+              {{ ui.icon('telegram') }}<span>تلگرام</span><span class="footer-social-handle" dir="ltr">@Persianix</span>
+            </a>
+            <a class="footer-social-link" href="https://x.com/Persianix" target="_blank" rel="me noopener noreferrer" aria-label="توییتر: @Persianix">
+              {{ ui.icon('x') }}<span>توییتر</span><span class="footer-social-handle" dir="ltr">@Persianix</span>
+            </a>
+          </div>
         </div>
 
         <div class="footer-col">

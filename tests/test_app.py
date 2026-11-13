@@ -266,6 +266,24 @@ class TestDiscovery(AppTestCase):
         self.assertNotIn("dict object", country_body)
 
 
+class TestOwnerSocialLinks(AppTestCase):
+    def test_social_links_are_public_and_open_safely(self) -> None:
+        for path in ("/", "/about"):
+            with self.subTest(path=path):
+                body = self.get(path).get_data(as_text=True)
+                self.assertIn('name="twitter:site" content="@Persianix"', body)
+                self.assertIn('<link rel="me" href="https://t.me/Persianix">', body)
+                self.assertIn('<link rel="me" href="https://x.com/Persianix">', body)
+                self.assertIn("@Persianix", body)
+                for url in ("https://t.me/Persianix", "https://x.com/Persianix"):
+                    tags = re.findall(r'<a\b[^>]*href="%s"[^>]*>' % re.escape(url), body)
+                    self.assertTrue(tags, f"{path} must link to {url}")
+                    for tag in tags:
+                        self.assertIn('target="_blank"', tag)
+                        self.assertIn("noopener", tag)
+                        self.assertIn("noreferrer", tag)
+
+
 class TestSearch(AppTestCase):
     def test_normalize_fa_variants(self) -> None:
         normalize = app_module.normalize_fa

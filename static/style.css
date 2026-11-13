@@ -320,6 +320,15 @@ main:focus {
   }
 }
 
+.site-header.is-scrolled {
+  border-block-end-color: var(--rule-strong);
+  box-shadow: 0 8px 28px rgb(27 42 37 / 8%);
+}
+
+[data-theme="dark"] .site-header.is-scrolled {
+  box-shadow: 0 10px 32px rgb(0 0 0 / 34%);
+}
+
 .header-inner {
   display: flex;
   align-items: center;
@@ -880,6 +889,23 @@ main:focus {
   flex: 0 0 auto;
 }
 
+.search-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 1px solid var(--rule);
+  border-block-end-width: 2px;
+  border-radius: 4px;
+  color: var(--faint);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.7rem;
+  line-height: 1;
+  direction: ltr;
+}
+
 .quick-links {
   display: flex;
   flex-wrap: wrap;
@@ -1019,6 +1045,159 @@ main:focus {
 }
 
 /* --------------------------------------------------------------------------
+   Animated SVG accents (hero)
+   -------------------------------------------------------------------------- */
+
+.title-underline {
+  display: block;
+  width: 100%;
+  height: 9px;
+  margin-block-start: 2px;
+  overflow: visible;
+  color: var(--gold-bright);
+}
+
+.title-underline path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.js .title-underline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line 1.1s var(--ease) 620ms forwards;
+}
+
+.hero-panel {
+  overflow: hidden;
+}
+
+.hero-panel > :not(.hero-atlas) {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-atlas {
+  position: absolute;
+  inset-block-start: -54px;
+  inset-inline-end: -62px;
+  width: 300px;
+  height: 300px;
+  color: var(--gold-bright);
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.atlas-rings circle {
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.atlas-rings circle:last-child {
+  stroke-dasharray: 3 8;
+}
+
+.atlas-orbit {
+  stroke-width: 1.2;
+  stroke-dasharray: 2 13;
+  opacity: 0.75;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: orbit-spin 36s linear infinite;
+}
+
+.atlas-cross {
+  stroke-width: 1;
+  opacity: 0.45;
+}
+
+.atlas-route {
+  stroke-width: 1.3;
+  stroke-dasharray: 5 9;
+  opacity: 0.8;
+  animation: dash-flow 16s linear infinite;
+}
+
+.atlas-needle {
+  opacity: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: needle-sway 9s ease-in-out infinite;
+}
+
+.atlas-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: soft-pulse 4.2s ease-in-out infinite;
+}
+
+.atlas-node-2 {
+  animation-delay: 1.1s;
+}
+
+.atlas-node-3 {
+  animation-delay: 2.2s;
+}
+
+.panel-mark .icon {
+  transition: transform 400ms var(--ease);
+}
+
+.hero-panel:hover .panel-mark .icon {
+  transform: rotate(28deg);
+}
+
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: max-content;
+  margin-block-start: clamp(30px, 5vw, 46px);
+  margin-inline: auto;
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-decoration: none;
+}
+
+.scroll-cue:hover {
+  color: var(--accent);
+}
+
+.scroll-cue-line {
+  width: 36px;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.scroll-cue .icon {
+  width: 15px;
+  height: 15px;
+  animation: cue-bounce 2.6s var(--ease) infinite;
+}
+
+.js .hero-copy > * {
+  animation: hero-rise 620ms var(--ease) both;
+}
+
+.js .hero-copy > :nth-child(1) { animation-delay: 40ms; }
+.js .hero-copy > :nth-child(2) { animation-delay: 100ms; }
+.js .hero-copy > :nth-child(3) { animation-delay: 160ms; }
+.js .hero-copy > :nth-child(4) { animation-delay: 220ms; }
+.js .hero-copy > :nth-child(5) { animation-delay: 280ms; }
+.js .hero-copy > :nth-child(6) { animation-delay: 340ms; }
+
+.js .hero-panel {
+  animation: hero-panel-in 750ms var(--ease) 180ms both;
+}
+
+.js .scroll-cue {
+  animation: fade-in 700ms var(--ease) 650ms both;
+}
+
+/* --------------------------------------------------------------------------
    Stats and sections
    -------------------------------------------------------------------------- */
 
@@ -1039,6 +1218,19 @@ main:focus {
 .stat:first-child {
   border-inline-start: 0;
   padding-inline-start: 0;
+}
+
+.stat-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  margin-block-end: 7px;
+  color: var(--gold);
+}
+
+.stat-icon .icon {
+  width: 18px;
+  height: 18px;
 }
 
 .stat strong {
@@ -1140,6 +1332,10 @@ main:focus {
   font-size: 0.88rem;
 }
 
+.filter-search input {
+  padding-inline-end: 40px;
+}
+
 .filter-search input:focus {
   border-color: var(--accent);
   outline: 3px solid color-mix(in srgb, var(--accent) 16%, transparent);
@@ -1159,6 +1355,35 @@ main:focus {
 .filter-search-icon .icon {
   width: 17px;
   height: 17px;
+}
+
+.filter-clear {
+  position: absolute;
+  inset-inline-end: 9px;
+  inset-block-start: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--paper-2);
+  color: var(--muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+}
+
+.filter-clear:hover {
+  background: var(--accent);
+  color: var(--cream);
+}
+
+.filter-clear .icon {
+  width: 13px;
+  height: 13px;
 }
 
 .filter-status {
@@ -3231,6 +3456,411 @@ main:focus {
 }
 
 /* --------------------------------------------------------------------------
+   Motion, social contact and micro-interactions
+   -------------------------------------------------------------------------- */
+
+/* Reveal on scroll (only when JavaScript is available). */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Logo draw-on-load. */
+.js .brand-mark .logo-arc {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line 1.15s var(--ease) forwards;
+}
+
+.js .brand-mark .logo-arc-gold {
+  animation-delay: 180ms;
+}
+
+.brand-mark .logo-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.brand:hover .logo-dot {
+  animation: logo-dot 900ms var(--ease);
+}
+
+/* Flags and icon chips respond to hover without moving text. */
+.cc-flag img {
+  transition: transform 360ms var(--ease);
+}
+
+.country-cell:hover .cc-flag img {
+  transform: scale(1.12);
+}
+
+.topic-icon,
+.category-icon {
+  transition: background 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.topic-row:hover .topic-icon,
+.category-row:hover .category-icon {
+  border-color: var(--brand-ink);
+  background: var(--brand-ink);
+  color: var(--gold-bright);
+  transform: rotate(-6deg);
+}
+
+.btn .icon {
+  transition: transform 180ms var(--ease);
+}
+
+.btn:hover .icon {
+  transform: translateX(-2px);
+}
+
+.theme-icon {
+  transition: transform 300ms var(--ease);
+}
+
+[data-theme-btn]:hover .theme-icon {
+  transform: rotate(16deg);
+}
+
+.g-body:not([hidden]) {
+  animation: fade-in 280ms var(--ease);
+}
+
+/* Checklist check stroke draws itself when ticked. */
+.check-box {
+  transition: background 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.check-box .icon path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 340ms var(--ease) 40ms;
+}
+
+.check-input:checked + .check-label .check-box {
+  transform: scale(1.04);
+}
+
+.check-input:checked + .check-label .check-box .icon path {
+  stroke-dashoffset: 0;
+}
+
+.check-item.is-done {
+  background: color-mix(in srgb, var(--success) 5%, transparent);
+}
+
+.mini-btn.is-copied {
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: var(--success);
+}
+
+/* Shared social links. */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block-start: 22px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+  padding: 9px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 180ms var(--ease), border-color 180ms var(--ease), background 180ms var(--ease), box-shadow 180ms var(--ease);
+}
+
+.social-link:hover {
+  border-color: var(--rule-strong);
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--link) 12%, transparent);
+  color: var(--link);
+}
+
+.social-icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.social-link-telegram .social-icon {
+  background: color-mix(in srgb, #2a9bd7 14%, transparent);
+  color: #1c7fb4;
+}
+
+[data-theme="dark"] .social-link-telegram .social-icon {
+  color: #7ec8ea;
+}
+
+.social-link-twitter .social-icon {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
+}
+
+.social-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.social-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.social-handle {
+  color: var(--muted);
+  font-size: 0.73rem;
+  letter-spacing: 0.02em;
+  text-align: start;
+}
+
+.social-arrow {
+  display: inline-flex;
+  margin-inline-start: auto;
+  color: var(--accent);
+  transition: transform 180ms var(--ease);
+}
+
+.social-arrow .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.social-link:hover .social-arrow {
+  transform: translateX(-3px);
+}
+
+/* Contact card on the homepage. */
+.section-contact {
+  background: var(--paper-2);
+}
+
+.contact-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: clamp(24px, 4vw, 54px);
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 54px);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-soft);
+}
+
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: linear-gradient(to left, var(--brand-ink), var(--accent), var(--gold-bright));
+}
+
+.contact-copy h2 {
+  margin-block-end: 12px;
+}
+
+.contact-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-block-start: 18px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.7;
+}
+
+.contact-note .icon {
+  margin-block-start: 0.26em;
+  color: var(--gold);
+}
+
+.contact-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.contact-art-svg {
+  width: min(100%, 420px);
+  height: auto;
+  overflow: visible;
+}
+
+.contact-ring {
+  stroke-width: 1;
+  opacity: 0.26;
+}
+
+.contact-ring-2 {
+  stroke-dasharray: 2 8;
+  opacity: 0.36;
+}
+
+.contact-route {
+  stroke-width: 1.6;
+  stroke-dasharray: 6 9;
+  opacity: 0.72;
+  animation: dash-flow 14s linear infinite;
+}
+
+.contact-node,
+.contact-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: soft-pulse 4s ease-in-out infinite;
+}
+
+.contact-node-2 { animation-delay: 1.1s; }
+.contact-node-3 { animation-delay: 2.2s; }
+.contact-spark-2 { animation-delay: 1.4s; }
+
+.contact-plane {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: float-y 5s ease-in-out infinite;
+}
+
+/* About page contact block. */
+.about-social {
+  margin-block-start: 22px;
+  padding-block-start: 18px;
+  border-block-start: 1px dashed var(--rule);
+}
+
+.about-social-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.about-social .social-links {
+  margin-block-start: 10px;
+}
+
+/* Footer social links. */
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-block-start: 15px;
+}
+
+.footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid rgb(247 241 228 / 18%);
+  border-radius: 999px;
+  color: rgb(247 241 228 / 78%);
+  font-size: 0.7rem;
+  text-decoration: none;
+  transition: border-color 160ms var(--ease), background 160ms var(--ease), color 160ms var(--ease);
+}
+
+.footer-social-link .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--gold-bright);
+}
+
+.footer-social-handle {
+  color: rgb(247 241 228 / 52%);
+  font-size: 0.65rem;
+}
+
+.footer-social-link:hover {
+  border-color: var(--gold-bright);
+  background: rgb(247 241 228 / 8%);
+  color: var(--cream);
+}
+
+/* Keyframes */
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -90; }
+}
+
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes needle-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes cue-bounce {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(4px); }
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hero-panel-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes logo-dot {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.35); }
+}
+
+/* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 
@@ -3864,6 +4494,69 @@ main:focus {
   }
 }
 
+@media (max-width: 920px) {
+  .contact-card {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-art {
+    max-width: 360px;
+    margin-inline: auto;
+  }
+
+  .social-link {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 720px) {
+  .search-kbd {
+    display: none;
+  }
+
+  .hero-atlas {
+    inset-block-start: -42px;
+    inset-inline-end: -48px;
+    width: 250px;
+    height: 250px;
+  }
+
+  .scroll-cue {
+    margin-block-start: 26px;
+  }
+
+  .contact-card {
+    padding: 24px 20px;
+  }
+
+  .social-links,
+  .about-social .social-links {
+    flex-direction: column;
+  }
+
+  .social-link {
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+
+  .contact-art {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 430px) {
+  .contact-art {
+    display: none;
+  }
+
+  .hero-atlas {
+    width: 230px;
+    height: 230px;
+    opacity: 0.22;
+  }
+}
+
 @media (hover: hover) {
   .country-cell:hover {
     transform: translateY(-2px);
@@ -3875,6 +4568,18 @@ main:focus {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .js .hero-copy > *,
+  .js .hero-panel,
+  .js .scroll-cue {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .js .brand-mark .logo-arc {
+    stroke-dashoffset: 0 !important;
+  }
+
   html {
     scroll-behavior: auto;
   }
@@ -3930,6 +4635,11 @@ main:focus {
     font-size: 11pt;
   }
 
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   .site-header,
   .site-footer,
   .read-progress,
@@ -3942,13 +4652,19 @@ main:focus {
   .disclaimer-box,
   .skip-link,
   .search-bar,
+  .search-kbd,
   .quick-links,
   .hero-panel,
+  .hero-atlas,
   .hero-actions,
+  .scroll-cue,
+  .title-underline,
   .stats-strip,
   .directory-toolbar,
   .fav-btn,
-  .band-actions {
+  .band-actions,
+  .section-contact,
+  .social-links {
     display: none !important;
   }
 

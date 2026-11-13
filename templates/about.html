@@ -14,7 +14,8 @@
     "@type": "Organization",
     "name": "دانش‌راه",
     "url": site_url ~ "/",
-    "description": "راهنمای مستقل زندگی دانشجویی در خارج از کشور"
+    "description": "راهنمای مستقل زندگی دانشجویی در خارج از کشور",
+    "sameAs": ["https://t.me/Persianix", "https://x.com/Persianix"]
   }
 }|tojson }}</script>
 {% endblock %}
@@ -128,6 +129,27 @@
       <h2 id="creator-title">سازنده و استقلال پروژه</h2>
       <p>دانش‌راه توسط <strong>متین</strong> ساخته و نگهداری می‌شود. این یک پروژه‌ی شخصی و مستقل است و به دانشگاه، سفارت، شرکت مهاجرتی یا نهاد دیگری وابسته نیست. در نسخه‌ی فعلی هیچ حساب کاربری، تبلیغ یا فروش خدمتی در سایت وجود ندارد.</p>
       <p>کد پروژه در <a href="https://github.com/MatinIsapoor/DaneshRah" target="_blank" rel="noopener noreferrer">GitHub</a> نگهداری می‌شود. برای دیدن تغییرات، گزارش خطا یا پیشنهاد محتوا از همان‌جا اقدام کن.</p>
+      <div class="about-social">
+        <p class="about-social-label">ارتباط مستقیم</p>
+        <div class="social-links" aria-label="ارتباط با سازنده">
+          <a class="social-link social-link-telegram" href="https://t.me/Persianix" target="_blank" rel="me noopener noreferrer">
+            <span class="social-icon" aria-hidden="true">{{ icon('telegram') }}</span>
+            <span class="social-copy">
+              <span class="social-name">تلگرام</span>
+              <span class="social-handle" dir="ltr">@Persianix</span>
+            </span>
+            <span class="social-arrow" aria-hidden="true">{{ icon('arrow-left') }}</span>
+          </a>
+          <a class="social-link social-link-twitter" href="https://x.com/Persianix" target="_blank" rel="me noopener noreferrer">
+            <span class="social-icon" aria-hidden="true">{{ icon('x') }}</span>
+            <span class="social-copy">
+              <span class="social-name">توییتر</span>
+              <span class="social-handle" dir="ltr">@Persianix</span>
+            </span>
+            <span class="social-arrow" aria-hidden="true">{{ icon('arrow-left') }}</span>
+          </a>
+        </div>
+      </div>
       <p class="about-credits">فونت‌های Vazirmatn و Markazi Text با مجوز SIL Open Font License استفاده شده‌اند. پرچم‌ها از سرویس FlagCDN بارگذاری می‌شوند.</p>
     </section>
 

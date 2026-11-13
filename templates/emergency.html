@@ -22,6 +22,7 @@
       <span class="filter-search-icon">{{ icon('search') }}</span>
       <label class="visually-hidden" for="emergency-filter">جست‌وجوی کشور، پایتخت یا شماره</label>
       <input id="emergency-filter" type="search" placeholder="کشور، پایتخت، واحد پول یا شماره…" data-em-search autocomplete="off">
+      <button class="filter-clear" type="button" data-filter-clear aria-label="پاک کردن فیلتر شماره‌های اضطراری" title="پاک کردن" hidden>{{ icon('x') }}</button>
     </div>
     <p class="filter-status" role="status" aria-live="polite" data-em-count>{{ rows|length|fa_digits }} کشور نمایش داده می‌شود</p>
   </div>
