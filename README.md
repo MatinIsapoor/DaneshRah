@@ -210,7 +210,7 @@ Before calling a deployment production-ready, verify at minimum:
 
 ## Project background and credit
 
-The `/about` page documents the project’s origin, data policy, and limitations, and contains the single genuine creator credit. The repository is [MatinIsapoor/DaneshRah](https://github.com/MatinIsapoor/DaneshRah).
+The `/about` page documents the project’s origin, data policy, and limitations, and contains the single genuine creator credit. The repository is [Persianix/DaneshRah](https://github.com/Persianix/DaneshRah).
 
 ---
 
@@ -232,7 +232,7 @@ python app.py
 * صفحات: `/search` جست‌وجو، `/checklist` چک‌لیست تعاملی، `/emergency` شماره‌های اضطراری.
 * تست‌ها: `python -m unittest discover -s tests -t .` — بررسی مسیرها، جست‌وجو، امنیت، HTML و داده.
 * اعتبارسنجی داده: `python guide_validation.py` — اگر فیلدی کم، لینک ناامن، تاریخ غلط یا لینک مارک‌داون خراب باشد، خطا می‌دهد.
-* ارتباط: تلگرام [@Persianix](https://t.me/Persianix) — توییتر [@Persianix](https://x.com/Persianix) — گیت‌هاب [MatinIsapoor](https://github.com/MatinIsapoor).
+* ارتباط: تلگرام [@Persianix](https://t.me/Persianix) — توییتر [@Persianix](https://x.com/Persianix) — گیت‌هاب [Persianix](https://github.com/Persianix).
 
 ```powershell
 python -m unittest discover -s tests -t .
