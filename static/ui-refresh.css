@@ -1,0 +1,654 @@
+/* ==========================================================================
+   DaneshRah — UI refresh layer (2026)
+   --------------------------------------------------------------------------
+   Loaded AFTER style.css. Purely additive: delete this file and its <link>
+   and the site returns to the previous look, untouched.
+
+   Palette direction: warm neutral paper + charcoal ink, with terracotta and
+   amber as the only two hues. Deliberately NO green anywhere — the previous
+   green-tinted ink, jade wash and yellow-cast paper are gone.
+
+   What this layer changes
+     · palette v2 — clean warm white, neutral charcoal ink, terracotta + amber
+     · display type moved to Vazirmatn 800 (tighter, more contemporary)
+     · paper grain + ambient light so surfaces stop looking flat
+     · a living SVG "sky" behind the hero
+     · motion: dash-running routes, orbiting nodes, scroll-linked reveals
+     · sharper focus states, selection colour, scrollbar
+
+   Everything motion-related is disabled under prefers-reduced-motion.
+   Layout is deliberately NOT restructured: colours, type, texture, motion.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* surfaces — clean warm white. No yellow cast, no green cast. */
+  --paper: #faf8f5;
+  --paper-2: #f2efeb;
+  --paper-3: #e7e2db;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+
+  /* ink — warm neutral charcoal, not green-tinted */
+  --ink: #15120f;
+  --ink-2: #322c26;
+  --muted: #5c554e;
+  --faint: #6d655d;
+
+  /* rules */
+  --rule: #e2dcd4;
+  --rule-strong: #c4baad;
+
+  /* brand — terracotta + amber on neutral. Nothing else. */
+  --brand-ink: #1b1815;
+  --brand-ink-2: #0b0908;
+  --accent: #c9471f;
+  --accent-strong: #9a3412;
+  --gold: #8a5f1c;
+  --gold-bright: #e3a92c;
+  --link: #a63f18;
+  --link-hover: #7c2d0f;
+  --focus: #c9471f;
+  --danger: #8b2d24;
+  --cream: #faf7f2;
+
+  /* elevation — tinted with the ink, never pure black */
+  --shadow-soft: 0 1px 2px rgb(21 18 15 / 6%);
+  --shadow-lift:
+    0 18px 40px -14px rgb(21 18 15 / 20%),
+    0 6px 16px -8px rgb(21 18 15 / 11%);
+
+  /* geometry — slightly rounder than the 3px editorial baseline */
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+
+  /* motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  /* warm neutral charcoal, not green-black */
+  --paper: #100e0d;
+  --paper-2: #181513;
+  --paper-3: #221e1b;
+  --surface: #171412;
+  --surface-raised: #1e1a17;
+
+  --ink: #f6f2ed;
+  --ink-2: #d8d0c7;
+  --muted: #aba29a;
+  --faint: #8c837b;
+
+  --rule: #2c2724;
+  --rule-strong: #443d37;
+
+  --brand-ink: #332c26;
+  --brand-ink-2: #1d1815;
+  --accent: #f4794f;
+  --accent-strong: #ffa07a;
+  --gold: #d3a75b;
+  --gold-bright: #f2c96e;
+  --link: #f8a179;
+  --link-hover: #ffc4a3;
+  --focus: #f4794f;
+  --cream: #faf7f2;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-lift:
+    0 20px 46px -16px rgb(0 0 0 / 55%),
+    0 8px 18px -10px rgb(0 0 0 / 35%);
+}
+
+/* --------------------------------------------------------------------------
+   1b. Sweep out the last green-tinted legacy tokens
+   --mark-* drives the compass logo, --success drives the "verified" badges.
+   Both are retuned into the neutral/terracotta world so no green is left.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --mark-bg: #1b1815;
+  --mark-stroke: #faf7f2;
+  --mark-gold: #e3a92c;
+  --mark-dot: #c9471f;
+  --success: #7d5a17;
+  --warning: #8a5f1c;
+}
+
+[data-theme="dark"] {
+  --mark-bg: #332c26;
+  --mark-stroke: #faf7f2;
+  --mark-gold: #f2c96e;
+  --mark-dot: #f4794f;
+  --success: #d3a75b;
+  --warning: #e3a92c;
+}
+
+/* --------------------------------------------------------------------------
+   2. Paper grain + ambient wash
+   Fixed overlay, never intercepts pointer events, sits above everything.
+   -------------------------------------------------------------------------- */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+[data-theme="dark"] body::before {
+  opacity: 0.045;
+  mix-blend-mode: screen;
+}
+
+/* A very slow warm wash so the page is never a flat single tone. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 88% -6%, color-mix(in srgb, var(--gold-bright) 8%, transparent), transparent 68%),
+    radial-gradient(60% 50% at 4% 104%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 70%);
+}
+
+/* --------------------------------------------------------------------------
+   3. Typography
+   Vazirmatn 800 for display gives the site a contemporary voice; Markazi Text
+   stays available via --font-display for pull quotes and the brand wordmark.
+   -------------------------------------------------------------------------- */
+
+.hero h1,
+.page-hero h1,
+.section-head h2,
+h2,
+h3 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.021em;
+  line-height: 1.24;
+  text-wrap: balance;
+}
+
+.hero h1,
+.page-hero h1 {
+  letter-spacing: -0.028em;
+  line-height: 1.18;
+  font-size: clamp(2.05rem, 4.5vw, 3.4rem);
+}
+
+p,
+.hero-lead,
+.page-lead,
+.topic-desc,
+.section-intro {
+  text-wrap: pretty;
+}
+
+.hero-lead,
+.page-lead {
+  color: var(--ink-2);
+  line-height: 1.95;
+}
+
+/* accent word in the headline: terracotta -> amber */
+.hero h1 em {
+  color: var(--accent);
+  background: linear-gradient(96deg, var(--accent) 12%, var(--gold-bright) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* section eyebrow — small, tracked, with a growing rule */
+.section-kicker {
+  letter-spacing: 0.02em;
+}
+
+.section-kicker::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 2px;
+  margin-block-start: 8px;
+  border-radius: 2px;
+  background: linear-gradient(to left, var(--accent), var(--gold-bright));
+  transform-origin: right center;
+  transform: scaleX(0.55);
+  transition: transform 520ms var(--ease-out-expo);
+}
+
+.section-head:hover .section-kicker::after,
+section:hover .section-kicker::after {
+  transform: scaleX(1);
+}
+
+/* numbers, counters and dates line up */
+.stat-value,
+.route-num,
+.topic-num,
+.meta-badge,
+time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   4. Interaction — buttons, links, focus, selection
+   -------------------------------------------------------------------------- */
+
+.btn {
+  border-radius: 11px;
+  font-weight: 700;
+  transition:
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease),
+    box-shadow 240ms var(--ease),
+    transform 200ms var(--ease-spring);
+}
+
+.btn-primary {
+  background: var(--brand-ink);
+  box-shadow: 0 1px 1px rgb(255 255 255 / 10%) inset, 0 6px 16px -10px var(--brand-ink);
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 1px rgb(255 255 255 / 14%) inset,
+    0 12px 26px -12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* dark theme: the primary button becomes the accent, dark text on warm fill */
+[data-theme="dark"] .btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #17120e;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+  color: #17120e;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--surface-raised);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* animated underline on inline links */
+.text-link,
+.quick-links a,
+.social-link {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 180ms var(--ease);
+}
+
+.text-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: var(--ink);
+}
+
+/* slim, theme-aware scrollbar (Chromium/WebKit only, harmless elsewhere) */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong) transparent;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Hero — ambient mesh
+   -------------------------------------------------------------------------- */
+
+.hero {
+  isolation: isolate;
+}
+
+.hero::before {
+  /* keep the original hairline grid, just push it behind the mesh */
+  z-index: 0;
+  opacity: 0.26;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 62% at 84% 4%, color-mix(in srgb, var(--gold-bright) 16%, transparent), transparent 70%),
+    radial-gradient(50% 56% at 6% 96%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 72%),
+    radial-gradient(72% 84% at 46% -8%, color-mix(in srgb, var(--surface-raised) 70%, transparent), transparent 66%);
+}
+
+.hero > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* the animated sky sits behind the copy, bleeding off the inline-start edge */
+.hero-art {
+  position: absolute;
+  inset-block-start: -14%;
+  inset-inline-start: -10%;
+  width: min(760px, 68vw);
+  aspect-ratio: 1;
+  z-index: 0;
+  color: var(--gold-bright);
+  opacity: 0.46;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 34%, transparent 74%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 34%, transparent 74%);
+}
+
+.hero-sky {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* --- sky geometry ------------------------------------------------------- */
+
+.sky-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0.42;
+}
+
+.sky-ring-a {
+  stroke-dasharray: 2 11;
+  animation: sky-turn 74s linear infinite;
+}
+
+.sky-ring-b {
+  stroke-dasharray: 1 7;
+  opacity: 0.3;
+  animation: sky-turn-rev 52s linear infinite;
+}
+
+.sky-ring-c {
+  stroke-dasharray: 40 260;
+  stroke-linecap: round;
+  opacity: 0.55;
+  animation: sky-turn 34s linear infinite;
+}
+
+.sky-orbit {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 16;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sky-turn 44s linear infinite;
+}
+
+.sky-orbit-b {
+  animation: sky-turn-rev 66s linear infinite;
+  opacity: 0.6;
+}
+
+.sky-arm {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.sky-node {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sky-pulse 6.5s ease-in-out infinite;
+}
+
+.sky-node-2 { animation-delay: 1.6s; }
+.sky-node-3 { animation-delay: 3.2s; }
+.sky-node-4 { animation-delay: 4.8s; }
+
+/* a comet that rides the route path, then loops */
+.sky-route {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.85;
+  stroke-dasharray: 26 520;
+  animation: sky-run 11s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.sky-route-ghost {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 5 9;
+  opacity: 0.4;
+  animation: sky-dash 18s linear infinite;
+}
+
+@keyframes sky-turn {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sky-turn-rev {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes sky-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.86); }
+  50%      { opacity: 1;    transform: scale(1.14); }
+}
+
+@keyframes sky-run {
+  0%   { stroke-dashoffset: 546; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes sky-dash {
+  to { stroke-dashoffset: -280; }
+}
+
+/* the compass panel gets a touch of depth on hover */
+.hero-panel {
+  border-radius: var(--radius-lg);
+  transition: transform 380ms var(--ease-out-expo), box-shadow 380ms var(--ease);
+}
+
+.hero-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* --------------------------------------------------------------------------
+   6. Motion polish on existing accents
+   -------------------------------------------------------------------------- */
+
+.atlas-orbit {
+  animation-duration: 44s;
+}
+
+.atlas-route {
+  animation-duration: 20s;
+}
+
+/* stat cards: lift on hover, glow tinted with the accent */
+.stat {
+  border-radius: var(--radius-md);
+  transition:
+    transform 300ms var(--ease-out-expo),
+    box-shadow 300ms var(--ease),
+    border-color 300ms var(--ease);
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--rule));
+}
+
+.stat-icon {
+  transition: transform 420ms var(--ease-spring), color 300ms var(--ease);
+}
+
+.stat:hover .stat-icon {
+  transform: rotate(-6deg) scale(1.06);
+  color: var(--accent);
+}
+
+/* topic rows: the arrow slides, the number warms up */
+.topic-row {
+  transition:
+    background-color 260ms var(--ease),
+    transform 260ms var(--ease-out-expo),
+    border-color 260ms var(--ease);
+}
+
+.topic-row:hover {
+  transform: translateX(-3px);
+}
+
+.topic-row:hover .topic-num {
+  color: var(--accent);
+}
+
+.topic-row .icon,
+.topic-row .social-arrow {
+  transition: transform 300ms var(--ease-spring);
+}
+
+.topic-row:hover .icon,
+.topic-row:hover .social-arrow {
+  transform: translateX(-4px);
+}
+
+/* --------------------------------------------------------------------------
+   6b. Legacy hard-coded green surfaces
+   style.css paints the footer with a literal dark green (#10211d / #0b120f)
+   instead of a token, so no variable override could reach it. Same story for
+   two small hard-coded green inks and the high-contrast palette.
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  background: #17130f;
+  color: rgb(250 247 242 / 72%);
+}
+
+[data-theme="dark"] .site-footer {
+  background: #0b0908;
+}
+
+.btn-light:hover {
+  color: #15120f;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --muted: #4a443d;
+    --faint: #5d564e;
+  }
+
+  [data-theme="dark"] {
+    --muted: #c9c2ba;
+    --faint: #b5ada5;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. Scroll-linked reveals
+   Progressive enhancement: only where the browser supports view timelines,
+   and only when the visitor has not asked for reduced motion. If unsupported,
+   nothing is hidden — the rule simply never applies.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .js .section-head,
+    .js .topic-row,
+    .js .stat,
+    .js .faq-item {
+      animation: reveal-up both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 22%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. Reduced motion and print
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-ring,
+  .sky-orbit,
+  .sky-node,
+  .sky-route,
+  .sky-route-ghost {
+    animation: none !important;
+  }
+
+  .sky-route {
+    stroke-dasharray: none;
+    opacity: 0.5;
+  }
+
+  .hero-panel:hover,
+  .stat:hover,
+  .topic-row:hover,
+  .btn-primary:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  body::before,
+  body::after,
+  .hero-art,
+  .hero::after {
+    display: none !important;
+  }
+}
